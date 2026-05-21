@@ -16,6 +16,7 @@
     --line-soft: #eef0f3;
     --natalie: #c9a84c;
     --ian: #7d4fc7;
+    --gabi: #2f7fc4;
     --now: #ff3b30;
     --gutter: 44px;
     --col: 146px;
@@ -33,17 +34,15 @@
   }
 
   /* ---------- Top bar ---------- */
-  .topbar {
-    flex: none;
-    background: #fff; border-bottom: 1px solid var(--line);
-    padding-top: env(safe-area-inset-top);
-  }
-  .title-row {
-    display: flex; align-items: baseline; gap: 8px; padding: 9px 14px 7px;
-  }
-  .title { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+  .topbar { flex: none; background: #fff; border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+  .title-row { display: flex; align-items: center; gap: 8px; padding: 9px 12px 7px 14px; }
+  .title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
   .title span { color: var(--natalie); }
-  .count { margin-left: auto; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+  .exportbtn {
+    margin-left: auto; appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--ink); color: #fff; border: none; border-radius: 9px;
+    padding: 6px 11px; font-size: 11.5px; font-weight: 700;
+  }
   .daytabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; padding: 0 10px 8px; }
   .daytab {
     appearance: none; border: 1px solid var(--line); background: #fff;
@@ -55,70 +54,51 @@
   .daytab .d2 { font-size: 9.5px; font-weight: 600; }
   .daytab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
   .legend {
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     padding: 7px 14px; font-size: 10.5px; color: var(--muted);
     background: var(--bg); border-top: 1px solid var(--line-soft);
   }
-  .legend b { font-weight: 700; }
   .lg { display: flex; align-items: center; gap: 4px; }
   .star { font-size: 12px; line-height: 1; }
-  .star.n { color: var(--natalie); }
-  .star.i { color: var(--ian); }
-  .lg .dash {
-    width: 16px; height: 0; border-top: 2px dashed var(--muted);
-  }
+  .star.natalie { color: var(--natalie); }
+  .star.ian { color: var(--ian); }
+  .star.gabi { color: var(--gabi); }
 
   /* ---------- Scroller (two-axis) ---------- */
-  .scroller {
-    flex: 1; overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    background: var(--bg);
-  }
-  .board {
-    position: relative;
-    width: calc(var(--gutter) + 6 * var(--col));
-  }
+  .scroller { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+  .board { position: relative; width: calc(var(--gutter) + 6 * var(--col)); }
 
-  /* header row — sticky to top, scrolls horizontally */
   .headrow {
     position: sticky; top: 0; z-index: 20;
-    display: flex; height: var(--head);
-    width: calc(var(--gutter) + 6 * var(--col));
+    display: flex; height: var(--head); width: calc(var(--gutter) + 6 * var(--col));
   }
   .corner {
-    position: sticky; left: 0; z-index: 5;
-    width: var(--gutter); flex: none;
+    position: sticky; left: 0; z-index: 5; width: var(--gutter); flex: none;
     background: var(--ink); color: #fff;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     border-right: 1px solid var(--ink);
   }
-  .corner .c1 { font-size: 11px; font-weight: 800; letter-spacing: 0.02em; }
+  .corner .c1 { font-size: 11px; font-weight: 800; }
   .corner .c2 { font-size: 7.5px; font-weight: 600; opacity: .7; }
   .stagehead {
     width: var(--col); flex: none;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 1px; border-right: 1px solid var(--line);
-    border-bottom: 2px solid currentColor;
+    gap: 1px; border-right: 1px solid var(--line); border-bottom: 2px solid currentColor;
   }
   .stagehead .sh-name { font-size: 12.5px; font-weight: 800; letter-spacing: -0.01em; }
-  .stagehead .sh-sub { font-size: 8px; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted); }
+  .stagehead .sh-sub { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
-  /* body — gutter + 6 columns */
   .body { position: relative; display: flex; width: calc(var(--gutter) + 6 * var(--col)); }
   .gutter {
-    position: sticky; left: 0; z-index: 10;
-    width: var(--gutter); flex: none;
+    position: sticky; left: 0; z-index: 10; width: var(--gutter); flex: none;
     background: #fbfbfc; border-right: 1px solid var(--line);
   }
   .hourlab {
     position: absolute; left: 0; right: 3px; text-align: right;
-    font-size: 9px; font-weight: 700; color: var(--muted);
-    font-variant-numeric: tabular-nums;
+    font-size: 9px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums;
   }
   .stagecol {
-    width: var(--col); flex: none; position: relative;
-    border-right: 1px solid var(--line);
+    width: var(--col); flex: none; position: relative; border-right: 1px solid var(--line);
     background-image: repeating-linear-gradient(
       to bottom, var(--line-soft) 0, var(--line-soft) 1px,
       transparent 1px, transparent var(--hourpx));
@@ -133,44 +113,23 @@
     cursor: pointer; transition: transform .07s ease;
   }
   .act:active { transform: scale(0.97); }
-  .act.pick-n { background: #fbf6e9; border-color: #e3cf93; }
-  .act.pick-i { background: #f4effb; border-color: #c9b6e8; }
-  .act.pick-b { background: #f6f1ef; border-color: #d8c08f; }
+  .act.has-pick { border-color: #cfd3da; box-shadow: 0 1px 3px rgba(20,22,28,.07); }
   .act.est { border-style: dashed; }
   .a-band {
-    font-size: 11.5px; font-weight: 700; line-height: 1.13;
-    letter-spacing: -0.015em; color: var(--ink);
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 11.5px; font-weight: 700; line-height: 1.13; letter-spacing: -0.015em;
+    color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .a-time {
-    font-size: 9px; font-weight: 600; color: var(--muted);
-    font-variant-numeric: tabular-nums; margin-top: auto;
-  }
-  .a-stars {
-    position: absolute; top: 3px; right: 4px;
-    display: flex; gap: 1px; line-height: 1;
-  }
-  .a-stars span { font-size: 10px; }
-  .act.short { padding: 3px 6px; }
-  .act.short .a-band { font-size: 11px; -webkit-line-clamp: 2; }
+  .a-time { font-size: 9px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: auto; }
+  .a-stars { position: absolute; top: 3px; right: 4px; display: flex; gap: 1px; line-height: 1; }
+  .a-stars span { font-size: 9.5px; }
 
-  /* now line */
   .nowline {
     position: absolute; left: var(--gutter); right: 0; height: 0;
     border-top: 2px solid var(--now); z-index: 8; pointer-events: none; display: none;
   }
-  .nowline::before {
-    content: ""; position: absolute; left: 0; top: -4px;
-    width: 7px; height: 7px; border-radius: 50%; background: var(--now);
-  }
-  .nowtag {
-    position: absolute; left: 2px; top: -8px;
-    background: var(--now); color: #fff; font-size: 8px; font-weight: 800;
-    padding: 1px 4px; border-radius: 3px; letter-spacing: .04em;
-  }
+  .nowline::before { content:""; position:absolute; left:0; top:-4px; width:7px; height:7px; border-radius:50%; background:var(--now); }
+  .nowtag { position:absolute; left:2px; top:-8px; background:var(--now); color:#fff; font-size:8px; font-weight:800; padding:1px 4px; border-radius:3px; }
 
-  /* floating now button */
   .nowbtn {
     position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 30; appearance: none; font-family: inherit; cursor: pointer;
@@ -181,7 +140,7 @@
   .nowbtn.show { display: flex; }
   .nowbtn .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
 
-  /* ---------- Detail sheet ---------- */
+  /* ---------- Sheet ---------- */
   .backdrop {
     position: fixed; inset: 0; z-index: 60; background: rgba(15,17,22,.45);
     opacity: 0; pointer-events: none; transition: opacity .2s ease;
@@ -189,27 +148,83 @@
   .backdrop.open { opacity: 1; pointer-events: auto; }
   .sheet {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; background: #fff;
-    border-radius: 20px 20px 0 0; padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
+    border-radius: 20px 20px 0 0; padding: 8px 22px calc(24px + env(safe-area-inset-bottom));
     transform: translateY(110%); transition: transform .26s cubic-bezier(.32,.72,0,1);
-    box-shadow: 0 -8px 40px rgba(15,17,22,.22);
+    box-shadow: 0 -8px 40px rgba(15,17,22,.22); max-height: 90vh; overflow-y: auto;
   }
   .sheet.open { transform: translateY(0); }
-  .sheet-handle { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 6px auto 16px; }
-  .sheet-stage { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  .sheet-band { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin: 4px 0 10px; }
-  .sheet-time { font-size: 14px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
-  .sheet-pick {
-    display: flex; align-items: center; gap: 8px; margin-top: 14px;
-    border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600;
+  .sheet-handle { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 6px auto 14px; }
+  .sheet-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .sheet-band { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin: 4px 0 8px; }
+  .sheet-time { font-size: 13.5px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 10px 0; border-bottom: 1px solid var(--line-soft);
   }
-  .sheet-pick.n { background: #fbf6e9; color: #8a6d1e; }
-  .sheet-pick.i { background: #f4effb; color: #5a3a91; }
-  .sheet-note { margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .sheet-close {
-    margin-top: 18px; width: 100%; appearance: none; font-family: inherit; cursor: pointer;
-    background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+  .stat-key { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); flex: none; }
+  .stat-val { font-size: 13.5px; font-weight: 600; text-align: right; line-height: 1.4; }
+  .stat-val b { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .stats { margin-top: 12px; }
+  .vibe { margin-top: 12px; font-size: 14px; line-height: 1.5; }
+  .spotify-btn {
+    margin-top: 14px; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    background: #1DB954; color: #fff; text-decoration: none;
     border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 700;
   }
+  .spotify-btn svg { width: 18px; height: 18px; fill: #fff; flex: none; }
+  .spotify-btn:active { background: #15913f; }
+  .est-note { margin-top: 10px; font-size: 11.5px; color: var(--muted); }
+
+  /* who's going */
+  .who { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .who-title { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 9px; }
+  .prow {
+    display: flex; align-items: center; gap: 11px; width: 100%;
+    appearance: none; font-family: inherit; cursor: pointer; text-align: left;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 12px 13px; margin-bottom: 7px; transition: all .12s ease;
+  }
+  .prow .pcheck {
+    width: 22px; height: 22px; border-radius: 6px; flex: none;
+    border: 2px solid var(--muted); background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #fff; font-weight: 800;
+  }
+  .prow .pname { font-size: 15px; font-weight: 700; }
+  .prow .pgoing { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .prow.on { border-color: var(--pc); background: var(--pc-bg); }
+  .prow.on .pcheck { background: var(--pc); border-color: var(--pc); }
+  .prow.on .pname { color: var(--pc-ink); }
+  .prow.on .pgoing { color: var(--pc-ink); }
+
+  .sheet-close {
+    margin-top: 16px; width: 100%; appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--ink); color: #fff; border: none;
+    border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 700;
+  }
+
+  /* export sheet */
+  .exp-sub { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 3px 0 12px; }
+  .exp-people { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+  .exp-prow {
+    display: flex; align-items: center; gap: 9px;
+    border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13px;
+  }
+  .exp-prow .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .exp-prow b { font-weight: 800; }
+  .exp-prow .cnt { margin-left: auto; font-weight: 700; color: var(--muted); }
+  .exp-area {
+    width: 100%; height: 130px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px; border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px; resize: none; color: var(--ink); background: var(--bg);
+  }
+  .copybtn {
+    margin-top: 9px; width: 100%; appearance: none; font-family: inherit; cursor: pointer;
+    background: #1DB954; color: #fff; border: none; border-radius: 11px;
+    padding: 12px; font-size: 13.5px; font-weight: 700;
+  }
+  .copybtn.done { background: var(--ink); }
 </style>
 </head>
 <body>
@@ -217,15 +232,10 @@
 <div class="topbar">
   <div class="title-row">
     <span class="title">BottleRock <span>2026</span> · Full Grid</span>
-    <span class="count" id="count"></span>
+    <button class="exportbtn" id="exportbtn">⬆ Export picks</button>
   </div>
   <div class="daytabs" id="daytabs"></div>
-  <div class="legend">
-    <span class="lg"><span class="star n">★</span> Natalie</span>
-    <span class="lg"><span class="star i">★</span> Ian</span>
-    <span class="lg"><span class="dash"></span> approx. time</span>
-    <span class="lg">Scroll ⇆ for all 6 stages</span>
-  </div>
+  <div class="legend" id="legend"></div>
 </div>
 
 <div class="scroller" id="scroller">
@@ -241,7 +251,15 @@
 </div>
 
 <script>
-/* ===================== DATA ===================== */
+/* ===================== PEOPLE ===================== */
+/* add more people here — the popup checkboxes and grid stars adapt automatically */
+const PEOPLE = [
+  { id:'natalie', name:'Natalie', color:'#c9a84c', ink:'#8a6d1e', bg:'#fbf6e9' },
+  { id:'ian',     name:'Ian',     color:'#7d4fc7', ink:'#5a3a91', bg:'#f4effb' },
+  { id:'gabi',    name:'Gabi',    color:'#2f7fc4', ink:'#235f93', bg:'#eaf2fa' }
+];
+
+/* ===================== STAGES / DAYS ===================== */
 const STAGES = [
   { id:'prudential', name:'Prudential',  sub:'Main',      color:'#2f6f9e' },
   { id:'tmobile',    name:'T-Mobile',    sub:'Main',      color:'#b83f7d' },
@@ -250,14 +268,14 @@ const STAGES = [
   { id:'vip',        name:'VIP Village', sub:'Stage',     color:'#5d52a8' },
   { id:'backstage',  name:'Backstage',   sub:'by United', color:'#8a6f3e' }
 ];
-
 const DAYS = [
   { id:'fri', d1:'FRI', d2:'May 22', iso:'2026-05-22' },
   { id:'sat', d1:'SAT', d2:'May 23', iso:'2026-05-23' },
   { id:'sun', d1:'SUN', d2:'May 24', iso:'2026-05-24' }
 ];
 
-/* a = act: {b:band, s:start, e:end, n:Natalie pick, i:Ian pick, x:time approx} */
+/* ===================== SCHEDULE ===================== */
+/* n/i = starting picks for Natalie / Ian.  x = end time approximate */
 const SCHED = {
   fri: {
     prudential: [
@@ -411,19 +429,126 @@ const SCHED = {
   }
 };
 
-/* ===================== CONFIG ===================== */
-const WIN_START = 12 * 60, WIN_END = 22 * 60;
-const HOUR_PX = 140, PX_MIN = HOUR_PX / 60;
-const TL_HEIGHT = (WIN_END - WIN_START) * PX_MIN;
+/* ===================== BAND INFO ===================== */
+/* g=genre, m=Spotify monthly listeners, sid=Spotify artist id (null = search link), v=vibe */
+const BANDS = {
+  'AJR':{g:'Indie pop · electropop',m:'~12M',sid:'6s22t5Y3prQHyaHWUN1R1C',v:'Maximalist, theatrical pop spectacle — confetti, brass stabs and stadium-wide chants.'},
+  'Absolutely':{g:'Indie pop',m:'Emerging act',sid:null,v:'An up-and-coming act on the BottleRock undercard.'},
+  'Alec Shaw':{g:'Singer-songwriter',m:'Emerging act',sid:null,v:'A rising singer-songwriter playing the smaller stages.'},
+  'Alicia Creti':{g:'Pop',m:'Emerging act',sid:null,v:'An emerging pop voice early on the bill.'},
+  'Almost Monday':{g:'Indie pop',m:'~1.9M',sid:'42FzVuyJH8YbkhzWSR2n8E',v:'Sun-soaked San Diego indie pop — "can’t slow down." Beachy, upbeat, feel-good.'},
+  'Arrested Development':{g:'Hip hop · soul',m:'~1.3M',sid:'5Va9LuEmaZxnbk1gMnjMD7',v:'Grammy-winning 90s conscious hip hop — "Tennessee," "Mr. Wendal." Soulful and positive.'},
+  'Backstreet Boys':{g:'Pop',m:'~26M',sid:'5rSXSAkZ67PYJSvpUpkOr7',v:'The boy-band blueprint — "I Want It That Way." Nostalgia-fuelled singalong euphoria.'},
+  'Better Than Ezra':{g:'Alt-rock · pop-rock',m:'~830K',sid:'4UuoJfJ9UybJft7a8E6UHX',v:'90s alt-rock survivors — "Good." Breezy, hooky, feel-good guitar pop.'},
+  'Bettina Maureenji':{g:'Singer-songwriter',m:'Emerging act',sid:null,v:'An emerging artist opening a stage.'},
+  'Betty Taylor':{g:'Pop · singer-songwriter',m:'Emerging act',sid:null,v:'A rising young performer kicking off the day.'},
+  'BigXThaPlug':{g:'Hip hop · Texas rap',m:'~22M',sid:'6qxpnaukVayrQn6ViNvu9I',v:'Booming Dallas rapper — "Texas," "Mmhmm." Heavyweight Southern hip hop.'},
+  'Buffalo Traffic Jam':{g:'Roots rock · jam',m:'Emerging act',sid:null,v:'A local jam-rock outfit bringing loose, groovy energy.'},
+  'Bush':{g:'Post-grunge · alt-rock',m:'~5M',sid:'78SHxLdtysAXgywQ4vE0Oa',v:'90s grunge anthems — "Glycerine," "Machinehead." Brooding, big-riff nostalgia.'},
+  'Busta Rhymes':{g:'Hip hop',m:'~12M',sid:'1YfEcTuGvBQ8xSD1f53UnK',v:'Rapid-fire rap legend — "Touch It," "Look at Me Now." Explosive and relentless.'},
+  'Børns':{g:'Indie pop · dream-pop',m:'~8M',sid:'1KP6TWI40m7p3QBTU6u2xo',v:'Glittery, falsetto-laced dream pop — "Electric Love." Made for golden hour.'},
+  'Chaka Khan':{g:'Funk · R&B · soul',m:'~6.7M',sid:'6mQfAAqZGBzIfrmlZCeaYT',v:'The Queen of Funk — a towering voice behind "Ain’t Nobody" and "I Feel For You."'},
+  'Charlotte Lawrence':{g:'Alt-pop',m:'~1.9M',sid:'7LImGq5KnzQobZciDJpeJb',v:'Moody, cinematic alt-pop delivered with a smoky, expressive voice.'},
+  'Chevy Metal':{g:'Classic-rock covers',m:'Emerging act',sid:null,v:'The late Taylor Hawkins’ beloved cover band — a riff-fuelled classic-rock party.'},
+  'Colin Hay (of Men At Work)':{g:'Rock · singer-songwriter',m:'~1.5M',sid:null,v:'Men at Work’s frontman solo — "Down Under" and witty, warm acoustic storytelling.'},
+  'Cut Copy':{g:'Electronic · synth-pop',m:'~1.5M',sid:'4EENT7N7rCBwrddM3s0vFS',v:'Australian neon synth-pop — "Lights & Music." Shimmery, propulsive, made for dancing.'},
+  'DJ Pauly D x America Rose':{g:'DJ set · EDM',m:'Emerging act',sid:null,v:'Jersey Shore’s DJ Pauly D — a high-energy club/party set to close the night.'},
+  'Del Water Gap':{g:'Indie rock · indie pop',m:'~2.4M',sid:'0xPoVNPnxIIUS1vrxAYV00',v:'Yearning, romantic indie — "Ode to a Conversation Stuck in Your Throat."'},
+  'Flipturn':{g:'Indie rock',m:'~2M',sid:'7FKTg75ADVMZgY3P9ZMRtH',v:'Florida indie-rock with anthemic, atmospheric builds — "Vanilla," "August."'},
+  'Folk Bitch Trio':{g:'Indie folk',m:'~250K',sid:'26jdbJyBkpr6LivDYvKp2r',v:'Australian three-part-harmony indie folk — wry, intimate and gorgeous.'},
+  'Foo Fighters':{g:'Rock · alt-rock',m:'~22M',sid:'7jy3rLJdDQY21OgRLCZ9sD',v:'Stadium-rock royalty — "Everlong," "Best of You." Scream-every-word energy.'},
+  'Girl Tones':{g:'Garage rock',m:'Emerging act',sid:null,v:'A scrappy, fun garage-rock band on the rise.'},
+  'Good Neighbours':{g:'Indie pop',m:'~7.3M',sid:'52N3KGrTWDRhdQJrgBTofE',v:'Breakout indie-pop duo — "Home." Joyful, hand-clappy and sunlit.'},
+  'Hannah Cohen':{g:'Dream pop · singer-songwriter',m:'~900K',sid:'7ovXNdlB2DNSC16TbKgros',v:'Lush, hazy dream-pop — slow-burning and quietly atmospheric.'},
+  'Indy':{g:'Singer-songwriter',m:'Emerging act',sid:null,v:'An emerging singer-songwriter opening the festival.'},
+  'Izzy Escobar':{g:'Singer-songwriter · indie pop',m:'Emerging act',sid:'63iuP8EumHpqaaMKyi0pxO',v:'A raw, emotive singer-songwriter from Massachusetts — intimate and powerful.'},
+  'Jake Zimma':{g:'Pop',m:'Emerging act',sid:null,v:'A rising pop artist early in the day.'},
+  'Jess King x Trackstar The DJ':{g:'DJ set',m:'Emerging act',sid:null,v:'A late-night dance/DJ set to send the festival home.'},
+  'Joan Jett and The Blackhearts':{g:'Rock · punk rock',m:'~6.9M',sid:'1Fmb52lZ6Jv7FMWXXTPO3K',v:'Leather-jacket attitude and swagger — "I Love Rock ’n’ Roll." Pure rebellion.'},
+  'Jon Bellion':{g:'Pop',m:'~4.3M',sid:'50JJSqHUf2RQ9xsHs0KMHg',v:'Genre-blending pop craftsman — inventive, melodic and heartfelt. "All Time Low."'},
+  'Khatumu':{g:'R&B · soul',m:'Emerging act',sid:null,v:'An emerging R&B and soul artist.'},
+  'Kool & The Gang':{g:'Funk · disco · R&B',m:'~9M',sid:'3VNITwohbvU5Wuy5PC6dsI',v:'An instant party — "Celebration," "Get Down On It." Pure dance-floor funk.'},
+  'LCD Soundsystem':{g:'Dance-punk',m:'~4.5M',sid:'066X20Nz7iquqkkCW6Jxy6',v:'Sweaty, euphoric dance-rock catharsis — "All My Friends." Builds and builds.'},
+  'Larkin Poe':{g:'Blues rock · roots rock',m:'~400K',sid:'7d10VF1J4LqW7vrpPOngzm',v:'Sister-duo slide-guitar firepower — gritty Southern blues-rock.'},
+  'Lil Wayne':{g:'Hip hop',m:'~47M',sid:'55Aa2cqylxrFIXC767Z865',v:'One of the most influential rappers ever — "Lollipop," "A Milli." Restless, iconic.'},
+  'Lorde':{g:'Art pop · alt-pop',m:'~32M',sid:'163tK9Wjr9P9DmM0AVK7lm',v:'Theatrical, brooding modern pop — "Royals," "Green Light." A genuine event.'},
+  'Ludacris':{g:'Hip hop',m:'~8.8M',sid:'3ipn9JLAPI5GUEo4y4jcoi',v:'Charismatic Atlanta rap superstar — "Money Maker," "Stand Up." Punchy and fun.'},
+  'Malick Koly':{g:'Soul · singer-songwriter',m:'Emerging act',sid:null,v:'An emerging soulful singer-songwriter.'},
+  'Maoli':{g:'Island reggae · pop',m:'~1.1M',sid:'6EKzehEG2fwJtRMH4KbjsA',v:'Hawaiian island-reggae and soulful, heartfelt love songs.'},
+  'Matt Maeson':{g:'Alt · singer-songwriter',m:'~4.7M',sid:'7gHscNMDI8FF8pcgrV8eIn',v:'Gravelly-voiced, brooding alt-folk — "Cringe," "Hallucinogenics."'},
+  'Melt':{g:'Indie funk-pop',m:'Emerging act',sid:null,v:'A groovy, horn-flecked indie-funk collective — feel-good and danceable.'},
+  'Men at Work':{g:'Rock · new wave',m:'~12M',sid:'0f3EsoviYnRKTkmayI3cux',v:'80s icons — "Down Under," "Who Can It Be Now?" Quirky, timeless pop-rock.'},
+  'Meredith Marks x DJ Umami':{g:'DJ set',m:'Emerging act',sid:null,v:'Bravo’s Meredith Marks with Bay Area’s DJ Umami — a glam party DJ set.'},
+  'Midnight Generation':{g:'Disco · electro-pop',m:'~250K',sid:'4CKIGHCZRzNoiNDSaW5eaq',v:'A buzzy Mexican disco-pop band — shimmery, danceable and bright.'},
+  'Mt. Joy':{g:'Indie folk-rock',m:'~4.8M',sid:'69tiO1fG8VWduDl3ji2qhI',v:'Warm, sunlit folk-rock — easy harmonies and gentle uplift.'},
+  'Napa Valley Youth Symphony':{g:'Orchestral',m:'Emerging act',sid:null,v:'Napa’s own youth orchestra — a charming hometown opening set.'},
+  'Nat Myers':{g:'Country blues',m:'~120K',sid:'2QMlNryks9wyxBCsBGciTS',v:'Kentucky country-blues — raw, fingerpicked, old-soul storytelling.'},
+  'Natasha Bedingfield':{g:'Pop',m:'~24M',sid:'7o95ZoZt5ZYn31e9z1Hc0a',v:'Feel-good 2000s pop singalongs — "Unwritten." Pure sunshine.'},
+  'New Constellations':{g:'Indie · alt',m:'Emerging act',sid:null,v:'An emerging indie act on the smaller stages.'},
+  'Paco Versailles':{g:'Electronic · flamenco-disco',m:'~72K',sid:'5VptPtXbT0T4imW6GcobiW',v:'Flamenco guitar meets disco-electronic groove — sultry and danceable.'},
+  'Papa Roach':{g:'Rock · nu-metal',m:'~13M',sid:'4RddZ3iHvSpGV4dvATac9X',v:'High-octane rock — "Last Resort." Cathartic, heavy and crowd-roaring.'},
+  'Paris Jackson':{g:'Alt-rock · indie',m:'~600K',sid:'11I8qWK4foqycuPFRDFH6e',v:'Moody, grungy alt-rock with confessional, diaristic songwriting.'},
+  'Paulo Londra':{g:'Latin trap · reggaeton',m:'~17M',sid:'3vQ0GE3mI0dAaxIMYe5g7z',v:'Argentine Latin-trap star — melodic, energetic and globally huge.'},
+  'Penelope Road':{g:'Indie folk-pop',m:'Emerging act',sid:null,v:'An up-and-coming indie folk-pop band.'},
+  'Rev Run':{g:'Hip hop · old-school',m:'~9M',sid:null,v:'Run-DMC’s Rev Run — hip hop royalty with "It’s Tricky" and "Walk This Way" energy.'},
+  'Rilo Kiley':{g:'Indie rock',m:'~430K',sid:'2cevwbv7ISD92VMNLYLHZA',v:'A beloved 2000s indie reunion — "Portions for Foxes." Bittersweet and melodic.'},
+  'Saxsquatch':{g:'Funk · electronic',m:'~57K',sid:'0rsyQklwpBiAvkeXbnFB1t',v:'A Sasquatch in a tracksuit playing funky sax over electronic beats — pure fun.'},
+  'Slightly Stoopid':{g:'Reggae-rock',m:'~2.7M',sid:'6MxlVTY6PmY8Nyn16fvxtb',v:'SoCal reggae-punk-rock fusion — sunny, mellow and groove-heavy.'},
+  'Sombr':{g:'Bedroom pop · alt-pop',m:'~60M',sid:'4G9NDjRyZFDlJKMRL8hx3S',v:'A brooding, lovelorn alt-pop breakout — "back to friends." Very of-the-moment.'},
+  'Sons of the East':{g:'Indie folk',m:'~2M',sid:'6cSxzHrQgGc4I4Ck5Gewej',v:'Australian acoustic-folk trio — warm harmonies and breezy melodies.'},
+  'Tash Sultana':{g:'Indie · psych-soul (live looping)',m:'~3.1M',sid:'6zVFRTB0Y1whWyH7ZNmywf',v:'A one-person orchestra — builds songs live across 12+ instruments.'},
+  'Teddy Swims':{g:'Soul · pop · R&B',m:'~48M',sid:'33qOK5uJ8AR2xuQQAhHump',v:'A massive, gospel-sized voice — "Lose Control." Goosebumps guaranteed.'},
+  'The Alive':{g:'Rock (rising act)',m:'Emerging act',sid:'6JHewNtpMw6Kit2LAgP8BS',v:'A Sabbath / Floyd-inspired young rock band — heavy riffs and classic-rock worship.'},
+  'The Beths':{g:'Indie rock · power-pop',m:'~280K',sid:'7DjwIxbe8kpw4pqnzAMoin',v:'Punchy New Zealand guitar-pop — jangly hooks and wry lyrics.'},
+  'The California Honeydrops':{g:'Soul · blues · R&B',m:'~800K',sid:'21t0aavYGSGFkYYFhu6urk',v:'Oakland’s joyful street-soul band — horns, groove and dance-floor warmth.'},
+  'The Chin Chins':{g:'Garage rock',m:'Emerging act',sid:null,v:'A high-energy emerging rock band.'},
+  'The Heavy Heavy':{g:'Psych-rock · retro-rock',m:'~400K',sid:'5WSRRbhBJlhqvzgbOm3U2Q',v:'A sun-drenched 60s/70s-style rock’n’roll revival — "Miles & Miles."'},
+  'The Paper Kites':{g:'Indie folk · dream-pop',m:'~3.8M',sid:'79hrYiudVcFyyxyJW0ipTy',v:'Gentle, atmospheric Australian indie-folk — "Bloom." Soft and lovely.'},
+  'The Paradox':{g:'Hip hop · funk',m:'Emerging act',sid:null,v:'An emerging genre-blending act with funk and hip hop roots.'},
+  'The Return of Jackie and Judy':{g:'Punk (Ramones tribute)',m:'Emerging act',sid:null,v:'A Ramones tribute act — fast, loud, three-chord punk fun.'},
+  'The Rookie5':{g:'Pop-rock',m:'Emerging act',sid:null,v:'A young, rising pop-rock band.'},
+  'The Silverado Pickups':{g:'Country rock',m:'~1K',sid:'3dyZoO5k4tuibjwdbtnal9',v:'Napa’s own wine-country country-rock band — local roots-rock charm.'},
+  'The Warning':{g:'Hard rock · metal',m:'~1.5M',sid:'2SmW1lFlBJn4IfBzBZDlSh',v:'Three sisters from Monterrey detonating ferocious, razor-tight hard rock.'},
+  'Treach (of Naughty By Nature)':{g:'Hip hop',m:'~3M',sid:null,v:'Naughty by Nature’s Treach — 90s hip hop classics, "O.P.P." and "Hip Hop Hooray."'},
+  'Zedd':{g:'EDM · electro-house',m:'~25M',sid:'2qxJFvFYMEDqd7ui6kSAcq',v:'Grammy-winning EDM producer — "Clarity," "The Middle." Festival-peak euphoria.'},
+  'Zinadelphia':{g:'Alt-pop · R&B',m:'Emerging act',sid:null,v:'An emerging alt-pop and R&B artist.'}
+};
 
-const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+/* ===================== CONFIG ===================== */
+const WIN_START = 12*60, WIN_END = 22*60;
+const HOUR_PX = 140, PX_MIN = HOUR_PX/60;
+const TL_HEIGHT = (WIN_END-WIN_START)*PX_MIN;
+const STORE_KEY = 'br26_picks_v1';
+
+const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
 const pad2 = n => String(n).padStart(2,'0');
-function fmt(min){
-  let h = Math.floor(min/60), m = min%60, ap = h>=12?'PM':'AM';
-  let hh = h%12; if(hh===0) hh=12;
-  return hh+':'+pad2(m)+' '+ap;
-}
+function fmt(min){ let h=Math.floor(min/60),m=min%60,ap=h>=12?'PM':'AM'; let hh=h%12; if(hh===0)hh=12; return hh+':'+pad2(m)+' '+ap; }
 const shortT = min => { let h=Math.floor(min/60)%12; if(h===0)h=12; return h+':'+pad2(min%60); };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const actKey = (day,stage,a) => day+'|'+stage+'|'+a.b+'|'+a.s;
+
+/* ===================== PICKS STATE ===================== */
+function defaultPicks(){
+  const p = {};
+  for (const day of Object.keys(SCHED))
+    for (const stg of Object.keys(SCHED[day]))
+      for (const a of SCHED[day][stg]){
+        const o = {}; PEOPLE.forEach(pp => o[pp.id] = false);
+        if (a.n) o.natalie = true;
+        if (a.i) o.ian = true;
+        p[actKey(day,stg,a)] = o;
+      }
+  return p;
+}
+let picks = (function(){
+  const def = defaultPicks();
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (saved) for (const k in saved) if (def[k]) for (const pid in saved[k]) def[k][pid] = !!saved[k][pid];
+  } catch(e){}
+  return def;
+})();
+function savePicks(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(picks)); } catch(e){} }
 
 /* ===================== RENDER ===================== */
 const board = document.getElementById('board');
@@ -431,10 +556,9 @@ const scroller = document.getElementById('scroller');
 const daytabs = document.getElementById('daytabs');
 let activeDay = 'fri';
 
-/* count total sets */
-let total = 0;
-Object.values(SCHED).forEach(day => Object.values(day).forEach(arr => total += arr.length));
-document.getElementById('count').textContent = total + ' sets · 6 stages';
+document.getElementById('legend').innerHTML =
+  PEOPLE.map(p => `<span class="lg"><span class="star ${p.id}">★</span> ${p.name}</span>`).join('')
+  + `<span class="lg">Tap a set for info &amp; check-in</span>`;
 
 DAYS.forEach(D => {
   const tab = document.createElement('button');
@@ -444,11 +568,15 @@ DAYS.forEach(D => {
   daytabs.appendChild(tab);
 });
 
+function starsHTML(key){
+  const o = picks[key] || {};
+  return PEOPLE.filter(p => o[p.id]).map(p => `<span class="star ${p.id}">★</span>`).join('');
+}
+
 function renderBoard(dayId){
-  const day = DAYS.find(d => d.id === dayId);
+  const day = DAYS.find(d => d.id===dayId);
   board.innerHTML = '';
 
-  /* header row */
   const headrow = document.createElement('div');
   headrow.className = 'headrow';
   const corner = document.createElement('div');
@@ -457,25 +585,21 @@ function renderBoard(dayId){
   headrow.appendChild(corner);
   STAGES.forEach(st => {
     const sh = document.createElement('div');
-    sh.className = 'stagehead';
-    sh.style.color = st.color;
+    sh.className = 'stagehead'; sh.style.color = st.color;
     sh.innerHTML = `<span class="sh-name">${st.name}</span><span class="sh-sub">${st.sub}</span>`;
     headrow.appendChild(sh);
   });
   board.appendChild(headrow);
 
-  /* body */
   const body = document.createElement('div');
   body.className = 'body';
 
   const gutter = document.createElement('div');
-  gutter.className = 'gutter';
-  gutter.style.height = TL_HEIGHT + 'px';
-  for (let h = 0; h <= 10; h++){
+  gutter.className = 'gutter'; gutter.style.height = TL_HEIGHT+'px';
+  for (let h=0; h<=10; h++){
     const lab = document.createElement('div');
-    lab.className = 'hourlab';
-    lab.style.top = (h*HOUR_PX + 3) + 'px';
-    let hr = (12+h) % 12; if (hr===0) hr = 12;
+    lab.className = 'hourlab'; lab.style.top = (h*HOUR_PX+3)+'px';
+    let hr = (12+h)%12; if (hr===0) hr=12;
     lab.textContent = hr;
     gutter.appendChild(lab);
   }
@@ -483,9 +607,8 @@ function renderBoard(dayId){
 
   STAGES.forEach(st => {
     const col = document.createElement('div');
-    col.className = 'stagecol';
-    col.style.height = TL_HEIGHT + 'px';
-    (SCHED[dayId][st.id] || []).forEach(a => col.appendChild(makeAct(a, st, day)));
+    col.className = 'stagecol'; col.style.height = TL_HEIGHT+'px';
+    (SCHED[dayId][st.id]||[]).forEach(a => col.appendChild(makeAct(a, st, dayId)));
     body.appendChild(col);
   });
 
@@ -497,114 +620,188 @@ function renderBoard(dayId){
   board.appendChild(body);
 }
 
-function makeAct(a, st, day){
+function makeAct(a, st, dayId){
   const s = toMin(a.s), e = toMin(a.e);
-  const top = (s - WIN_START) * PX_MIN;
-  const h = (e - s) * PX_MIN;
+  const key = actKey(dayId, st.id, a);
   const el = document.createElement('div');
-  const pick = a.n && a.i ? ' pick-b' : a.n ? ' pick-n' : a.i ? ' pick-i' : '';
-  el.className = 'act' + pick + (a.x ? ' est' : '') + (h < 64 ? ' short' : '');
-  el.style.top = top + 'px';
-  el.style.height = (h - 4) + 'px';
+  const anyPick = PEOPLE.some(p => (picks[key]||{})[p.id]);
+  el.className = 'act' + (anyPick?' has-pick':'') + (a.x?' est':'');
+  el.dataset.key = key;
+  el.style.top = ((s-WIN_START)*PX_MIN)+'px';
+  el.style.height = ((e-s)*PX_MIN - 4)+'px';
 
   const band = document.createElement('div');
   band.className = 'a-band'; band.textContent = a.b;
   const time = document.createElement('div');
-  time.className = 'a-time';
-  time.textContent = (a.x ? '~' : '') + shortT(s) + '–' + shortT(e);
-  el.appendChild(band);
-  el.appendChild(time);
+  time.className = 'a-time'; time.textContent = (a.x?'~':'')+shortT(s)+'–'+shortT(e);
+  const stars = document.createElement('div');
+  stars.className = 'a-stars'; stars.innerHTML = starsHTML(key);
 
-  if (a.n || a.i){
-    const stars = document.createElement('div');
-    stars.className = 'a-stars';
-    if (a.n) stars.innerHTML += '<span class="star n">★</span>';
-    if (a.i) stars.innerHTML += '<span class="star i">★</span>';
-    el.appendChild(stars);
-  }
-  el.addEventListener('click', () => openSheet(a, st, day));
+  el.appendChild(band); el.appendChild(time); el.appendChild(stars);
+  el.addEventListener('click', () => openSheet(a, st, dayId, key));
   return el;
 }
+
+function refreshCell(key){
+  const el = board.querySelector(`.act[data-key="${cssEsc(key)}"]`);
+  if (!el) return;
+  el.querySelector('.a-stars').innerHTML = starsHTML(key);
+  el.classList.toggle('has-pick', PEOPLE.some(p => (picks[key]||{})[p.id]));
+}
+function cssEsc(s){ return s.replace(/["\\]/g,'\\$&'); }
 
 /* ===================== DAY SELECT ===================== */
 function selectDay(id, scroll){
   activeDay = id;
-  document.querySelectorAll('.daytab').forEach(t =>
-    t.classList.toggle('active', t.dataset.day === id));
+  document.querySelectorAll('.daytab').forEach(t => t.classList.toggle('active', t.dataset.day===id));
   renderBoard(id);
   updateNow();
   if (scroll){
     scroller.scrollLeft = 0;
-    if (id === festDay() && festNow()) scrollToNow();
-    else scroller.scrollTop = 0;
+    if (id===festDay() && festNow()) scrollToNow(); else scroller.scrollTop = 0;
   }
 }
 
-/* ===================== NOW LOGIC ===================== */
-function todayISO(){
-  const d = new Date();
-  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
-}
-function festDay(){
-  const t = todayISO();
-  const d = DAYS.find(x => x.iso === t);
-  if (d) return d.id;
-  return t < DAYS[0].iso ? DAYS[0].id : DAYS[DAYS.length-1].id;
-}
-function festNow(){ return DAYS.some(d => d.iso === todayISO()); }
-function nowMin(){ const d = new Date(); return d.getHours()*60 + d.getMinutes(); }
-
+/* ===================== NOW ===================== */
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function festDay(){ const t=todayISO(); const d=DAYS.find(x=>x.iso===t); if(d)return d.id; return t<DAYS[0].iso?DAYS[0].id:DAYS[DAYS.length-1].id; }
+function festNow(){ return DAYS.some(d=>d.iso===todayISO()); }
+function nowMin(){ const d=new Date(); return d.getHours()*60+d.getMinutes(); }
 function updateNow(){
-  const nl = board.querySelector('.nowline');
-  if (!nl) return;
-  const onDay = festNow() && DAYS.find(d => d.id === activeDay).iso === todayISO();
-  const nm = nowMin();
-  const show = onDay && nm >= WIN_START && nm <= WIN_END;
+  const nl = board.querySelector('.nowline'); if(!nl) return;
+  const onDay = festNow() && DAYS.find(d=>d.id===activeDay).iso===todayISO();
+  const nm = nowMin(), show = onDay && nm>=WIN_START && nm<=WIN_END;
   if (show){
-    nl.style.display = 'block';
-    nl.style.top = ((nm - WIN_START) * PX_MIN) + 'px';
-    nl.querySelector('.nowtag').textContent = 'NOW ' + fmt(nm).replace(' ','');
-  } else {
-    nl.style.display = 'none';
-  }
-  document.getElementById('nowbtn').classList.toggle('show', festNow() && nm >= WIN_START && nm <= WIN_END);
+    nl.style.display='block';
+    nl.style.top=((nm-WIN_START)*PX_MIN)+'px';
+    nl.querySelector('.nowtag').textContent='NOW '+fmt(nm).replace(' ','');
+  } else nl.style.display='none';
+  document.getElementById('nowbtn').classList.toggle('show', festNow() && nm>=WIN_START && nm<=WIN_END);
 }
 function scrollToNow(){
   const nl = board.querySelector('.nowline');
-  if (!nl || nl.style.display === 'none'){ scroller.scrollTop = 0; return; }
-  const y = parseFloat(nl.style.top) - 110;
-  scroller.scrollTop = Math.max(0, y);
+  if(!nl || nl.style.display==='none'){ scroller.scrollTop=0; return; }
+  scroller.scrollTop = Math.max(0, parseFloat(nl.style.top)-110);
 }
 document.getElementById('nowbtn').addEventListener('click', () => {
   selectDay(festDay(), false);
-  requestAnimationFrame(() => { scroller.scrollLeft = 0; scrollToNow(); });
+  requestAnimationFrame(() => { scroller.scrollLeft=0; scrollToNow(); });
 });
 
-/* ===================== DETAIL SHEET ===================== */
+/* ===================== SHEET ===================== */
 const backdrop = document.getElementById('backdrop');
 const sheet = document.getElementById('sheet');
 const sheetContent = document.getElementById('sheetContent');
 
-function openSheet(a, st, day){
-  let picks = '';
-  if (a.n) picks += `<div class="sheet-pick n"><span class="star n">★</span> One of Natalie’s picks</div>`;
-  if (a.i) picks += `<div class="sheet-pick i"><span class="star i">★</span> One of Ian’s picks</div>`;
-  const note = a.x ? `<div class="sheet-note">End time is approximate — double-check in the BottleRock app.</div>` : '';
-  sheetContent.innerHTML = `
-    <div class="sheet-stage" style="color:${st.color}">${st.name} Stage · ${day.d2}</div>
-    <div class="sheet-band">${esc(a.b)}</div>
-    <div class="sheet-time">${a.x ? 'approx. ' : ''}${fmt(toMin(a.s))} – ${fmt(toMin(a.e))}</div>
-    ${picks}
-    ${note}
-    <button class="sheet-close" id="sheetClose">Close</button>
-  `;
-  document.getElementById('sheetClose').addEventListener('click', closeSheet);
-  backdrop.classList.add('open');
-  sheet.classList.add('open');
+function spotifyHref(band){
+  const info = BANDS[band];
+  return (info && info.sid)
+    ? 'https://open.spotify.com/artist/' + info.sid
+    : 'https://open.spotify.com/search/' + encodeURIComponent(band);
 }
+function mlHTML(m){
+  if (/^[~\d]/.test(m)) return `<b>${m}</b> monthly listeners`;
+  return m;
+}
+const SPOT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.314a.748.748 0 0 1-1.029.25c-2.818-1.722-6.366-2.111-10.544-1.156a.748.748 0 1 1-.333-1.459c4.571-1.044 8.494-.595 11.656 1.336a.748.748 0 0 1 .25 1.029zm1.47-3.272a.936.936 0 0 1-1.287.308c-3.226-1.983-8.145-2.557-11.961-1.398a.936.936 0 1 1-.543-1.79c4.36-1.323 9.779-.683 13.483 1.593a.936.936 0 0 1 .308 1.287zm.126-3.408C15.51 8.46 8.876 8.227 5.026 9.395a1.122 1.122 0 1 1-.651-2.148c4.421-1.342 11.748-1.083 16.272 1.603a1.122 1.122 0 0 1-1.146 1.929z"/></svg>';
+
+function openSheet(a, st, dayId, key){
+  const day = DAYS.find(d=>d.id===dayId);
+  const info = BANDS[a.b] || {g:'—', m:'Emerging act', sid:null, v:'No details available yet.'};
+
+  const whoRows = PEOPLE.map(p => {
+    const on = (picks[key]||{})[p.id];
+    return `<button class="prow${on?' on':''}" data-person="${p.id}"
+      style="--pc:${p.color};--pc-bg:${p.bg};--pc-ink:${p.ink}">
+      <span class="pcheck">${on?'✓':''}</span>
+      <span class="pname">${p.name}</span>
+      <span class="pgoing">${on?'Going':'Tap to add'}</span>
+    </button>`;
+  }).join('');
+
+  sheetContent.innerHTML = `
+    <div class="sheet-eyebrow" style="color:${st.color}">${st.name} Stage · ${day.d2}</div>
+    <div class="sheet-band">${esc(a.b)}</div>
+    <div class="sheet-time">${a.x?'approx. ':''}${fmt(toMin(a.s))} – ${fmt(toMin(a.e))}</div>
+    <div class="stats">
+      <div class="stat-row"><span class="stat-key">Genre</span><span class="stat-val">${esc(info.g)}</span></div>
+      <div class="stat-row"><span class="stat-key">Spotify</span><span class="stat-val">${mlHTML(info.m)}</span></div>
+    </div>
+    <div class="vibe">${esc(info.v)}</div>
+    <a class="spotify-btn" href="${spotifyHref(a.b)}" target="_blank" rel="noopener noreferrer">${SPOT_SVG} Open artist on Spotify</a>
+    ${a.x?'<div class="est-note">End time is approximate — confirm in the BottleRock app.</div>':''}
+    <div class="who">
+      <div class="who-title">Who’s going?</div>
+      ${whoRows}
+    </div>
+    <button class="sheet-close" id="sheetClose">Done</button>
+  `;
+  sheetContent.querySelectorAll('.prow').forEach(row => {
+    row.addEventListener('click', () => {
+      const pid = row.dataset.person;
+      const cur = !(picks[key] && picks[key][pid]);
+      if (!picks[key]){ picks[key] = {}; PEOPLE.forEach(pp=>picks[key][pp.id]=false); }
+      picks[key][pid] = cur;
+      savePicks();
+      row.classList.toggle('on', cur);
+      row.querySelector('.pcheck').textContent = cur?'✓':'';
+      row.querySelector('.pgoing').textContent = cur?'Going':'Tap to add';
+      refreshCell(key);
+    });
+  });
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  openBackdrop();
+}
+
+/* ----- export ----- */
+function buildExport(){
+  const out = { festival:'BottleRock 2026', exported:new Date().toISOString(), people:{} };
+  PEOPLE.forEach(p => out.people[p.id] = { name:p.name, color:p.color, picks:[] });
+  for (const day of Object.keys(SCHED))
+    for (const stg of Object.keys(SCHED[day]))
+      for (const a of SCHED[day][stg]){
+        const k = actKey(day,stg,a), o = picks[k]||{};
+        const stageName = STAGES.find(s=>s.id===stg).name;
+        PEOPLE.forEach(p => {
+          if (o[p.id]) out.people[p.id].picks.push(
+            { day, stage:stageName, band:a.b, start:a.s, end:a.e });
+        });
+      }
+  return out;
+}
+function openExport(){
+  const data = buildExport();
+  const json = JSON.stringify(data, null, 1);
+  const rows = PEOPLE.map(p => `<div class="exp-prow">
+      <span class="dot" style="background:${p.color}"></span>
+      <b>${p.name}</b><span class="cnt">${data.people[p.id].picks.length} sets</span>
+    </div>`).join('');
+  sheetContent.innerHTML = `
+    <div class="sheet-band" style="font-size:21px">Export picks</div>
+    <div class="exp-sub">Everyone’s current check-ins. Copy this and send it back to rebuild the
+      coordinate page with all of you.</div>
+    <div class="exp-people">${rows}</div>
+    <textarea class="exp-area" id="expArea" readonly>${esc(json)}</textarea>
+    <button class="copybtn" id="copyBtn">Copy to clipboard</button>
+    <button class="sheet-close" id="sheetClose">Done</button>
+  `;
+  const ta = document.getElementById('expArea');
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    ta.select(); ta.setSelectionRange(0, 99999);
+    const btn = document.getElementById('copyBtn');
+    const done = () => { btn.textContent = 'Copied ✓'; btn.classList.add('done'); };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(done, () => { try{document.execCommand('copy');done();}catch(e){} });
+    } else { try{document.execCommand('copy');done();}catch(e){} }
+  });
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  openBackdrop();
+}
+document.getElementById('exportbtn').addEventListener('click', openExport);
+
+function openBackdrop(){ backdrop.classList.add('open'); sheet.classList.add('open'); sheet.scrollTop = 0; }
 function closeSheet(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
 backdrop.addEventListener('click', closeSheet);
-function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 /* ===================== INIT ===================== */
 function init(){
@@ -617,7 +814,7 @@ function init(){
 }
 window.addEventListener('load', init);
 setInterval(updateNow, 60000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNow(); });
+document.addEventListener('visibilitychange', () => { if(!document.hidden) updateNow(); });
 </script>
 </body>
 </html>
