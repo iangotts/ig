@@ -192,6 +192,17 @@
   }
   .spotify-btn svg { width: 18px; height: 18px; fill: #fff; flex: none; }
   .spotify-btn:active { background: #15913f; }
+  .share-btn {
+    margin-top: 9px; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: #fff; color: var(--ink);
+    border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 12px; font-size: 14px; font-weight: 700;
+    font-family: inherit; cursor: pointer; transition: all .12s ease;
+  }
+  .share-btn svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+  .share-btn:active { background: var(--bg); }
+  .share-btn.done { background: var(--ink); color: #fff; border-color: var(--ink); }
   .est-note { margin-top: 10px; font-size: 11.5px; color: var(--muted); }
 
   /* who's going */
@@ -279,12 +290,12 @@ const PEOPLE = [
 
 /* ===================== STAGES / DAYS ===================== */
 const STAGES = [
-  { id:'prudential', name:'Prudential',  sub:'Main',      color:'#2f6f9e' },
-  { id:'tmobile',    name:'T-Mobile',    sub:'Main',      color:'#b83f7d' },
-  { id:'hellofresh', name:'HelloFresh',  sub:'Stage',     color:'#3f8f5a' },
-  { id:'northbay',   name:'NorthBay',    sub:'Health',    color:'#c2683a' },
-  { id:'vip',        name:'VIP Village', sub:'Stage',     color:'#5d52a8' },
-  { id:'backstage',  name:'Backstage',   sub:'by United', color:'#8a6f3e' }
+  { id:'prudential', name:'Prudential',  sub:'Main',      full:'Prudential Stage',     color:'#2f6f9e' },
+  { id:'tmobile',    name:'T-Mobile',    sub:'Main',      full:'T-Mobile Stage',       color:'#b83f7d' },
+  { id:'hellofresh', name:'HelloFresh',  sub:'Stage',     full:'HelloFresh Stage',     color:'#3f8f5a' },
+  { id:'northbay',   name:'NorthBay',    sub:'Health',    full:'NorthBay Health Stage',color:'#c2683a' },
+  { id:'vip',        name:'VIP Village', sub:'Stage',     full:'VIP Village Stage',    color:'#5d52a8' },
+  { id:'backstage',  name:'Backstage',   sub:'by United', full:'Backstage by United',  color:'#8a6f3e' }
 ];
 const DAYS = [
   { id:'fri', d1:'FRI', d2:'May 22', iso:'2026-05-22' },
@@ -758,6 +769,21 @@ function mlHTML(m){
   return m;
 }
 const SPOT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.314a.748.748 0 0 1-1.029.25c-2.818-1.722-6.366-2.111-10.544-1.156a.748.748 0 1 1-.333-1.459c4.571-1.044 8.494-.595 11.656 1.336a.748.748 0 0 1 .25 1.029zm1.47-3.272a.936.936 0 0 1-1.287.308c-3.226-1.983-8.145-2.557-11.961-1.398a.936.936 0 1 1-.543-1.79c4.36-1.323 9.779-.683 13.483 1.593a.936.936 0 0 1 .308 1.287zm.126-3.408C15.51 8.46 8.876 8.227 5.026 9.395a1.122 1.122 0 1 1-.651-2.148c4.421-1.342 11.748-1.083 16.272 1.603a1.122 1.122 0 0 1-1.146 1.929z"/></svg>';
+const SHARE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>';
+
+function execCopy(text){
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.top='-9999px'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  } catch(e){}
+}
+function copyText(text, onDone){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(onDone, () => { execCopy(text); onDone(); });
+  } else { execCopy(text); onDone(); }
+}
 
 function openSheet(a, st, dayId, key){
   const day = DAYS.find(d=>d.id===dayId);
@@ -783,6 +809,7 @@ function openSheet(a, st, dayId, key){
     </div>
     <div class="vibe">${esc(info.v)}</div>
     <a class="spotify-btn" href="${spotifyHref(a.b)}" target="_blank" rel="noopener noreferrer">${SPOT_SVG} Open artist on Spotify</a>
+    <button class="share-btn" id="shareBtn">${SHARE_SVG} Copy set details</button>
     ${a.x?'<div class="est-note">End time is approximate — confirm in the BottleRock app.</div>':''}
     <div class="who">
       <div class="who-title">Who’s going?</div>
@@ -803,6 +830,11 @@ function openSheet(a, st, dayId, key){
       refreshCell(key);
       applyFilter();
     });
+  });
+  const shareText = a.b + ', ' + st.full + ', ' + fmt(toMin(a.s)) + ' – ' + fmt(toMin(a.e));
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    const btn = document.getElementById('shareBtn');
+    copyText(shareText, () => { btn.innerHTML = SHARE_SVG + ' Copied ✓'; btn.classList.add('done'); });
   });
   document.getElementById('sheetClose').addEventListener('click', closeSheet);
   openBackdrop();
