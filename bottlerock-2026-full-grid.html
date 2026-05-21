@@ -593,9 +593,9 @@ function applyFilter(){
   const sel = [...filterPeople];
   board.querySelectorAll('.act').forEach(el => {
     const o = picks[el.dataset.key] || {};
-    const match = sel.length > 0 && sel.every(pid => o[pid]);
-    el.classList.toggle('dim', sel.length > 0 && !match);
-    el.classList.toggle('match', match);
+    const going = sel.filter(pid => o[pid]).length;     // how many selected people are going
+    el.classList.toggle('dim', sel.length > 0 && going === 0);          // nobody selected → fade
+    el.classList.toggle('match', sel.length > 1 && going === sel.length); // all selected → outline
   });
   updateFilterStatus();
 }
@@ -603,9 +603,14 @@ function updateFilterStatus(){
   const sel = [...filterPeople];
   const st = document.getElementById('fbStatus');
   if (sel.length === 0){ st.textContent = 'tap a name'; return; }
-  const n = board.querySelectorAll('.act.match').length;
-  const names = sel.map(id => PEOPLE.find(p => p.id===id).name).join(' + ');
-  st.textContent = n + (n===1?' set · ':' sets · ') + names;
+  const shown = board.querySelectorAll('.act:not(.dim)').length;
+  if (sel.length === 1){
+    const name = PEOPLE.find(p => p.id===sel[0]).name;
+    st.textContent = shown + (shown===1?' set · ':' sets · ') + name;
+  } else {
+    const together = board.querySelectorAll('.act.match').length;
+    st.textContent = shown + ' shown · ' + together + ' all together';
+  }
 }
 
 DAYS.forEach(D => {
