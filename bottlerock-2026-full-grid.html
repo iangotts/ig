@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<title>BottleRock 2026 — Full Festival Grid</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --ink: #14161c;
+    --muted: #868b95;
+    --line: #e4e6ea;
+    --line-soft: #eef0f3;
+    --natalie: #c9a84c;
+    --ian: #7d4fc7;
+    --now: #ff3b30;
+    --gutter: 44px;
+    --col: 146px;
+    --head: 48px;
+    --hourpx: 140px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column;
+    height: 100dvh; overflow: hidden;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    flex: none;
+    background: #fff; border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top);
+  }
+  .title-row {
+    display: flex; align-items: baseline; gap: 8px; padding: 9px 14px 7px;
+  }
+  .title { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+  .title span { color: var(--natalie); }
+  .count { margin-left: auto; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+  .daytabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; padding: 0 10px 8px; }
+  .daytab {
+    appearance: none; border: 1px solid var(--line); background: #fff;
+    border-radius: 10px; padding: 6px 4px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    font-family: inherit; color: var(--muted); transition: all .14s ease;
+  }
+  .daytab .d1 { font-size: 13px; font-weight: 800; }
+  .daytab .d2 { font-size: 9.5px; font-weight: 600; }
+  .daytab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .legend {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 7px 14px; font-size: 10.5px; color: var(--muted);
+    background: var(--bg); border-top: 1px solid var(--line-soft);
+  }
+  .legend b { font-weight: 700; }
+  .lg { display: flex; align-items: center; gap: 4px; }
+  .star { font-size: 12px; line-height: 1; }
+  .star.n { color: var(--natalie); }
+  .star.i { color: var(--ian); }
+  .lg .dash {
+    width: 16px; height: 0; border-top: 2px dashed var(--muted);
+  }
+
+  /* ---------- Scroller (two-axis) ---------- */
+  .scroller {
+    flex: 1; overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg);
+  }
+  .board {
+    position: relative;
+    width: calc(var(--gutter) + 6 * var(--col));
+  }
+
+  /* header row — sticky to top, scrolls horizontally */
+  .headrow {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; height: var(--head);
+    width: calc(var(--gutter) + 6 * var(--col));
+  }
+  .corner {
+    position: sticky; left: 0; z-index: 5;
+    width: var(--gutter); flex: none;
+    background: var(--ink); color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-right: 1px solid var(--ink);
+  }
+  .corner .c1 { font-size: 11px; font-weight: 800; letter-spacing: 0.02em; }
+  .corner .c2 { font-size: 7.5px; font-weight: 600; opacity: .7; }
+  .stagehead {
+    width: var(--col); flex: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px; border-right: 1px solid var(--line);
+    border-bottom: 2px solid currentColor;
+  }
+  .stagehead .sh-name { font-size: 12.5px; font-weight: 800; letter-spacing: -0.01em; }
+  .stagehead .sh-sub { font-size: 8px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); }
+
+  /* body — gutter + 6 columns */
+  .body { position: relative; display: flex; width: calc(var(--gutter) + 6 * var(--col)); }
+  .gutter {
+    position: sticky; left: 0; z-index: 10;
+    width: var(--gutter); flex: none;
+    background: #fbfbfc; border-right: 1px solid var(--line);
+  }
+  .hourlab {
+    position: absolute; left: 0; right: 3px; text-align: right;
+    font-size: 9px; font-weight: 700; color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .stagecol {
+    width: var(--col); flex: none; position: relative;
+    border-right: 1px solid var(--line);
+    background-image: repeating-linear-gradient(
+      to bottom, var(--line-soft) 0, var(--line-soft) 1px,
+      transparent 1px, transparent var(--hourpx));
+  }
+
+  /* ---------- Act cells ---------- */
+  .act {
+    position: absolute; left: 4px; right: 4px; overflow: hidden;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 7px; padding: 5px 6px;
+    display: flex; flex-direction: column; gap: 1px;
+    cursor: pointer; transition: transform .07s ease;
+  }
+  .act:active { transform: scale(0.97); }
+  .act.pick-n { background: #fbf6e9; border-color: #e3cf93; }
+  .act.pick-i { background: #f4effb; border-color: #c9b6e8; }
+  .act.pick-b { background: #f6f1ef; border-color: #d8c08f; }
+  .act.est { border-style: dashed; }
+  .a-band {
+    font-size: 11.5px; font-weight: 700; line-height: 1.13;
+    letter-spacing: -0.015em; color: var(--ink);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .a-time {
+    font-size: 9px; font-weight: 600; color: var(--muted);
+    font-variant-numeric: tabular-nums; margin-top: auto;
+  }
+  .a-stars {
+    position: absolute; top: 3px; right: 4px;
+    display: flex; gap: 1px; line-height: 1;
+  }
+  .a-stars span { font-size: 10px; }
+  .act.short { padding: 3px 6px; }
+  .act.short .a-band { font-size: 11px; -webkit-line-clamp: 2; }
+
+  /* now line */
+  .nowline {
+    position: absolute; left: var(--gutter); right: 0; height: 0;
+    border-top: 2px solid var(--now); z-index: 8; pointer-events: none; display: none;
+  }
+  .nowline::before {
+    content: ""; position: absolute; left: 0; top: -4px;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--now);
+  }
+  .nowtag {
+    position: absolute; left: 2px; top: -8px;
+    background: var(--now); color: #fff; font-size: 8px; font-weight: 800;
+    padding: 1px 4px; border-radius: 3px; letter-spacing: .04em;
+  }
+
+  /* floating now button */
+  .nowbtn {
+    position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 30; appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--ink); color: #fff; border: none; border-radius: 22px;
+    padding: 10px 15px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(20,22,28,.32); display: none; align-items: center; gap: 6px;
+  }
+  .nowbtn.show { display: flex; }
+  .nowbtn .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
+
+  /* ---------- Detail sheet ---------- */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 60; background: rgba(15,17,22,.45);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  .backdrop.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; background: #fff;
+    border-radius: 20px 20px 0 0; padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(110%); transition: transform .26s cubic-bezier(.32,.72,0,1);
+    box-shadow: 0 -8px 40px rgba(15,17,22,.22);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 6px auto 16px; }
+  .sheet-stage { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .sheet-band { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin: 4px 0 10px; }
+  .sheet-time { font-size: 14px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sheet-pick {
+    display: flex; align-items: center; gap: 8px; margin-top: 14px;
+    border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600;
+  }
+  .sheet-pick.n { background: #fbf6e9; color: #8a6d1e; }
+  .sheet-pick.i { background: #f4effb; color: #5a3a91; }
+  .sheet-note { margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .sheet-close {
+    margin-top: 18px; width: 100%; appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="title-row">
+    <span class="title">BottleRock <span>2026</span> · Full Grid</span>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="daytabs" id="daytabs"></div>
+  <div class="legend">
+    <span class="lg"><span class="star n">★</span> Natalie</span>
+    <span class="lg"><span class="star i">★</span> Ian</span>
+    <span class="lg"><span class="dash"></span> approx. time</span>
+    <span class="lg">Scroll ⇆ for all 6 stages</span>
+  </div>
+</div>
+
+<div class="scroller" id="scroller">
+  <div class="board" id="board"></div>
+</div>
+
+<button class="nowbtn" id="nowbtn"><span class="dot"></span> Now</button>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sheet-handle"></div>
+  <div id="sheetContent"></div>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const STAGES = [
+  { id:'prudential', name:'Prudential',  sub:'Main',      color:'#2f6f9e' },
+  { id:'tmobile',    name:'T-Mobile',    sub:'Main',      color:'#b83f7d' },
+  { id:'hellofresh', name:'HelloFresh',  sub:'Stage',     color:'#3f8f5a' },
+  { id:'northbay',   name:'NorthBay',    sub:'Health',    color:'#c2683a' },
+  { id:'vip',        name:'VIP Village', sub:'Stage',     color:'#5d52a8' },
+  { id:'backstage',  name:'Backstage',   sub:'by United', color:'#8a6f3e' }
+];
+
+const DAYS = [
+  { id:'fri', d1:'FRI', d2:'May 22', iso:'2026-05-22' },
+  { id:'sat', d1:'SAT', d2:'May 23', iso:'2026-05-23' },
+  { id:'sun', d1:'SUN', d2:'May 24', iso:'2026-05-24' }
+];
+
+/* a = act: {b:band, s:start, e:end, n:Natalie pick, i:Ian pick, x:time approx} */
+const SCHED = {
+  fri: {
+    prudential: [
+      {b:'Indy', s:'12:00', e:'13:00'},
+      {b:'The Beths', s:'13:30', e:'14:30', n:1},
+      {b:'Del Water Gap', s:'15:00', e:'16:00'},
+      {b:'Chaka Khan', s:'16:30', e:'17:30', n:1, i:1},
+      {b:'Teddy Swims', s:'18:15', e:'19:30', n:1, i:1},
+      {b:'Lorde', s:'20:15', e:'21:45', n:1}
+    ],
+    tmobile: [
+      {b:'Hannah Cohen', s:'13:00', e:'13:45'},
+      {b:'Natasha Bedingfield', s:'14:15', e:'15:15', n:1, i:1},
+      {b:'Tash Sultana', s:'15:45', e:'16:45', n:1, i:1},
+      {b:'Jon Bellion', s:'17:15', e:'18:15'},
+      {b:'Papa Roach', s:'18:45', e:'20:00'},
+      {b:'Lil Wayne', s:'20:30', e:'21:45'}
+    ],
+    hellofresh: [
+      {b:'Malick Koly', s:'12:00', e:'12:40'},
+      {b:'Penelope Road', s:'13:15', e:'14:15'},
+      {b:'The Paradox', s:'14:45', e:'15:45'},
+      {b:'Chevy Metal', s:'16:15', e:'17:15'},
+      {b:'Rev Run', s:'17:45', e:'18:45'},
+      {b:'Børns', s:'19:15', e:'20:15', n:1},
+      {b:'Men at Work', s:'20:45', e:'22:00'}
+    ],
+    northbay: [
+      {b:'The Rookie5', s:'12:00', e:'12:45'},
+      {b:'Khatumu', s:'13:15', e:'14:00'},
+      {b:'The Chin Chins', s:'14:30', e:'15:30'},
+      {b:'New Constellations', s:'16:00', e:'17:00'},
+      {b:'Melt', s:'17:30', e:'18:30'},
+      {b:'Treach (of Naughty By Nature)', s:'19:00', e:'20:00'},
+      {b:'Meredith Marks x DJ Umami', s:'20:30', e:'22:00'}
+    ],
+    vip: [
+      {b:'Chevy Metal', s:'14:30', e:'15:00'},
+      {b:'Børns', s:'16:00', e:'16:30'},
+      {b:'Colin Hay (of Men At Work)', s:'17:30', e:'18:00'},
+      {b:'New Constellations', s:'19:30', e:'20:00'}
+    ],
+    backstage: [
+      {b:'Nat Myers', s:'13:00', e:'13:30'},
+      {b:'Melt', s:'14:30', e:'15:00'},
+      {b:'The Beths', s:'16:00', e:'16:30'},
+      {b:'The Paradox', s:'17:30', e:'18:00'},
+      {b:'Penelope Road', s:'19:30', e:'20:00'}
+    ]
+  },
+  sat: {
+    prudential: [
+      {b:'The Alive', s:'12:00', e:'13:00', i:1},
+      {b:'The Return of Jackie and Judy', s:'13:30', e:'14:15'},
+      {b:'Joan Jett and The Blackhearts', s:'14:45', e:'15:45', n:1, i:1},
+      {b:'AJR', s:'16:15', e:'17:15', n:1, i:1},
+      {b:'LCD Soundsystem', s:'17:45', e:'19:00', n:1, i:1},
+      {b:'Foo Fighters', s:'19:45', e:'21:45', n:1, i:1}
+    ],
+    tmobile: [
+      {b:'Paris Jackson', s:'13:00', e:'13:45'},
+      {b:'Flipturn', s:'14:15', e:'15:15'},
+      {b:'Bush', s:'15:45', e:'16:45', n:1},
+      {b:'Busta Rhymes', s:'17:15', e:'18:15'},
+      {b:'Rilo Kiley', s:'18:45', e:'19:45', n:1},
+      {b:'Zedd', s:'20:30', e:'22:00'}
+    ],
+    hellofresh: [
+      {b:'Bettina Maureenji', s:'12:00', e:'12:45'},
+      {b:'Alicia Creti', s:'13:15', e:'14:15'},
+      {b:'Saxsquatch', s:'14:45', e:'15:45'},
+      {b:'Midnight Generation', s:'16:15', e:'17:15'},
+      {b:'The Warning', s:'17:45', e:'18:45', n:1, i:1},
+      {b:'Arrested Development', s:'19:15', e:'20:15'},
+      {b:'Maoli', s:'20:45', e:'22:00'}
+    ],
+    northbay: [
+      {b:'Jake Zimma', s:'12:00', e:'12:30'},
+      {b:'Folk Bitch Trio', s:'13:00', e:'14:00'},
+      {b:'Zinadelphia', s:'14:30', e:'15:15'},
+      {b:'Charlotte Lawrence', s:'15:45', e:'16:45'},
+      {b:'Almost Monday', s:'17:15', e:'18:15'},
+      {b:'Better Than Ezra', s:'18:45', e:'19:45', i:1},
+      {b:'DJ Pauly D x America Rose', s:'20:15', e:'22:00'}
+    ],
+    vip: [
+      {b:'Nat Myers', s:'13:00', e:'13:30'},
+      {b:'Midnight Generation', s:'14:15', e:'14:45'},
+      {b:'Almost Monday', s:'15:45', e:'16:15'},
+      {b:'Maoli', s:'17:15', e:'17:45'},
+      {b:'Bush', s:'19:00', e:'19:30'}
+    ],
+    backstage: [
+      {b:'Alec Shaw', s:'13:00', e:'13:30'},
+      {b:'Paris Jackson', s:'14:15', e:'14:45'},
+      {b:'Better Than Ezra', s:'15:45', e:'16:15', i:1},
+      {b:'Flipturn', s:'17:15', e:'17:45'},
+      {b:'The Alive', s:'19:00', e:'19:30', i:1}
+    ]
+  },
+  sun: {
+    prudential: [
+      {b:'Betty Taylor', s:'12:00', e:'13:00'},
+      {b:'Larkin Poe', s:'13:30', e:'14:30', n:1},
+      {b:'Kool & The Gang', s:'15:00', e:'16:00', n:1, i:1},
+      {b:'Mt. Joy', s:'16:30', e:'17:45', n:1},
+      {b:'Sombr', s:'18:15', e:'19:15', i:1},
+      {b:'Backstreet Boys', s:'20:00', e:'21:45', n:1, i:1}
+    ],
+    tmobile: [
+      {b:'Nat Myers', s:'12:00', e:'12:45'},
+      {b:'Izzy Escobar', s:'13:15', e:'14:00', i:1},
+      {b:'Absolutely', s:'14:30', e:'15:15'},
+      {b:'Paulo Londra', s:'15:45', e:'16:45'},
+      {b:'BigXThaPlug', s:'17:15', e:'18:15'},
+      {b:'Slightly Stoopid', s:'18:45', e:'20:00'},
+      {b:'Ludacris', s:'20:30', e:'22:00', x:1}
+    ],
+    hellofresh: [
+      {b:'Napa Valley Youth Symphony', s:'12:00', e:'12:30'},
+      {b:'The Silverado Pickups', s:'13:00', e:'14:00'},
+      {b:'The Paper Kites', s:'14:30', e:'15:30'},
+      {b:'Paco Versailles', s:'16:00', e:'17:00'},
+      {b:'Good Neighbours', s:'17:30', e:'18:30'},
+      {b:'The California Honeydrops', s:'19:00', e:'20:00'},
+      {b:'Cut Copy', s:'20:30', e:'21:45', n:1}
+    ],
+    northbay: [
+      {b:'Alec Shaw', s:'12:00', e:'12:45'},
+      {b:'Girl Tones', s:'13:15', e:'14:00'},
+      {b:'Buffalo Traffic Jam', s:'14:30', e:'15:30'},
+      {b:'The Heavy Heavy', s:'16:00', e:'17:00'},
+      {b:'Sons of the East', s:'17:30', e:'18:30'},
+      {b:'Matt Maeson', s:'19:00', e:'20:00'},
+      {b:'Jess King x Trackstar The DJ', s:'20:30', e:'22:00'}
+    ],
+    vip: [
+      {b:'The Heavy Heavy', s:'13:00', e:'13:30'},
+      {b:'Mt. Joy', s:'14:30', e:'15:00'},
+      {b:'Slightly Stoopid', s:'16:00', e:'16:30'},
+      {b:'Buffalo Traffic Jam', s:'17:45', e:'18:15'},
+      {b:'Paco Versailles', s:'19:15', e:'19:45'}
+    ],
+    backstage: [
+      {b:'Malick Koly', s:'13:00', e:'13:30'},
+      {b:'Sons of the East', s:'14:30', e:'15:00'},
+      {b:'The California Honeydrops', s:'16:00', e:'16:30'},
+      {b:'The Paper Kites', s:'17:45', e:'18:15'},
+      {b:'Izzy Escobar', s:'19:15', e:'19:45'}
+    ]
+  }
+};
+
+/* ===================== CONFIG ===================== */
+const WIN_START = 12 * 60, WIN_END = 22 * 60;
+const HOUR_PX = 140, PX_MIN = HOUR_PX / 60;
+const TL_HEIGHT = (WIN_END - WIN_START) * PX_MIN;
+
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const pad2 = n => String(n).padStart(2,'0');
+function fmt(min){
+  let h = Math.floor(min/60), m = min%60, ap = h>=12?'PM':'AM';
+  let hh = h%12; if(hh===0) hh=12;
+  return hh+':'+pad2(m)+' '+ap;
+}
+const shortT = min => { let h=Math.floor(min/60)%12; if(h===0)h=12; return h+':'+pad2(min%60); };
+
+/* ===================== RENDER ===================== */
+const board = document.getElementById('board');
+const scroller = document.getElementById('scroller');
+const daytabs = document.getElementById('daytabs');
+let activeDay = 'fri';
+
+/* count total sets */
+let total = 0;
+Object.values(SCHED).forEach(day => Object.values(day).forEach(arr => total += arr.length));
+document.getElementById('count').textContent = total + ' sets · 6 stages';
+
+DAYS.forEach(D => {
+  const tab = document.createElement('button');
+  tab.className = 'daytab'; tab.dataset.day = D.id;
+  tab.innerHTML = `<span class="d1">${D.d1}</span><span class="d2">${D.d2}</span>`;
+  tab.addEventListener('click', () => selectDay(D.id, true));
+  daytabs.appendChild(tab);
+});
+
+function renderBoard(dayId){
+  const day = DAYS.find(d => d.id === dayId);
+  board.innerHTML = '';
+
+  /* header row */
+  const headrow = document.createElement('div');
+  headrow.className = 'headrow';
+  const corner = document.createElement('div');
+  corner.className = 'corner';
+  corner.innerHTML = `<div class="c1">${day.d1}</div><div class="c2">${day.d2.toUpperCase()}</div>`;
+  headrow.appendChild(corner);
+  STAGES.forEach(st => {
+    const sh = document.createElement('div');
+    sh.className = 'stagehead';
+    sh.style.color = st.color;
+    sh.innerHTML = `<span class="sh-name">${st.name}</span><span class="sh-sub">${st.sub}</span>`;
+    headrow.appendChild(sh);
+  });
+  board.appendChild(headrow);
+
+  /* body */
+  const body = document.createElement('div');
+  body.className = 'body';
+
+  const gutter = document.createElement('div');
+  gutter.className = 'gutter';
+  gutter.style.height = TL_HEIGHT + 'px';
+  for (let h = 0; h <= 10; h++){
+    const lab = document.createElement('div');
+    lab.className = 'hourlab';
+    lab.style.top = (h*HOUR_PX + 3) + 'px';
+    let hr = (12+h) % 12; if (hr===0) hr = 12;
+    lab.textContent = hr;
+    gutter.appendChild(lab);
+  }
+  body.appendChild(gutter);
+
+  STAGES.forEach(st => {
+    const col = document.createElement('div');
+    col.className = 'stagecol';
+    col.style.height = TL_HEIGHT + 'px';
+    (SCHED[dayId][st.id] || []).forEach(a => col.appendChild(makeAct(a, st, day)));
+    body.appendChild(col);
+  });
+
+  const nl = document.createElement('div');
+  nl.className = 'nowline';
+  nl.innerHTML = `<span class="nowtag">NOW</span>`;
+  body.appendChild(nl);
+
+  board.appendChild(body);
+}
+
+function makeAct(a, st, day){
+  const s = toMin(a.s), e = toMin(a.e);
+  const top = (s - WIN_START) * PX_MIN;
+  const h = (e - s) * PX_MIN;
+  const el = document.createElement('div');
+  const pick = a.n && a.i ? ' pick-b' : a.n ? ' pick-n' : a.i ? ' pick-i' : '';
+  el.className = 'act' + pick + (a.x ? ' est' : '') + (h < 64 ? ' short' : '');
+  el.style.top = top + 'px';
+  el.style.height = (h - 4) + 'px';
+
+  const band = document.createElement('div');
+  band.className = 'a-band'; band.textContent = a.b;
+  const time = document.createElement('div');
+  time.className = 'a-time';
+  time.textContent = (a.x ? '~' : '') + shortT(s) + '–' + shortT(e);
+  el.appendChild(band);
+  el.appendChild(time);
+
+  if (a.n || a.i){
+    const stars = document.createElement('div');
+    stars.className = 'a-stars';
+    if (a.n) stars.innerHTML += '<span class="star n">★</span>';
+    if (a.i) stars.innerHTML += '<span class="star i">★</span>';
+    el.appendChild(stars);
+  }
+  el.addEventListener('click', () => openSheet(a, st, day));
+  return el;
+}
+
+/* ===================== DAY SELECT ===================== */
+function selectDay(id, scroll){
+  activeDay = id;
+  document.querySelectorAll('.daytab').forEach(t =>
+    t.classList.toggle('active', t.dataset.day === id));
+  renderBoard(id);
+  updateNow();
+  if (scroll){
+    scroller.scrollLeft = 0;
+    if (id === festDay() && festNow()) scrollToNow();
+    else scroller.scrollTop = 0;
+  }
+}
+
+/* ===================== NOW LOGIC ===================== */
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+}
+function festDay(){
+  const t = todayISO();
+  const d = DAYS.find(x => x.iso === t);
+  if (d) return d.id;
+  return t < DAYS[0].iso ? DAYS[0].id : DAYS[DAYS.length-1].id;
+}
+function festNow(){ return DAYS.some(d => d.iso === todayISO()); }
+function nowMin(){ const d = new Date(); return d.getHours()*60 + d.getMinutes(); }
+
+function updateNow(){
+  const nl = board.querySelector('.nowline');
+  if (!nl) return;
+  const onDay = festNow() && DAYS.find(d => d.id === activeDay).iso === todayISO();
+  const nm = nowMin();
+  const show = onDay && nm >= WIN_START && nm <= WIN_END;
+  if (show){
+    nl.style.display = 'block';
+    nl.style.top = ((nm - WIN_START) * PX_MIN) + 'px';
+    nl.querySelector('.nowtag').textContent = 'NOW ' + fmt(nm).replace(' ','');
+  } else {
+    nl.style.display = 'none';
+  }
+  document.getElementById('nowbtn').classList.toggle('show', festNow() && nm >= WIN_START && nm <= WIN_END);
+}
+function scrollToNow(){
+  const nl = board.querySelector('.nowline');
+  if (!nl || nl.style.display === 'none'){ scroller.scrollTop = 0; return; }
+  const y = parseFloat(nl.style.top) - 110;
+  scroller.scrollTop = Math.max(0, y);
+}
+document.getElementById('nowbtn').addEventListener('click', () => {
+  selectDay(festDay(), false);
+  requestAnimationFrame(() => { scroller.scrollLeft = 0; scrollToNow(); });
+});
+
+/* ===================== DETAIL SHEET ===================== */
+const backdrop = document.getElementById('backdrop');
+const sheet = document.getElementById('sheet');
+const sheetContent = document.getElementById('sheetContent');
+
+function openSheet(a, st, day){
+  let picks = '';
+  if (a.n) picks += `<div class="sheet-pick n"><span class="star n">★</span> One of Natalie’s picks</div>`;
+  if (a.i) picks += `<div class="sheet-pick i"><span class="star i">★</span> One of Ian’s picks</div>`;
+  const note = a.x ? `<div class="sheet-note">End time is approximate — double-check in the BottleRock app.</div>` : '';
+  sheetContent.innerHTML = `
+    <div class="sheet-stage" style="color:${st.color}">${st.name} Stage · ${day.d2}</div>
+    <div class="sheet-band">${esc(a.b)}</div>
+    <div class="sheet-time">${a.x ? 'approx. ' : ''}${fmt(toMin(a.s))} – ${fmt(toMin(a.e))}</div>
+    ${picks}
+    ${note}
+    <button class="sheet-close" id="sheetClose">Close</button>
+  `;
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  backdrop.classList.add('open');
+  sheet.classList.add('open');
+}
+function closeSheet(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
+backdrop.addEventListener('click', closeSheet);
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ===================== INIT ===================== */
+function init(){
+  selectDay(festDay(), false);
+  updateNow();
+  requestAnimationFrame(() => {
+    scroller.scrollLeft = 0;
+    if (festNow()) scrollToNow(); else scroller.scrollTop = 0;
+  });
+}
+window.addEventListener('load', init);
+setInterval(updateNow, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNow(); });
+</script>
+</body>
+</html>
