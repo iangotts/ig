@@ -15,10 +15,8 @@
     --muted: #8a8f99;
     --line: #e4e6ea;
     --line-soft: #eef0f3;
-    --natalie: #d6517e;
-    --ian: #2f7fc4;
-    --together: #15a06b;
-    --together-bg: #e6f6ee;
+    --natalie: #c9a84c;
+    --ian: #7d4fc7;
     --now: #ff3b30;
     --topbar-h: 96px;
     --colhead-h: 44px;
@@ -105,7 +103,6 @@
     padding: 8px 14px 9px; background: var(--bg);
     border-bottom: 1px solid var(--line-soft);
   }
-  .hint .sw { color: var(--together); font-weight: 700; }
 
   /* ---------- Timeline grid ---------- */
   .grid {
@@ -125,8 +122,8 @@
   }
   .pcol { position: relative; border-right: 1px solid var(--line-soft); }
   .pcol:last-child { border-right: none; }
-  .pcol[data-person="natalie"] { background: rgba(214,81,126,0.035); }
-  .pcol[data-person="ian"]     { background: rgba(47,127,196,0.035); }
+  .pcol[data-person="natalie"] { background: rgba(201,168,76,0.09); }
+  .pcol[data-person="ian"]     { background: rgba(125,79,199,0.045); }
 
   /* ---------- Act cards ---------- */
   .card {
@@ -144,11 +141,6 @@
   .card:active { transform: scale(0.975); }
   .card[data-person="natalie"] { border-left-color: var(--natalie); }
   .card[data-person="ian"]     { border-left-color: var(--ian); }
-  .card.together {
-    background: var(--together-bg);
-    border-color: #bfe6d2;
-    border-left-color: var(--together);
-  }
   .c-band {
     font-size: 13.5px; font-weight: 700; line-height: 1.14;
     letter-spacing: -0.015em; color: var(--ink);
@@ -164,17 +156,9 @@
     font-size: 10px; font-weight: 600; color: var(--muted);
     font-variant-numeric: tabular-nums; margin-top: auto;
   }
-  .card.together .c-time { color: #2f8c63; }
-  .c-tog {
-    align-self: flex-start; margin-top: 2px;
-    font-size: 8px; font-weight: 800; letter-spacing: 0.08em;
-    text-transform: uppercase; color: #fff; background: var(--together);
-    padding: 2px 5px; border-radius: 4px;
-  }
   .card.tiny { padding: 5px 6px; }
   .card.tiny .c-band { font-size: 12px; -webkit-line-clamp: 2; }
   .card.tiny .c-stage { display: none; }
-  .card.tiny .c-tog { display: none; }
   .card.tiny .c-time { font-size: 9.5px; }
 
   /* ---------- Now line ---------- */
@@ -249,13 +233,6 @@
     margin-bottom: 14px;
   }
   .sheet-meta b { color: var(--ink); font-weight: 700; }
-  .tog-banner {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--together-bg); color: #1c7a52;
-    border-radius: 10px; padding: 9px 12px; margin-bottom: 14px;
-    font-size: 12.5px; font-weight: 600;
-  }
-  .tog-banner .ic { font-size: 14px; }
   .stat-grid { display: flex; flex-direction: column; gap: 1px; }
   .stat-row {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -276,8 +253,18 @@
     text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
   }
   .vibe-text { font-size: 14.5px; line-height: 1.5; color: var(--ink); }
-  .sheet-close {
+  .spotify-btn {
     margin-top: 20px; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    background: #1DB954; color: #fff; text-decoration: none;
+    border-radius: 12px; padding: 14px;
+    font-size: 14px; font-weight: 700;
+    transition: background .12s ease;
+  }
+  .spotify-btn svg { width: 19px; height: 19px; fill: #fff; flex-shrink: 0; }
+  .spotify-btn:active { background: #15913f; }
+  .sheet-close {
+    margin-top: 10px; width: 100%;
     appearance: none; font-family: inherit; cursor: pointer;
     background: var(--bg); color: var(--ink);
     border: 1px solid var(--line); border-radius: 12px;
@@ -310,8 +297,8 @@
 <script>
 /* ============================ DATA ============================ */
 const PEOPLE = [
-  { id: 'natalie', name: 'Natalie', color: '#d6517e' },
-  { id: 'ian',     name: 'Ian',     color: '#2f7fc4' }
+  { id: 'natalie', name: 'Natalie', color: '#c9a84c' },
+  { id: 'ian',     name: 'Ian',     color: '#7d4fc7' }
   /* add a 3rd person here when the data arrives — layout adapts automatically */
 ];
 
@@ -390,6 +377,33 @@ const BANDS = {
   'Sombr': { genre:'Bedroom pop · alt-pop', spotify:'~60M', vibe:'A brooding, lovelorn alt-pop breakout — “back to friends,” “undressed.” Moody, melodic and very of-the-moment.' }
 };
 
+/* Spotify artist IDs — link target is https://open.spotify.com/artist/<id> */
+const SPOTIFY = {
+  'The Beths':'7DjwIxbe8kpw4pqnzAMoin',
+  'Natasha Bedingfield':'7o95ZoZt5ZYn31e9z1Hc0a',
+  'Tash Sultana':'6zVFRTB0Y1whWyH7ZNmywf',
+  'Chaka Khan':'6mQfAAqZGBzIfrmlZCeaYT',
+  'Teddy Swims':'33qOK5uJ8AR2xuQQAhHump',
+  'Børns':'1KP6TWI40m7p3QBTU6u2xo',
+  'Lorde':'163tK9Wjr9P9DmM0AVK7lm',
+  'Joan Jett & the Blackhearts':'1Fmb52lZ6Jv7FMWXXTPO3K',
+  'Bush':'78SHxLdtysAXgywQ4vE0Oa',
+  'AJR':'6s22t5Y3prQHyaHWUN1R1C',
+  'The Warning':'2SmW1lFlBJn4IfBzBZDlSh',
+  'LCD Soundsystem':'066X20Nz7iquqkkCW6Jxy6',
+  'Rilo Kiley':'2cevwbv7ISD92VMNLYLHZA',
+  'Foo Fighters':'7jy3rLJdDQY21OgRLCZ9sD',
+  'Larkin Poe':'7d10VF1J4LqW7vrpPOngzm',
+  'Kool & the Gang':'3VNITwohbvU5Wuy5PC6dsI',
+  'Mt. Joy':'69tiO1fG8VWduDl3ji2qhI',
+  'Backstreet Boys':'5rSXSAkZ67PYJSvpUpkOr7',
+  'Cut Copy':'4EENT7N7rCBwrddM3s0vFS',
+  'The Alive':'6JHewNtpMw6Kit2LAgP8BS',
+  'Better Than Ezra':'4UuoJfJ9UybJft7a8E6UHX',
+  'Izzy Escobar':'63iuP8EumHpqaaMKyi0pxO',
+  'Sombr':'4G9NDjRyZFDlJKMRL8hx3S'
+};
+
 /* ============================ CONFIG ============================ */
 const WIN_START = 12 * 60;            // 12:00 PM
 const WIN_END   = 22 * 60;            // 10:00 PM
@@ -450,13 +464,6 @@ DAYS.forEach(D => {
   tab.addEventListener('click', () => selectDay(D.id, true));
   daytabs.appendChild(tab);
 
-  /* mark "together" acts: same band, overlapping time, different person */
-  D.acts.forEach(a => {
-    const as = toMin(a.s), ae = toMin(a.e);
-    a._together = D.acts.some(b => b !== a && b.p !== a.p && b.band === a.band
-      && as < toMin(b.e) && toMin(b.s) < ae);
-  });
-
   /* day section */
   const sec = document.createElement('section');
   sec.className = 'day'; sec.dataset.day = D.id;
@@ -472,7 +479,7 @@ DAYS.forEach(D => {
   /* hint */
   const hint = document.createElement('div');
   hint.className = 'hint';
-  hint.innerHTML = `Tap any set for band info &nbsp;·&nbsp; <span class="sw">green = you’re both there</span>`;
+  hint.textContent = 'Tap any set for band details';
   sec.appendChild(hint);
 
   /* grid */
@@ -520,7 +527,7 @@ function makeCard(a){
   const h   = (toMin(a.e) - toMin(a.s)) * PX_PER_MIN;
   const w   = 100 / a.lanes;
   const card = document.createElement('button');
-  card.className = 'card' + (a._together ? ' together' : '') + (h < 78 ? ' tiny' : '');
+  card.className = 'card' + (h < 78 ? ' tiny' : '');
   card.dataset.person = a.p;
   card.style.top = top + 'px';
   card.style.height = (h - 4) + 'px';
@@ -536,11 +543,6 @@ function makeCard(a){
 
   card.appendChild(band);
   card.appendChild(stage);
-  if (a._together && h >= 96){
-    const tg = document.createElement('span');
-    tg.className = 'c-tog'; tg.textContent = '✓ together';
-    card.appendChild(tg);
-  }
   card.appendChild(time);
 
   card.addEventListener('click', () => openSheet(a));
@@ -624,14 +626,14 @@ function openSheet(a){
   const spotifyVal = /^[~\d]/.test(info.spotify)
     ? `<span class="big">${info.spotify}</span> monthly listeners`
     : `${info.spotify} — not yet a major streaming presence`;
-  const togBanner = a._together
-    ? `<div class="tog-banner"><span class="ic">✓</span> Natalie &amp; Ian are both planning this one.</div>`
-    : '';
+  const sid = SPOTIFY[a.band];
+  const spotifyHref = sid
+    ? 'https://open.spotify.com/artist/' + sid
+    : 'https://open.spotify.com/search/' + encodeURIComponent(a.band);
   sheetContent.innerHTML = `
     <div class="sheet-eyebrow" style="color:${person.color}">${person.name}’s pick</div>
     <div class="sheet-band">${escapeHtml(a.band)}</div>
     <div class="sheet-meta"><b>${escapeHtml(a.stage)}</b> &nbsp;·&nbsp; ${fmt12(toMin(a.s))} – ${fmt12(toMin(a.e))}</div>
-    ${togBanner}
     <div class="stat-grid">
       <div class="stat-row">
         <span class="stat-key">Genre</span>
@@ -646,6 +648,10 @@ function openSheet(a){
       <div class="vibe-label">The vibe</div>
       <div class="vibe-text">${escapeHtml(info.vibe)}</div>
     </div>
+    <a class="spotify-btn" href="${spotifyHref}" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.314a.748.748 0 0 1-1.029.25c-2.818-1.722-6.366-2.111-10.544-1.156a.748.748 0 1 1-.333-1.459c4.571-1.044 8.494-.595 11.656 1.336a.748.748 0 0 1 .25 1.029zm1.47-3.272a.936.936 0 0 1-1.287.308c-3.226-1.983-8.145-2.557-11.961-1.398a.936.936 0 1 1-.543-1.79c4.36-1.323 9.779-.683 13.483 1.593a.936.936 0 0 1 .308 1.287zm.126-3.408C15.51 8.46 8.876 8.227 5.026 9.395a1.122 1.122 0 1 1-.651-2.148c4.421-1.342 11.748-1.083 16.272 1.603a1.122 1.122 0 0 1-1.146 1.929z"/></svg>
+      Open artist on Spotify
+    </a>
     <button class="sheet-close" id="sheetClose">Close</button>
   `;
   document.getElementById('sheetClose').addEventListener('click', closeSheet);
