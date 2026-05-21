@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<title>BottleRock 2026 — Our Schedule</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --ink: #14161c;
+    --muted: #8a8f99;
+    --line: #e4e6ea;
+    --line-soft: #eef0f3;
+    --natalie: #d6517e;
+    --ian: #2f7fc4;
+    --together: #15a06b;
+    --together-bg: #e6f6ee;
+    --now: #ff3b30;
+    --topbar-h: 96px;
+    --colhead-h: 44px;
+    --gutter: 46px;
+    --pcols: 2;
+    --hourpx: 140px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+    overscroll-behavior-y: none;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top);
+  }
+  .title-row {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 11px 16px 9px;
+  }
+  .title {
+    font-size: 18px; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .title em { font-style: normal; color: var(--natalie); }
+  .title b { font-weight: 700; color: var(--ian); }
+  .subtitle {
+    margin-left: auto; font-size: 11px; color: var(--muted); font-weight: 500;
+  }
+  .daytabs {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 6px; padding: 0 12px 10px;
+  }
+  .daytab {
+    appearance: none; border: 1px solid var(--line); background: #fff;
+    border-radius: 11px; padding: 7px 4px 6px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    font-family: inherit; color: var(--muted); transition: all .15s ease;
+  }
+  .daytab .dt-day { font-size: 14px; font-weight: 700; letter-spacing: .01em; }
+  .daytab .dt-date { font-size: 10px; font-weight: 500; }
+  .daytab.active {
+    background: var(--ink); border-color: var(--ink); color: #fff;
+  }
+  .daytab .dt-today {
+    margin-top: 2px; font-size: 8px; font-weight: 700; letter-spacing: .08em;
+    color: var(--now); text-transform: uppercase;
+  }
+  .daytab.active .dt-today { color: #ff8b85; }
+
+  /* ---------- Column header ---------- */
+  .day { display: none; }
+  .day.active { display: block; }
+
+  .colhead {
+    position: sticky; top: var(--topbar-h); z-index: 40;
+    display: grid; grid-template-columns: var(--gutter) repeat(var(--pcols), 1fr);
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
+    height: var(--colhead-h);
+  }
+  .ch-gutter { border-right: 1px solid var(--line-soft); }
+  .ch-person {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+    border-right: 1px solid var(--line-soft);
+  }
+  .ch-person:last-child { border-right: none; }
+  .ch-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  .hint {
+    font-size: 10.5px; color: var(--muted); text-align: center;
+    padding: 8px 14px 9px; background: var(--bg);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .hint .sw { color: var(--together); font-weight: 700; }
+
+  /* ---------- Timeline grid ---------- */
+  .grid {
+    position: relative;
+    display: grid; grid-template-columns: var(--gutter) repeat(var(--pcols), 1fr);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--line) 0, var(--line) 1px,
+      transparent 1px, transparent var(--hourpx));
+    background-position: 0 0;
+  }
+  .gutter { position: relative; border-right: 1px solid var(--line-soft); }
+  .hourlabel {
+    position: absolute; left: 0; right: 4px;
+    text-align: right; font-size: 9.5px; font-weight: 600;
+    color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+  .pcol { position: relative; border-right: 1px solid var(--line-soft); }
+  .pcol:last-child { border-right: none; }
+  .pcol[data-person="natalie"] { background: rgba(214,81,126,0.035); }
+  .pcol[data-person="ian"]     { background: rgba(47,127,196,0.035); }
+
+  /* ---------- Act cards ---------- */
+  .card {
+    position: absolute; overflow: hidden;
+    appearance: none; font-family: inherit; text-align: left;
+    background: var(--card); cursor: pointer;
+    border: 1px solid var(--line);
+    border-left-width: 3px;
+    border-radius: 8px;
+    padding: 6px 7px 5px 8px;
+    box-shadow: 0 1px 2px rgba(20,22,28,0.05);
+    display: flex; flex-direction: column; gap: 1px;
+    transition: transform .08s ease;
+  }
+  .card:active { transform: scale(0.975); }
+  .card[data-person="natalie"] { border-left-color: var(--natalie); }
+  .card[data-person="ian"]     { border-left-color: var(--ian); }
+  .card.together {
+    background: var(--together-bg);
+    border-color: #bfe6d2;
+    border-left-color: var(--together);
+  }
+  .c-band {
+    font-size: 13.5px; font-weight: 700; line-height: 1.14;
+    letter-spacing: -0.015em; color: var(--ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .c-stage {
+    font-size: 8.5px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .c-time {
+    font-size: 10px; font-weight: 600; color: var(--muted);
+    font-variant-numeric: tabular-nums; margin-top: auto;
+  }
+  .card.together .c-time { color: #2f8c63; }
+  .c-tog {
+    align-self: flex-start; margin-top: 2px;
+    font-size: 8px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #fff; background: var(--together);
+    padding: 2px 5px; border-radius: 4px;
+  }
+  .card.tiny { padding: 5px 6px; }
+  .card.tiny .c-band { font-size: 12px; -webkit-line-clamp: 2; }
+  .card.tiny .c-stage { display: none; }
+  .card.tiny .c-tog { display: none; }
+  .card.tiny .c-time { font-size: 9.5px; }
+
+  /* ---------- Now line ---------- */
+  .nowline {
+    position: absolute; left: var(--gutter); right: 0;
+    height: 0; border-top: 2px solid var(--now);
+    z-index: 30; pointer-events: none; display: none;
+  }
+  .nowline::before {
+    content: ""; position: absolute; left: -4px; top: -5px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--now);
+  }
+  .nowpill {
+    position: absolute; right: 4px; top: -9px;
+    background: var(--now); color: #fff;
+    font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+    padding: 2px 6px; border-radius: 5px;
+  }
+
+  /* ---------- Floating Now button ---------- */
+  .nowbtn {
+    position: fixed; right: 14px; z-index: 45;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--ink); color: #fff;
+    border: none; border-radius: 22px;
+    padding: 10px 16px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 4px 16px rgba(20,22,28,0.3);
+    display: none; align-items: center; gap: 6px;
+  }
+  .nowbtn.show { display: flex; }
+  .nowbtn .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
+
+  /* ---------- Footer ---------- */
+  .foot {
+    font-size: 10.5px; color: var(--muted); line-height: 1.7;
+    padding: 18px 18px 30px; text-align: center;
+  }
+
+  /* ---------- Band sheet ---------- */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(15,17,22,0.45);
+    opacity: 0; pointer-events: none; transition: opacity .22s ease;
+  }
+  .backdrop.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 61;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(110%);
+    transition: transform .26s cubic-bezier(.32,.72,0,1);
+    box-shadow: 0 -8px 40px rgba(15,17,22,0.22);
+    max-height: 86vh; overflow-y: auto;
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle {
+    width: 38px; height: 5px; border-radius: 3px;
+    background: var(--line); margin: 6px auto 14px;
+  }
+  .sheet-eyebrow {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .sheet-band {
+    font-size: 25px; font-weight: 800; letter-spacing: -0.025em;
+    line-height: 1.1; margin: 3px 0 9px;
+  }
+  .sheet-meta {
+    font-size: 12.5px; color: var(--muted); font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .sheet-meta b { color: var(--ink); font-weight: 700; }
+  .tog-banner {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--together-bg); color: #1c7a52;
+    border-radius: 10px; padding: 9px 12px; margin-bottom: 14px;
+    font-size: 12.5px; font-weight: 600;
+  }
+  .tog-banner .ic { font-size: 14px; }
+  .stat-grid { display: flex; flex-direction: column; gap: 1px; }
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .stat-row:last-of-type { border-bottom: none; }
+  .stat-key {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); flex-shrink: 0;
+  }
+  .stat-val {
+    font-size: 14px; font-weight: 600; text-align: right; line-height: 1.4;
+  }
+  .stat-val.big { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+  .vibe-block { margin-top: 14px; }
+  .vibe-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
+  }
+  .vibe-text { font-size: 14.5px; line-height: 1.5; color: var(--ink); }
+  .sheet-close {
+    margin-top: 20px; width: 100%;
+    appearance: none; font-family: inherit; cursor: pointer;
+    background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px; font-size: 14px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="title-row">
+    <span class="title">BottleRock <em>+</em> <b>2026</b></span>
+    <span class="subtitle">Natalie &amp; Ian</span>
+  </div>
+  <div class="daytabs" id="daytabs"></div>
+</div>
+
+<main id="main"></main>
+
+<button class="nowbtn" id="nowbtn"><span class="dot"></span> Now</button>
+
+<div class="foot" id="foot"></div>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Band info">
+  <div class="sheet-handle"></div>
+  <div id="sheet-content"></div>
+</div>
+
+<script>
+/* ============================ DATA ============================ */
+const PEOPLE = [
+  { id: 'natalie', name: 'Natalie', color: '#d6517e' },
+  { id: 'ian',     name: 'Ian',     color: '#2f7fc4' }
+  /* add a 3rd person here when the data arrives — layout adapts automatically */
+];
+
+/* times are 24-hour "HH:MM" */
+const DAYS = [
+  { id:'fri', day:'Fri', name:'Friday',   date:'May 22', iso:'2026-05-22',
+    acts: [
+      { p:'natalie', band:'The Beths',          stage:'Prudential Stage', s:'13:30', e:'14:30' },
+      { p:'natalie', band:'Natasha Bedingfield', stage:'T-Mobile Stage',  s:'14:15', e:'15:15' },
+      { p:'natalie', band:'Tash Sultana',        stage:'T-Mobile Stage',  s:'15:45', e:'16:45' },
+      { p:'natalie', band:'Chaka Khan',          stage:'Prudential Stage', s:'16:30', e:'17:30' },
+      { p:'natalie', band:'Teddy Swims',         stage:'Prudential Stage', s:'18:15', e:'19:30' },
+      { p:'natalie', band:'Børns',               stage:'HelloFresh Stage', s:'19:15', e:'20:15' },
+      { p:'natalie', band:'Lorde',               stage:'Prudential Stage', s:'20:15', e:'21:45' },
+      { p:'ian', band:'Natasha Bedingfield', stage:'T-Mobile Stage',  s:'14:15', e:'15:15' },
+      { p:'ian', band:'Tash Sultana',        stage:'T-Mobile Stage',  s:'15:45', e:'16:45' },
+      { p:'ian', band:'Chaka Khan',          stage:'Prudential Stage', s:'16:30', e:'17:30' },
+      { p:'ian', band:'Teddy Swims',         stage:'Prudential Stage', s:'18:15', e:'19:30' }
+    ] },
+  { id:'sat', day:'Sat', name:'Saturday', date:'May 23', iso:'2026-05-23',
+    acts: [
+      { p:'natalie', band:'Joan Jett & the Blackhearts', stage:'Prudential Stage', s:'14:45', e:'15:45' },
+      { p:'natalie', band:'Bush',            stage:'T-Mobile Stage',  s:'15:45', e:'16:45' },
+      { p:'natalie', band:'AJR',             stage:'Prudential Stage', s:'16:15', e:'17:15' },
+      { p:'natalie', band:'The Warning',     stage:'HelloFresh Stage', s:'17:45', e:'18:45' },
+      { p:'natalie', band:'LCD Soundsystem', stage:'Prudential Stage', s:'17:45', e:'19:00' },
+      { p:'natalie', band:'Rilo Kiley',      stage:'T-Mobile Stage',  s:'18:45', e:'19:45' },
+      { p:'natalie', band:'Foo Fighters',    stage:'Prudential Stage', s:'19:45', e:'21:45' },
+      { p:'ian', band:'The Alive',        stage:'Prudential Stage',     s:'12:00', e:'13:00' },
+      { p:'ian', band:'Joan Jett & the Blackhearts', stage:'Prudential Stage', s:'14:45', e:'15:45' },
+      { p:'ian', band:'Better Than Ezra', stage:'Backstage by United',  s:'15:45', e:'16:15' },
+      { p:'ian', band:'AJR',              stage:'Prudential Stage',     s:'16:15', e:'17:15' },
+      { p:'ian', band:'LCD Soundsystem',  stage:'Prudential Stage',     s:'17:45', e:'19:00' },
+      { p:'ian', band:'The Warning',      stage:'HelloFresh Stage',     s:'17:45', e:'18:45' },
+      { p:'ian', band:'Better Than Ezra', stage:'NorthBay Health Stage', s:'18:45', e:'19:45' },
+      { p:'ian', band:'The Alive',        stage:'Backstage by United',  s:'19:00', e:'19:30' },
+      { p:'ian', band:'Foo Fighters',     stage:'Prudential Stage',     s:'19:45', e:'21:45' }
+    ] },
+  { id:'sun', day:'Sun', name:'Sunday',   date:'May 24', iso:'2026-05-24',
+    acts: [
+      { p:'natalie', band:'Larkin Poe',      stage:'Prudential Stage', s:'13:30', e:'14:30' },
+      { p:'natalie', band:'Kool & the Gang', stage:'Prudential Stage', s:'15:00', e:'16:00' },
+      { p:'natalie', band:'Mt. Joy',         stage:'Prudential Stage', s:'16:30', e:'17:45' },
+      { p:'natalie', band:'Backstreet Boys', stage:'Prudential Stage', s:'20:00', e:'21:45' },
+      { p:'natalie', band:'Cut Copy',        stage:'HelloFresh Stage', s:'20:30', e:'21:45' },
+      { p:'ian', band:'Izzy Escobar',    stage:'T-Mobile Stage',  s:'13:15', e:'14:00' },
+      { p:'ian', band:'Kool & the Gang', stage:'Prudential Stage', s:'15:00', e:'16:00' },
+      { p:'ian', band:'Sombr',           stage:'Prudential Stage', s:'18:15', e:'19:15' },
+      { p:'ian', band:'Backstreet Boys', stage:'Prudential Stage', s:'20:00', e:'21:45' }
+    ] }
+];
+
+const BANDS = {
+  'The Beths': { genre:'Indie rock · power-pop', spotify:'~280K', vibe:'Punchy New Zealand guitar-pop — jangly hooks, wry lyrics and an easy, bright energy. A great early-arrival warm-up.' },
+  'Natasha Bedingfield': { genre:'Pop', spotify:'~24M', vibe:'Feel-good 2000s pop singalongs — “Unwritten” and “Pocket Full of Sunshine.” Pure sunshine and crowd euphoria.' },
+  'Tash Sultana': { genre:'Indie · psychedelic soul (live looping)', spotify:'~3.1M', vibe:'A one-person orchestra who builds whole songs live across 12+ instruments. Hypnotic, jam-heavy and raw.' },
+  'Chaka Khan': { genre:'Funk · R&B · soul', spotify:'~6.7M', vibe:'The Queen of Funk — a towering voice behind “Ain’t Nobody” and “I Feel For You.” Vintage groove, full power.' },
+  'Teddy Swims': { genre:'Soul · pop · R&B', spotify:'~48M', vibe:'A massive, gospel-sized voice wrapped around modern soul-pop. “Lose Control” live is a goosebumps moment.' },
+  'Børns': { genre:'Indie pop · dream-pop', spotify:'~8M', vibe:'Glittery, falsetto-laced dream pop — “Electric Love.” Hazy, romantic, made for golden hour.' },
+  'Lorde': { genre:'Art pop · alt-pop', spotify:'~32M', vibe:'Theatrical, brooding modern pop — “Royals,” “Green Light.” Intimate yet arena-sized; a genuine event.' },
+  'Joan Jett & the Blackhearts': { genre:'Rock · punk rock', spotify:'~6.9M', vibe:'Leather-jacket attitude and three-chord swagger — “I Love Rock ’n’ Roll.” Pure, joyful rebellion.' },
+  'Bush': { genre:'Post-grunge · alt-rock', spotify:'~5M', vibe:'90s grunge anthems — “Glycerine,” “Machinehead.” Brooding, big-riff nostalgia.' },
+  'AJR': { genre:'Indie pop · electropop', spotify:'~12M', vibe:'Maximalist, theatrical pop spectacle — confetti, brass stabs and stadium-wide chants. Part concert, part Broadway.' },
+  'The Warning': { genre:'Hard rock · metal', spotify:'~1.5M', vibe:'Three sisters from Monterrey detonating ferocious, razor-tight hard rock. The raw-energy act of the weekend.' },
+  'LCD Soundsystem': { genre:'Dance-punk · electronic rock', spotify:'~4.5M', vibe:'Sweaty, euphoric dance-rock catharsis — “All My Friends” builds until the whole field is moving.' },
+  'Rilo Kiley': { genre:'Indie rock', spotify:'~430K', vibe:'A beloved 2000s indie reunion — bittersweet, melodic, Jenny Lewis’s wink-and-ache vocals. “Portions for Foxes.”' },
+  'Foo Fighters': { genre:'Rock · alt-rock', spotify:'~22M', vibe:'Stadium-rock royalty — “Everlong,” “Best of You.” Two hours of fist-in-the-air, scream-every-word energy.' },
+  'Larkin Poe': { genre:'Blues rock · roots rock', spotify:'~400K', vibe:'Sister-duo slide-guitar firepower — gritty Southern blues-rock that cuts through the field like a siren.' },
+  'Kool & the Gang': { genre:'Funk · disco · R&B', spotify:'~9M', vibe:'An instant party — “Celebration,” “Get Down On It.” Pure, joyful, dance-floor funk.' },
+  'Mt. Joy': { genre:'Indie folk-rock', spotify:'~4.8M', vibe:'Warm, sunlit folk-rock — easy harmonies and gentle uplift. An ideal golden-hour watch.' },
+  'Backstreet Boys': { genre:'Pop', spotify:'~26M', vibe:'The boy-band blueprint — “I Want It That Way,” “Everybody.” Nostalgia-fuelled, whole-crowd singalong euphoria.' },
+  'Cut Copy': { genre:'Electronic · synth-pop · dance-rock', spotify:'~1.5M', vibe:'Australian neon synth-pop — “Lights & Music.” Shimmery, propulsive, made for dancing after dark.' },
+  'The Alive': { genre:'Rock (rising act)', spotify:'Emerging act', vibe:'A Sabbath / Floyd-inspired young rock band — heavy riffs and classic-rock worship. A spirited Day 2 opener.' },
+  'Better Than Ezra': { genre:'Alt-rock · pop-rock', spotify:'~830K', vibe:'90s alt-rock survivors — “Good,” “Desperately Wanting.” Breezy, hooky, feel-good guitar pop.' },
+  'Izzy Escobar': { genre:'Singer-songwriter · indie pop', spotify:'Emerging act', vibe:'A raw, emotive singer-songwriter from Massachusetts with Cuban-Italian roots — intimate and quietly powerful.' },
+  'Sombr': { genre:'Bedroom pop · alt-pop', spotify:'~60M', vibe:'A brooding, lovelorn alt-pop breakout — “back to friends,” “undressed.” Moody, melodic and very of-the-moment.' }
+};
+
+/* ============================ CONFIG ============================ */
+const WIN_START = 12 * 60;            // 12:00 PM
+const WIN_END   = 22 * 60;            // 10:00 PM
+const HOUR_PX   = 140;
+const PX_PER_MIN = HOUR_PX / 60;
+const TL_HEIGHT = (WIN_END - WIN_START) * PX_PER_MIN;
+
+/* ============================ HELPERS ============================ */
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const pad2  = n => String(n).padStart(2,'0');
+function fmt12(min){
+  let h = Math.floor(min/60), m = min%60;
+  const ap = h >= 12 ? 'PM' : 'AM';
+  let hh = h % 12; if (hh === 0) hh = 12;
+  return hh + ':' + pad2(m) + (ap ? ' ' + ap : '');
+}
+const shortT = min => { let h=Math.floor(min/60)%12; if(h===0)h=12; return h+':'+pad2(min%60); };
+const personById = id => PEOPLE.find(p => p.id === id);
+
+/* greedy lane layout for overlapping acts within one column */
+function layout(acts){
+  const list = acts.map(a => ({...a, sMin:toMin(a.s), eMin:toMin(a.e)}))
+                   .sort((a,b) => a.sMin - b.sMin || a.eMin - b.eMin);
+  let cluster = [], clusterEnd = -1;
+  const flush = () => {
+    if (!cluster.length) return;
+    const lanes = [];                                  // lanes[i] = end time of last act
+    cluster.forEach(a => {
+      let placed = false;
+      for (let i = 0; i < lanes.length; i++){
+        if (lanes[i] <= a.sMin){ a.lane = i; lanes[i] = a.eMin; placed = true; break; }
+      }
+      if (!placed){ a.lane = lanes.length; lanes.push(a.eMin); }
+    });
+    cluster.forEach(a => a.lanes = lanes.length);
+  };
+  list.forEach(a => {
+    if (cluster.length && a.sMin < clusterEnd){
+      cluster.push(a); clusterEnd = Math.max(clusterEnd, a.eMin);
+    } else { flush(); cluster = [a]; clusterEnd = a.eMin; }
+  });
+  flush();
+  return list;
+}
+
+/* ============================ RENDER ============================ */
+const main = document.getElementById('main');
+const daytabs = document.getElementById('daytabs');
+
+/* set column count for grid */
+document.documentElement.style.setProperty('--pcols', PEOPLE.length);
+
+DAYS.forEach(D => {
+  /* tab */
+  const tab = document.createElement('button');
+  tab.className = 'daytab'; tab.dataset.day = D.id;
+  tab.innerHTML = `<span class="dt-day">${D.day}</span><span class="dt-date">${D.date}</span>`;
+  tab.addEventListener('click', () => selectDay(D.id, true));
+  daytabs.appendChild(tab);
+
+  /* mark "together" acts: same band, overlapping time, different person */
+  D.acts.forEach(a => {
+    const as = toMin(a.s), ae = toMin(a.e);
+    a._together = D.acts.some(b => b !== a && b.p !== a.p && b.band === a.band
+      && as < toMin(b.e) && toMin(b.s) < ae);
+  });
+
+  /* day section */
+  const sec = document.createElement('section');
+  sec.className = 'day'; sec.dataset.day = D.id;
+
+  /* column header */
+  const ch = document.createElement('div');
+  ch.className = 'colhead';
+  ch.innerHTML = `<div class="ch-gutter"></div>` + PEOPLE.map(p =>
+    `<div class="ch-person"><span class="ch-dot" style="background:${p.color}"></span>${p.name}</div>`
+  ).join('');
+  sec.appendChild(ch);
+
+  /* hint */
+  const hint = document.createElement('div');
+  hint.className = 'hint';
+  hint.innerHTML = `Tap any set for band info &nbsp;·&nbsp; <span class="sw">green = you’re both there</span>`;
+  sec.appendChild(hint);
+
+  /* grid */
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  grid.style.height = TL_HEIGHT + 'px';
+
+  /* gutter with hour labels */
+  const gutter = document.createElement('div');
+  gutter.className = 'gutter';
+  gutter.style.height = TL_HEIGHT + 'px';
+  for (let h = 0; h <= (WIN_END-WIN_START)/60; h++){
+    const lab = document.createElement('div');
+    lab.className = 'hourlabel';
+    lab.style.top = (h*HOUR_PX + 3) + 'px';
+    const min = WIN_START + h*60;
+    let hr = Math.floor(min/60)%12; if (hr===0) hr=12;
+    lab.textContent = hr + ' PM';
+    gutter.appendChild(lab);
+  }
+  grid.appendChild(gutter);
+
+  /* one column per person */
+  PEOPLE.forEach(p => {
+    const col = document.createElement('div');
+    col.className = 'pcol'; col.dataset.person = p.id;
+    col.style.height = TL_HEIGHT + 'px';
+    const acts = layout(D.acts.filter(a => a.p === p.id));
+    acts.forEach(a => col.appendChild(makeCard(a)));
+    grid.appendChild(col);
+  });
+
+  /* now line */
+  const nl = document.createElement('div');
+  nl.className = 'nowline';
+  nl.innerHTML = `<span class="nowpill">NOW</span>`;
+  grid.appendChild(nl);
+
+  sec.appendChild(grid);
+  main.appendChild(sec);
+});
+
+function makeCard(a){
+  const top = (toMin(a.s) - WIN_START) * PX_PER_MIN;
+  const h   = (toMin(a.e) - toMin(a.s)) * PX_PER_MIN;
+  const w   = 100 / a.lanes;
+  const card = document.createElement('button');
+  card.className = 'card' + (a._together ? ' together' : '') + (h < 78 ? ' tiny' : '');
+  card.dataset.person = a.p;
+  card.style.top = top + 'px';
+  card.style.height = (h - 4) + 'px';
+  card.style.left  = `calc(${a.lane * w}% + 3px)`;
+  card.style.width = `calc(${w}% - 6px)`;
+
+  const band = document.createElement('span');
+  band.className = 'c-band'; band.textContent = a.band;
+  const stage = document.createElement('span');
+  stage.className = 'c-stage'; stage.textContent = a.stage;
+  const time = document.createElement('span');
+  time.className = 'c-time'; time.textContent = shortT(toMin(a.s)) + '–' + shortT(toMin(a.e));
+
+  card.appendChild(band);
+  card.appendChild(stage);
+  if (a._together && h >= 96){
+    const tg = document.createElement('span');
+    tg.className = 'c-tog'; tg.textContent = '✓ together';
+    card.appendChild(tg);
+  }
+  card.appendChild(time);
+
+  card.addEventListener('click', () => openSheet(a));
+  return card;
+}
+
+/* ============================ DAY SELECT ============================ */
+let activeDay = 'fri';
+
+function selectDay(id, scroll){
+  activeDay = id;
+  document.querySelectorAll('.daytab').forEach(t =>
+    t.classList.toggle('active', t.dataset.day === id));
+  document.querySelectorAll('.day').forEach(s =>
+    s.classList.toggle('active', s.dataset.day === id));
+  updateNow();
+  if (scroll){
+    if (id === festDay() && festNow()) scrollToNow(id);
+    else window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+}
+
+/* ============================ NOW LOGIC ============================ */
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+}
+function festDay(){
+  const t = todayISO();
+  const d = DAYS.find(x => x.iso === t);
+  if (d) return d.id;
+  if (t < DAYS[0].iso) return DAYS[0].id;          // before festival
+  return DAYS[DAYS.length-1].id;                    // after festival
+}
+function festNow(){ return DAYS.some(d => d.iso === todayISO()); }
+function nowMin(){ const d = new Date(); return d.getHours()*60 + d.getMinutes(); }
+
+function updateNow(){
+  const onFestDay = festNow();
+  const nm = nowMin();
+  const inWindow = nm >= WIN_START && nm <= WIN_END;
+  DAYS.forEach(D => {
+    const sec = document.querySelector(`.day[data-day="${D.id}"]`);
+    const nl  = sec.querySelector('.nowline');
+    const show = onFestDay && inWindow && D.iso === todayISO();
+    if (show){
+      nl.style.display = 'block';
+      nl.style.top = ((nm - WIN_START) * PX_PER_MIN) + 'px';
+      nl.querySelector('.nowpill').textContent = 'NOW ' + fmt12(nm).replace(' ','');
+    } else {
+      nl.style.display = 'none';
+    }
+  });
+  const btn = document.getElementById('nowbtn');
+  btn.classList.toggle('show', onFestDay && inWindow);
+}
+
+function scrollToNow(id){
+  const sec = document.querySelector(`.day[data-day="${id}"]`);
+  const nl  = sec.querySelector('.nowline');
+  if (!nl || nl.style.display === 'none'){ window.scrollTo({top:0, behavior:'instant'}); return; }
+  const topbarH  = document.getElementById('topbar').offsetHeight;
+  const colheadH = sec.querySelector('.colhead').offsetHeight;
+  const y = nl.getBoundingClientRect().top + window.scrollY - topbarH - colheadH - 24;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+}
+
+document.getElementById('nowbtn').addEventListener('click', () => {
+  selectDay(festDay(), false);
+  requestAnimationFrame(() => scrollToNow(festDay()));
+});
+
+/* ============================ BAND SHEET ============================ */
+const backdrop = document.getElementById('backdrop');
+const sheet    = document.getElementById('sheet');
+const sheetContent = document.getElementById('sheet-content');
+
+function openSheet(a){
+  const info = BANDS[a.band] || { genre:'—', spotify:'—', vibe:'No info available.' };
+  const person = personById(a.p);
+  const spotifyVal = /^[~\d]/.test(info.spotify)
+    ? `<span class="big">${info.spotify}</span> monthly listeners`
+    : `${info.spotify} — not yet a major streaming presence`;
+  const togBanner = a._together
+    ? `<div class="tog-banner"><span class="ic">✓</span> Natalie &amp; Ian are both planning this one.</div>`
+    : '';
+  sheetContent.innerHTML = `
+    <div class="sheet-eyebrow" style="color:${person.color}">${person.name}’s pick</div>
+    <div class="sheet-band">${escapeHtml(a.band)}</div>
+    <div class="sheet-meta"><b>${escapeHtml(a.stage)}</b> &nbsp;·&nbsp; ${fmt12(toMin(a.s))} – ${fmt12(toMin(a.e))}</div>
+    ${togBanner}
+    <div class="stat-grid">
+      <div class="stat-row">
+        <span class="stat-key">Genre</span>
+        <span class="stat-val">${escapeHtml(info.genre)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-key">Spotify</span>
+        <span class="stat-val">${spotifyVal}</span>
+      </div>
+    </div>
+    <div class="vibe-block">
+      <div class="vibe-label">The vibe</div>
+      <div class="vibe-text">${escapeHtml(info.vibe)}</div>
+    </div>
+    <button class="sheet-close" id="sheetClose">Close</button>
+  `;
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  backdrop.classList.add('open');
+  sheet.classList.add('open');
+}
+function closeSheet(){
+  backdrop.classList.remove('open');
+  sheet.classList.remove('open');
+}
+backdrop.addEventListener('click', closeSheet);
+function escapeHtml(s){
+  return String(s).replace(/[&<>"]/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+/* ============================ FOOTER ============================ */
+document.getElementById('foot').innerHTML =
+  'BottleRock Napa Valley · May 22–24, 2026<br>' +
+  'Spotify figures are approximate, as of May 2026. ' +
+  'Ian’s Friday shows only the sets confirmed from his app screenshots.';
+
+/* ============================ INIT ============================ */
+function init(){
+  /* size the sticky column header offset to the real topbar height */
+  const topbarH = document.getElementById('topbar').offsetHeight;
+  document.documentElement.style.setProperty('--topbar-h', topbarH + 'px');
+  selectDay(festDay(), false);
+  updateNow();
+  /* auto-scroll to the current time (or top, before the festival) */
+  requestAnimationFrame(() => {
+    if (festNow()) scrollToNow(activeDay);
+    else window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+}
+window.addEventListener('load', init);
+/* keep the now-line live, and re-check when returning to the tab */
+setInterval(updateNow, 60000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden){
+    document.documentElement.style.setProperty('--topbar-h',
+      document.getElementById('topbar').offsetHeight + 'px');
+    updateNow();
+  }
+});
+</script>
+</body>
+</html>
