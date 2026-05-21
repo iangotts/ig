@@ -172,8 +172,18 @@
   }
   .sheet.open { transform: translateY(0); }
   .sheet-handle { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 6px auto 14px; }
-  .sheet-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  .sheet-band { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin: 4px 0 8px; }
+  .sheet-controls { position: absolute; top: 12px; right: 14px; display: flex; gap: 8px; z-index: 3; }
+  .ctrl-btn {
+    width: 33px; height: 33px; border-radius: 50%; border: none; padding: 0;
+    background: var(--bg); color: var(--ink); cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s ease, color .12s ease;
+  }
+  .ctrl-btn svg { width: 16px; height: 16px; fill: currentColor; }
+  .ctrl-btn:active { background: var(--line); }
+  .ctrl-btn.done { background: #15a06b; color: #fff; }
+  .sheet-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding-right: 78px; }
+  .sheet-band { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin: 4px 0 8px; padding-right: 78px; }
   .sheet-time { font-size: 13.5px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
   .stat-row {
     display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
@@ -276,6 +286,12 @@
 <div class="backdrop" id="backdrop"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true">
   <div class="sheet-handle"></div>
+  <div class="sheet-controls">
+    <button class="ctrl-btn" id="ctrlShare" title="Copy set details" aria-label="Copy set details"></button>
+    <button class="ctrl-btn" id="ctrlClose" title="Close" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg>
+    </button>
+  </div>
   <div id="sheetContent"></div>
 </div>
 
@@ -757,6 +773,7 @@ document.getElementById('nowbtn').addEventListener('click', () => {
 const backdrop = document.getElementById('backdrop');
 const sheet = document.getElementById('sheet');
 const sheetContent = document.getElementById('sheetContent');
+const ctrlShare = document.getElementById('ctrlShare');
 
 function spotifyHref(band){
   const info = BANDS[band];
@@ -770,6 +787,7 @@ function mlHTML(m){
 }
 const SPOT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.314a.748.748 0 0 1-1.029.25c-2.818-1.722-6.366-2.111-10.544-1.156a.748.748 0 1 1-.333-1.459c4.571-1.044 8.494-.595 11.656 1.336a.748.748 0 0 1 .25 1.029zm1.47-3.272a.936.936 0 0 1-1.287.308c-3.226-1.983-8.145-2.557-11.961-1.398a.936.936 0 1 1-.543-1.79c4.36-1.323 9.779-.683 13.483 1.593a.936.936 0 0 1 .308 1.287zm.126-3.408C15.51 8.46 8.876 8.227 5.026 9.395a1.122 1.122 0 1 1-.651-2.148c4.421-1.342 11.748-1.083 16.272 1.603a1.122 1.122 0 0 1-1.146 1.929z"/></svg>';
 const SHARE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>';
+const CHECK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
 function execCopy(text){
   try {
@@ -809,13 +827,11 @@ function openSheet(a, st, dayId, key){
     </div>
     <div class="vibe">${esc(info.v)}</div>
     <a class="spotify-btn" href="${spotifyHref(a.b)}" target="_blank" rel="noopener noreferrer">${SPOT_SVG} Open artist on Spotify</a>
-    <button class="share-btn" id="shareBtn">${SHARE_SVG} Copy set details</button>
     ${a.x?'<div class="est-note">End time is approximate — confirm in the BottleRock app.</div>':''}
     <div class="who">
       <div class="who-title">Who’s going?</div>
       ${whoRows}
     </div>
-    <button class="sheet-close" id="sheetClose">Done</button>
   `;
   sheetContent.querySelectorAll('.prow').forEach(row => {
     row.addEventListener('click', () => {
@@ -832,11 +848,12 @@ function openSheet(a, st, dayId, key){
     });
   });
   const shareText = a.b + ', ' + st.full + ', ' + fmt(toMin(a.s)) + ' – ' + fmt(toMin(a.e));
-  document.getElementById('shareBtn').addEventListener('click', () => {
-    const btn = document.getElementById('shareBtn');
-    copyText(shareText, () => { btn.innerHTML = SHARE_SVG + ' Copied ✓'; btn.classList.add('done'); });
-  });
-  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  ctrlShare.style.display = 'flex';
+  ctrlShare.classList.remove('done');
+  ctrlShare.innerHTML = SHARE_SVG;
+  ctrlShare.onclick = () => {
+    copyText(shareText, () => { ctrlShare.classList.add('done'); ctrlShare.innerHTML = CHECK_SVG; });
+  };
   openBackdrop();
 }
 
@@ -870,8 +887,8 @@ function openExport(){
     <div class="exp-people">${rows}</div>
     <textarea class="exp-area" id="expArea" readonly>${esc(json)}</textarea>
     <button class="copybtn" id="copyBtn">Copy to clipboard</button>
-    <button class="sheet-close" id="sheetClose">Done</button>
   `;
+  ctrlShare.style.display = 'none';
   const ta = document.getElementById('expArea');
   document.getElementById('copyBtn').addEventListener('click', () => {
     ta.select(); ta.setSelectionRange(0, 99999);
@@ -881,7 +898,6 @@ function openExport(){
       navigator.clipboard.writeText(ta.value).then(done, () => { try{document.execCommand('copy');done();}catch(e){} });
     } else { try{document.execCommand('copy');done();}catch(e){} }
   });
-  document.getElementById('sheetClose').addEventListener('click', closeSheet);
   openBackdrop();
 }
 document.getElementById('exportbtn').addEventListener('click', openExport);
@@ -889,6 +905,7 @@ document.getElementById('exportbtn').addEventListener('click', openExport);
 function openBackdrop(){ backdrop.classList.add('open'); sheet.classList.add('open'); sheet.scrollTop = 0; }
 function closeSheet(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
 backdrop.addEventListener('click', closeSheet);
+document.getElementById('ctrlClose').addEventListener('click', closeSheet);
 
 /* ===================== INIT ===================== */
 function init(){
