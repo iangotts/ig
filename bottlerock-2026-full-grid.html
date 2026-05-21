@@ -63,6 +63,22 @@
   .star.natalie { color: var(--natalie); }
   .star.ian { color: var(--ian); }
   .star.gabi { color: var(--gabi); }
+  .fb-label { font-size: 10.5px; font-weight: 800; color: var(--muted);
+    letter-spacing: .04em; text-transform: uppercase; }
+  .fchip {
+    appearance: none; font-family: inherit; cursor: pointer;
+    border: 1.5px solid var(--line); background: #fff; color: var(--muted);
+    border-radius: 20px; padding: 4px 10px 4px 8px; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .fchip .fdot { width: 8px; height: 8px; border-radius: 50%; background: var(--pc); flex: none; }
+  .fchip.on { background: var(--pc); border-color: var(--pc); color: #fff; }
+  .fchip.on .fdot { background: #fff; }
+  .fb-status { font-size: 10.5px; font-weight: 700; color: var(--ink); margin-left: auto; }
+  .fb-clear {
+    appearance: none; font-family: inherit; cursor: pointer; font-size: 10.5px; font-weight: 700;
+    background: none; border: none; color: var(--ian); text-decoration: underline; padding: 0;
+  }
 
   /* ---------- Scroller (two-axis) ---------- */
   .scroller { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
@@ -110,11 +126,13 @@
     background: var(--card); border: 1px solid var(--line);
     border-radius: 7px; padding: 5px 6px;
     display: flex; flex-direction: column; gap: 1px;
-    cursor: pointer; transition: transform .07s ease;
+    cursor: pointer; transition: transform .07s ease, opacity .16s ease;
   }
   .act:active { transform: scale(0.97); }
   .act.has-pick { border-color: #cfd3da; box-shadow: 0 1px 3px rgba(20,22,28,.07); }
   .act.est { border-style: dashed; }
+  .act.dim { opacity: .14; }
+  .act.match { box-shadow: 0 0 0 2px var(--ink); }
   .a-band {
     font-size: 11.5px; font-weight: 700; line-height: 1.13; letter-spacing: -0.015em;
     color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
@@ -235,7 +253,7 @@
     <button class="exportbtn" id="exportbtn">⬆ Export picks</button>
   </div>
   <div class="daytabs" id="daytabs"></div>
-  <div class="legend" id="legend"></div>
+  <div class="legend" id="filterbar"></div>
 </div>
 
 <div class="scroller" id="scroller">
@@ -556,9 +574,39 @@ const scroller = document.getElementById('scroller');
 const daytabs = document.getElementById('daytabs');
 let activeDay = 'fri';
 
-document.getElementById('legend').innerHTML =
-  PEOPLE.map(p => `<span class="lg"><span class="star ${p.id}">★</span> ${p.name}</span>`).join('')
-  + `<span class="lg">Tap a set for info &amp; check-in</span>`;
+/* ----- filter bar ----- */
+const filterPeople = new Set();
+const filterbar = document.getElementById('filterbar');
+filterbar.innerHTML = `<span class="fb-label">Going</span>`
+  + PEOPLE.map(p => `<button class="fchip" data-person="${p.id}" style="--pc:${p.color}"><span class="fdot"></span>${p.name}</button>`).join('')
+  + `<span class="fb-status" id="fbStatus"></span>`;
+filterbar.querySelectorAll('.fchip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const pid = chip.dataset.person;
+    if (filterPeople.has(pid)) filterPeople.delete(pid); else filterPeople.add(pid);
+    chip.classList.toggle('on', filterPeople.has(pid));
+    applyFilter();
+  });
+});
+
+function applyFilter(){
+  const sel = [...filterPeople];
+  board.querySelectorAll('.act').forEach(el => {
+    const o = picks[el.dataset.key] || {};
+    const match = sel.length > 0 && sel.every(pid => o[pid]);
+    el.classList.toggle('dim', sel.length > 0 && !match);
+    el.classList.toggle('match', match);
+  });
+  updateFilterStatus();
+}
+function updateFilterStatus(){
+  const sel = [...filterPeople];
+  const st = document.getElementById('fbStatus');
+  if (sel.length === 0){ st.textContent = 'tap a name'; return; }
+  const n = board.querySelectorAll('.act.match').length;
+  const names = sel.map(id => PEOPLE.find(p => p.id===id).name).join(' + ');
+  st.textContent = n + (n===1?' set · ':' sets · ') + names;
+}
 
 DAYS.forEach(D => {
   const tab = document.createElement('button');
@@ -656,6 +704,7 @@ function selectDay(id, scroll){
   document.querySelectorAll('.daytab').forEach(t => t.classList.toggle('active', t.dataset.day===id));
   renderBoard(id);
   updateNow();
+  applyFilter();
   if (scroll){
     scroller.scrollLeft = 0;
     if (id===festDay() && festNow()) scrollToNow(); else scroller.scrollTop = 0;
@@ -747,6 +796,7 @@ function openSheet(a, st, dayId, key){
       row.querySelector('.pcheck').textContent = cur?'✓':'';
       row.querySelector('.pgoing').textContent = cur?'Going':'Tap to add';
       refreshCell(key);
+      applyFilter();
     });
   });
   document.getElementById('sheetClose').addEventListener('click', closeSheet);
