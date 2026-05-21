@@ -194,6 +194,22 @@
   .stat-val b { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
   .stats { margin-top: 12px; }
   .vibe { margin-top: 12px; font-size: 14px; line-height: 1.5; }
+  .alsoplaying { margin-top: 13px; border-top: 1px solid var(--line-soft); padding-top: 11px; }
+  .also-title {
+    font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .also-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+  .also-row + .also-row { border-top: 1px solid var(--line-soft); }
+  .also-row .ad {
+    font-size: 9.5px; font-weight: 800; letter-spacing: .04em; flex: none;
+    padding: 3px 6px; border-radius: 5px; background: var(--ink); color: #fff;
+  }
+  .also-row .as {
+    font-size: 12.5px; font-weight: 600; color: var(--ink);
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .also-row .at { font-size: 11.5px; font-weight: 600; color: var(--muted); flex: none; font-variant-numeric: tabular-nums; }
   .spotify-btn {
     margin-top: 14px; width: 100%;
     display: flex; align-items: center; justify-content: center; gap: 9px;
@@ -803,9 +819,36 @@ function copyText(text, onDone){
   } else { execCopy(text); onDone(); }
 }
 
+function otherSets(band, dayId, stageId, start){
+  const order = {fri:0, sat:1, sun:2};
+  const out = [];
+  for (const d of Object.keys(SCHED))
+    for (const stg of Object.keys(SCHED[d]))
+      for (const a of SCHED[d][stg])
+        if (a.b === band && !(d===dayId && stg===stageId && a.s===start))
+          out.push({ day:d, stage:stg, s:a.s, e:a.e });
+  out.sort((x,y) => order[x.day]-order[y.day] || toMin(x.s)-toMin(y.s));
+  return out;
+}
+
 function openSheet(a, st, dayId, key){
   const day = DAYS.find(d=>d.id===dayId);
   const info = BANDS[a.b] || {g:'—', m:'Emerging act', sid:null, v:'No details available yet.'};
+
+  const others = otherSets(a.b, dayId, st.id, a.s);
+  let alsoHTML = '';
+  if (others.length){
+    const rows = others.map(o => {
+      const dd = DAYS.find(d => d.id===o.day).d1;
+      const sname = STAGES.find(s => s.id===o.stage).full;
+      return `<div class="also-row"><span class="ad">${dd}</span>`
+        + `<span class="as">${esc(sname)}</span>`
+        + `<span class="at">${fmt(toMin(o.s))} – ${fmt(toMin(o.e))}</span></div>`;
+    }).join('');
+    alsoHTML = `<div class="alsoplaying">`
+      + `<div class="also-title">Also playing — ${others.length} more set${others.length>1?'s':''}</div>`
+      + rows + `</div>`;
+  }
 
   const whoRows = PEOPLE.map(p => {
     const on = (picks[key]||{})[p.id];
@@ -826,6 +869,7 @@ function openSheet(a, st, dayId, key){
       <div class="stat-row"><span class="stat-key">Spotify</span><span class="stat-val">${mlHTML(info.m)}</span></div>
     </div>
     <div class="vibe">${esc(info.v)}</div>
+    ${alsoHTML}
     <a class="spotify-btn" href="${spotifyHref(a.b)}" target="_blank" rel="noopener noreferrer">${SPOT_SVG} Open artist on Spotify</a>
     ${a.x?'<div class="est-note">End time is approximate — confirm in the BottleRock app.</div>':''}
     <div class="who">
