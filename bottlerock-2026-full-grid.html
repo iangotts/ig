@@ -140,6 +140,12 @@
   .a-time { font-size: 9px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: auto; }
   .a-stars { position: absolute; top: 3px; right: 4px; display: flex; gap: 1px; line-height: 1; }
   .a-stars span { font-size: 9.5px; }
+  .a-women {
+    position: absolute; top: 4px; left: 4px;
+    width: 7px; height: 7px; border-radius: 1.5px;
+    background: #e85a9e;
+  }
+  .act.has-women .a-band { text-indent: 11px; }
 
   .nowline {
     position: absolute; left: var(--gutter); right: 0; height: 0;
@@ -575,6 +581,24 @@ const BANDS = {
   'Zinadelphia':{g:'Alt-pop · R&B',m:'Emerging act',sid:null,v:'An emerging alt-pop and R&B artist.'}
 };
 
+/* ===================== ACTS WITH WOMEN ===================== */
+/* Pink square in top-left corner. Edit freely — names must match SCHED exactly. */
+const WOMEN = new Set([
+  /* solo / female-fronted */
+  'The Beths', 'Chaka Khan', 'Lorde', 'Hannah Cohen', 'Natasha Bedingfield',
+  'Joan Jett and The Blackhearts', 'Paris Jackson', 'Rilo Kiley',
+  'Charlotte Lawrence', 'Larkin Poe', 'Betty Taylor', 'Alicia Creti',
+  'Bettina Maureenji', 'Izzy Escobar',
+  /* all-female / sister groups */
+  'Folk Bitch Trio', 'The Warning', 'Girl Tones',
+  /* mixed-gender bands with women members */
+  'LCD Soundsystem', 'Flipturn', 'The Heavy Heavy', 'The Paper Kites',
+  'Arrested Development', 'Napa Valley Youth Symphony',
+  /* DJ / collab sets with a woman */
+  'Meredith Marks x DJ Umami', 'DJ Pauly D x America Rose',
+  'Jess King x Trackstar The DJ'
+]);
+
 /* ===================== CONFIG ===================== */
 const WIN_START = 12*60, WIN_END = 22*60;
 const HOUR_PX = 140, PX_MIN = HOUR_PX/60;
@@ -721,7 +745,8 @@ function makeAct(a, st, dayId){
   const key = actKey(dayId, st.id, a);
   const el = document.createElement('div');
   const anyPick = PEOPLE.some(p => (picks[key]||{})[p.id]);
-  el.className = 'act' + (anyPick?' has-pick':'') + (a.x?' est':'');
+  const hasWomen = WOMEN.has(a.b);
+  el.className = 'act' + (anyPick?' has-pick':'') + (a.x?' est':'') + (hasWomen?' has-women':'');
   el.dataset.key = key;
   el.style.top = ((s-WIN_START)*PX_MIN)+'px';
   el.style.height = ((e-s)*PX_MIN - 4)+'px';
@@ -734,6 +759,11 @@ function makeAct(a, st, dayId){
   stars.className = 'a-stars'; stars.innerHTML = starsHTML(key);
 
   el.appendChild(band); el.appendChild(time); el.appendChild(stars);
+  if (hasWomen){
+    const w = document.createElement('div');
+    w.className = 'a-women'; w.title = 'Women in this act';
+    el.appendChild(w);
+  }
   el.addEventListener('click', () => openSheet(a, st, dayId, key));
   return el;
 }
