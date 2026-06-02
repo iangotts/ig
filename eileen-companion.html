@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="theme-color" content="#F1E7D4" />
+<title>Eileen</title>
+<link id="manifest" rel="manifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1E7D4; --card:#FCF8EF; --ink:#322C24; --muted:#8A7C66;
+    --sage:#5F7A57; --sage-soft:#E6EEDD; --terra:#C56A43; --line:#E4D8C2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Spline Sans',sans-serif;color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 12% 0%, #f6eed9 0%, transparent 55%),
+      radial-gradient(120% 80% at 95% 100%, #ecdfc6 0%, transparent 50%),
+      var(--paper);
+    height:100vh;display:flex;flex-direction:column;overflow:hidden;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .topbar{
+    padding:22px 40px 16px;display:flex;align-items:flex-end;justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#fbf6ec 0%, rgba(246,238,221,.7) 100%);
+  }
+  .greeting{font-family:'Fraunces',serif;font-weight:500;font-size:34px;line-height:1.08;}
+  .greeting .name{color:var(--terra);}
+  .dateblock{text-align:right;}
+  .dateblock .dow{font-family:'Fraunces',serif;font-size:30px;font-weight:600;}
+  .dateblock .full{font-size:16px;color:var(--muted);letter-spacing:.3px;margin-top:2px;}
+
+  .convo{flex:1;overflow-y:auto;padding:30px 40px 14px;display:flex;flex-direction:column;gap:22px;scroll-behavior:smooth;}
+  .row{display:flex;gap:14px;align-items:flex-end;max-width:84%;}
+  .row.her{align-self:flex-end;flex-direction:row-reverse;}
+  .avatar{width:54px;height:54px;border-radius:50%;flex:0 0 54px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:25px;font-weight:600;color:#fff;}
+  .avatar.comp{background:var(--sage);}
+  .speaking .avatar.comp{animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(95,122,87,.45);}50%{box-shadow:0 0 0 14px rgba(95,122,87,0);}}
+  .bubble{font-family:'Fraunces',serif;font-size:30px;line-height:1.45;padding:20px 26px;border-radius:26px;box-shadow:0 4px 16px rgba(60,46,28,.07);}
+  .comp .bubble{background:var(--card);border:1px solid var(--line);border-bottom-left-radius:8px;}
+  .her .bubble{background:var(--sage-soft);border:1px solid #d4e0c7;border-bottom-right-radius:8px;color:#2c3a28;}
+  .typing{display:inline-flex;gap:6px;padding:6px 0;}
+  .typing span{width:10px;height:10px;border-radius:50%;background:var(--muted);opacity:.5;animation:blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;} .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,100%{opacity:.25;transform:translateY(0);}50%{opacity:.9;transform:translateY(-3px);}}
+
+  .controls{padding:18px 36px 26px;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(246,238,221,.7) 0%, var(--paper) 100%);}
+  .chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
+  .chip{font-family:'Spline Sans',sans-serif;font-size:19px;font-weight:500;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:14px 24px;cursor:pointer;transition:transform .12s,background .2s,border-color .2s;}
+  .chip:hover{background:#fff;border-color:var(--sage);transform:translateY(-2px);} .chip:active{transform:translateY(0);}
+  .microw{display:flex;align-items:center;justify-content:center;gap:20px;}
+  .mic{width:104px;height:104px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(120% 120% at 30% 25%, #d98a64 0%, var(--terra) 70%);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(197,106,67,.45), inset 0 2px 6px rgba(255,255,255,.35);transition:transform .15s;}
+  .mic:active{transform:scale(.95);}
+  .mic.listening{animation:listen 1.1s ease-in-out infinite;}
+  @keyframes listen{0%,100%{box-shadow:0 0 0 0 rgba(197,106,67,.5),0 10px 26px rgba(197,106,67,.45);}50%{box-shadow:0 0 0 22px rgba(197,106,67,0),0 10px 26px rgba(197,106,67,.45);}}
+  .mic svg{width:46px;height:46px;}
+  .miclabel{font-size:18px;color:var(--muted);text-align:center;min-width:160px;}
+  .miclabel b{display:block;font-family:'Fraunces',serif;font-size:23px;color:var(--ink);font-weight:600;}
+  .convo::-webkit-scrollbar{width:8px;} .convo::-webkit-scrollbar-thumb{background:#d8c9ad;border-radius:8px;}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="greeting" id="greetingline">Hello,<br><span class="name">Eileen</span></div>
+    <div class="dateblock"><div class="dow" id="dow">—</div><div class="full" id="full">—</div></div>
+  </div>
+  <div class="convo" id="convo"></div>
+  <div class="controls">
+    <div class="chips" id="chips"></div>
+    <div class="microw">
+      <div class="miclabel" id="miclabel"><b>Tap to talk</b>or choose above</div>
+      <button class="mic" id="mic" aria-label="Tap to talk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+<script>
+/* ============================================================
+   CONFIG  —  the only block the family / builder needs to touch
+   ============================================================ */
+
+// LIVE vs DEMO:
+//   ""            -> demo mode (uses the sample answers below; works offline)
+//   "https://..." -> live mode (every question is sent to your backend /ask)
+const BACKEND_URL = "";
+
+const PERSON_NAME = "Eileen";
+
+// Big tap prompts. Edit freely as life changes.
+const PROMPTS = [
+  "What's happening today?",
+  "Who is Rosie?",
+  "Tell me about the garden",
+  "Who is Dan?"
+];
+
+// Demo-only sample answers (ignored in live mode). Keyword -> reply.
+const DEMO_ANSWERS = [
+  {k:["today","happening","plan","plans","doing"], a:"Today is {DOW}. This afternoon Colin is taking you to the garden centre, and Natalie is going to ring at six o'clock for a chat."},
+  {k:["rosie","grandchild","grand","baby","granddaughter"], a:"Rosie is your new granddaughter — she's Natalie's little girl, and your very first grandchild."},
+  {k:["garden","rose","roses","maple","flower","flowers"], a:"You love the garden at the old house on Maple Road. Colin planted pink roses there for your thirtieth anniversary."},
+  {k:["dan","son","crossword"], a:"Dan is your son. You and Dan always did the Sunday crossword together at the kitchen table."},
+  {k:["natalie","daughter","nurse","leeds"], a:"Natalie is your daughter — a nurse up in Leeds, and she's just had baby Rosie."},
+  {k:["colin","husband"], a:"Colin is your husband. He's just popped out, but he won't be long."}
+];
+const DEMO_FALLBACK = "I'm not quite sure about that one, but Colin will know — we can ask him together when he's back.";
+const GREETING = "Hello "+PERSON_NAME+", it's lovely to see you. You can tap a question, or tap the round button and just talk to me.";
+
+/* ============================================================
+   App  —  no need to edit below here
+   ============================================================ */
+
+// Inline PWA manifest (replace icon with a real PNG before deploying)
+(function(){
+  const icon = "data:image/svg+xml,"+encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512"><rect width="512" height="512" rx="96" fill="#5F7A57"/><text x="50%" y="58%" font-size="300" text-anchor="middle" fill="#fff" font-family="serif">\u2665</text></svg>');
+  const manifest = {name:PERSON_NAME, short_name:PERSON_NAME, display:"standalone",
+    orientation:"landscape", background_color:"#F1E7D4", theme_color:"#F1E7D4",
+    icons:[{src:icon, sizes:"512x512", type:"image/svg+xml"}]};
+  document.getElementById('manifest').href =
+    URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}));
+})();
+
+const convo = document.getElementById('convo');
+const mic = document.getElementById('mic');
+const miclabel = document.getElementById('miclabel');
+const messages = []; // conversation history for live mode
+
+// Greeting + date header
+const now = new Date();
+const DOW = now.toLocaleDateString('en-GB',{weekday:'long'});
+document.getElementById('dow').textContent = DOW;
+document.getElementById('full').textContent = now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+document.getElementById('greetingline').innerHTML =
+  (now.getHours()<12?'Good morning,':now.getHours()<18?'Good afternoon,':'Good evening,')+'<br><span class="name">'+PERSON_NAME+'</span>';
+
+// Tap prompts
+const chipsEl = document.getElementById('chips');
+PROMPTS.forEach(p=>{ const b=document.createElement('button'); b.className='chip'; b.textContent=p; b.dataset.q=p; chipsEl.appendChild(b); });
+
+// Voice out
+let voice=null;
+function pickVoice(){ const vs=speechSynthesis.getVoices();
+  voice = vs.find(v=>/en-GB/i.test(v.lang)&&/female|Serena|Kate|Stephanie|Martha/i.test(v.name))
+       || vs.find(v=>/en-GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || vs[0] || null; }
+pickVoice(); if('speechSynthesis' in window) speechSynthesis.onvoiceschanged=pickVoice;
+function speak(t){ if(!('speechSynthesis' in window))return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); if(voice)u.voice=voice; u.rate=0.92; u.pitch=1;
+  document.body.classList.add('speaking'); u.onend=()=>document.body.classList.remove('speaking'); speechSynthesis.speak(u); }
+
+function addRow(text,who){ const row=document.createElement('div'); row.className='row '+(who==='her'?'her':'comp');
+  const av=document.createElement('div'); av.className='avatar '+(who==='her'?'her':'comp'); av.textContent=who==='her'?'E':'\u2665';
+  const b=document.createElement('div'); b.className='bubble'; b.textContent=text;
+  row.appendChild(av); row.appendChild(b); convo.appendChild(row); convo.scrollTop=convo.scrollHeight; }
+function addTyping(){ const row=document.createElement('div'); row.className='row comp';
+  row.innerHTML='<div class="avatar comp">\u2665</div><div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>';
+  convo.appendChild(row); convo.scrollTop=convo.scrollHeight; return row; }
+
+function demoAnswer(q){ const s=q.toLowerCase();
+  for(const it of DEMO_ANSWERS){ if(it.k.some(w=>s.includes(w))) return it.a.replace('{DOW}',DOW); }
+  return DEMO_FALLBACK; }
+
+async function liveAnswer(q){
+  messages.push({role:'user',content:q});
+  const r = await fetch(BACKEND_URL.replace(/\/$/,'')+'/ask',{
+    method:'POST', headers:{'content-type':'application/json'},
+    body:JSON.stringify({messages})
+  });
+  const data = await r.json();
+  const reply = (data.reply||"").trim() || DEMO_FALLBACK;
+  messages.push({role:'assistant',content:reply});
+  return reply;
+}
+
+async function ask(q){
+  addRow(q,'her');
+  const t=addTyping();
+  let reply;
+  try{ reply = BACKEND_URL ? await liveAnswer(q) : (await new Promise(r=>setTimeout(()=>r(demoAnswer(q)),700))); }
+  catch(e){ reply = "Sorry, I couldn't reach my memory just now. Colin can help — let's try again in a moment."; }
+  t.remove(); addRow(reply,'comp'); speak(reply);
+}
+
+let greeted=false;
+function greet(){ if(greeted)return; greeted=true; addRow(GREETING,'comp'); speak(GREETING); }
+
+chipsEl.addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b)return; greet(); setTimeout(()=>ask(b.dataset.q), greeted?0:50); });
+
+// Voice in (bonus; not the only way in)
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec=null, listening=false;
+if(SR){ rec=new SR(); rec.lang='en-GB'; rec.interimResults=false; rec.maxAlternatives=1;
+  rec.onresult=e=>{ const said=e.results[0][0].transcript; stopListen(); ask(said); };
+  rec.onerror=()=>stopListen(); rec.onend=()=>stopListen(); }
+function startListen(){ listening=true; mic.classList.add('listening'); miclabel.innerHTML='<b>Listening\u2026</b>just speak'; try{rec&&rec.start();}catch(_){} }
+function stopListen(){ listening=false; mic.classList.remove('listening'); miclabel.innerHTML='<b>Tap to talk</b>or choose above'; }
+mic.addEventListener('click',()=>{ greet();
+  if(!SR){ ask(PROMPTS[0]); return; }                 // graceful fallback where speech-in is unsupported
+  if(listening){ rec.stop(); stopListen(); } else startListen(); });
+</script>
+</body>
+</html>
