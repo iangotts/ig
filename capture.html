@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F1E7D4" />
+<title>Add a memory for Eileen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F1E7D4;--card:#FCF8EF;--ink:#322C24;--muted:#8A7C66;--sage:#5F7A57;--sage-soft:#E6EEDD;--terra:#C56A43;--line:#E4D8C2;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Spline Sans',sans-serif;color:var(--ink);min-height:100vh;
+    background:radial-gradient(120% 80% at 12% 0%, #f6eed9 0%, transparent 55%),radial-gradient(120% 80% at 95% 100%, #ecdfc6 0%, transparent 50%),var(--paper);
+    display:flex;align-items:center;justify-content:center;padding:24px;}
+  .card{width:min(640px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;
+    box-shadow:0 18px 50px rgba(60,46,28,.14);padding:34px 34px 30px;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:30px;line-height:1.1;margin-bottom:6px;}
+  h1 .name{color:var(--terra);}
+  .sub{color:var(--muted);font-size:16px;margin-bottom:22px;}
+  .examples{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .ex{font-size:14px;background:var(--sage-soft);color:#2c3a28;border:1px solid #d4e0c7;border-radius:999px;padding:7px 14px;cursor:pointer;transition:transform .12s;}
+  .ex:hover{transform:translateY(-1px);}
+  textarea{width:100%;min-height:160px;resize:vertical;font-family:'Fraunces',serif;font-size:21px;line-height:1.5;color:var(--ink);
+    background:#fffdf8;border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;outline:none;transition:border-color .2s;}
+  textarea:focus{border-color:var(--sage);}
+  .row{display:flex;align-items:center;gap:14px;margin-top:18px;}
+  button{font-family:'Spline Sans',sans-serif;font-weight:600;cursor:pointer;border:none;border-radius:14px;transition:transform .12s,opacity .2s;}
+  button:active{transform:scale(.97);}
+  .save{flex:1;font-size:20px;padding:18px;color:#fff;background:radial-gradient(120% 160% at 30% 10%, #6f8c66 0%, var(--sage) 80%);}
+  .save:disabled{opacity:.5;cursor:default;}
+  .voice{width:60px;height:60px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 60px;}
+  .voice.listening{animation:pulse 1.1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(197,106,67,.5);}50%{box-shadow:0 0 0 16px rgba(197,106,67,0);}}
+  .voice svg{width:26px;height:26px;}
+  .status{min-height:26px;margin-top:16px;font-size:16px;text-align:center;}
+  .status.ok{color:var(--sage);font-weight:600;}
+  .status.err{color:var(--terra);font-weight:600;}
+  .pass{margin-top:14px;display:none;}
+  .pass input{font-family:'Spline Sans';font-size:15px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;width:100%;background:#fffdf8;outline:none;}
+  .foot{margin-top:22px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5;}
+  .divider{display:flex;align-items:center;gap:12px;margin:24px 0 18px;color:var(--muted);font-size:14px;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+  .drop{border:2px dashed #d8c9ad;border-radius:18px;background:#fffdf8;padding:24px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+  .drop:hover{border-color:var(--sage);}
+  .drop.over{border-color:var(--sage);background:var(--sage-soft);}
+  .drop .big{font-family:'Fraunces',serif;font-size:18px;color:var(--ink);margin-bottom:4px;}
+  .drop .small{font-size:13px;color:var(--muted);}
+  .drop svg{width:30px;height:30px;color:var(--sage);margin-bottom:8px;}
+  .docstatus{min-height:22px;margin-top:12px;font-size:15px;text-align:center;}
+  .docstatus.ok{color:var(--sage);font-weight:600;}
+  .docstatus.err{color:var(--terra);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Add a memory for <span class="name">Eileen</span></h1>
+    <p class="sub">Anything she'd love to be reminded of — people, places, little moments. She can ask about it anytime.</p>
+
+    <div class="examples" id="examples">
+      <span class="ex" data-t="Eileen ">Start with “Eileen…”</span>
+      <span class="ex" data-t="Remember when ">“Remember when…”</span>
+      <span class="ex" data-t="Today ">Something today</span>
+    </div>
+
+    <textarea id="text" placeholder="e.g. Eileen and Colin used to dance in the kitchen on Sunday mornings…"></textarea>
+
+    <div class="pass" id="passwrap"><input id="passcode" type="password" placeholder="Family passcode" /></div>
+
+    <div class="row">
+      <button class="save" id="save">Save to Eileen's memory</button>
+      <button class="voice" id="voice" title="Speak the memory" aria-label="Speak the memory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="divider">or add from a file</div>
+
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add a document">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="big">Drop a document here</div>
+      <div class="small">or tap to choose — PDF, Word, or text. Letters, notes, life stories.</div>
+    </div>
+    <input id="file" type="file" accept=".pdf,.docx,.txt,.md,.html,.htm" style="display:none" />
+    <div class="docstatus" id="docstatus"></div>
+
+    <p class="foot">Everything you add goes only to Eileen's memory. Write it the way you'd say it to her.</p>
+  </div>
+
+<script>
+/* ---- CONFIG ---- */
+const API_BASE = "";                            // "" = same origin (served by backend); or "https://your-railway-url"
+const REQUIRE_PASSCODE = false;                 // set true if you set FAMILY_PASSCODE on the backend
+const BACKEND = (API_BASE || window.location.origin).replace(/\/$/, "");
+/* ---------------- */
+
+const text = document.getElementById('text');
+const save = document.getElementById('save');
+const status = document.getElementById('status');
+const voice = document.getElementById('voice');
+if (REQUIRE_PASSCODE) document.getElementById('passwrap').style.display = 'block';
+
+document.getElementById('examples').addEventListener('click', e => {
+  const ex = e.target.closest('.ex'); if (!ex) return;
+  text.value = ex.dataset.t; text.focus();
+  text.setSelectionRange(text.value.length, text.value.length);
+});
+
+function setStatus(msg, kind){ status.textContent = msg; status.className = 'status' + (kind ? ' ' + kind : ''); }
+
+async function saveMemory(){
+  const content = text.value.trim();
+  if (!content){ setStatus('Please write a memory first.', 'err'); return; }
+  save.disabled = true; setStatus('Saving…');
+  try{
+    const headers = { 'content-type':'application/json' };
+    if (REQUIRE_PASSCODE) headers['x-family-passcode'] = document.getElementById('passcode').value;
+    const r = await fetch(BACKEND + '/capture', {
+      method:'POST', headers, body: JSON.stringify({ text: content })
+    });
+    const data = await r.json();
+    if (r.ok && data.ok){
+      const s = data.saved || {};
+      const note = s.deduped ? 'Already in her memory \u2713'
+                 : s.preview ? `Saved \u2713  (${s.type}: \u201c${s.preview}\u2026\u201d)`
+                 : 'Saved to Eileen\u2019s memory \u2713';
+      setStatus(note, 'ok'); text.value = '';
+    }
+    else setStatus(data.error || 'Something went wrong — please try again.', 'err');
+  }catch(e){ setStatus('Could not reach the server. Check your connection.', 'err'); }
+  save.disabled = false;
+}
+save.addEventListener('click', saveMemory);
+
+// Voice dictation (appends to the box)
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec=null, listening=false;
+if (SR){
+  rec=new SR(); rec.lang='en-GB'; rec.interimResults=false;
+  rec.onresult=e=>{ const said=e.results[0][0].transcript; text.value=(text.value+' '+said).trim(); };
+  rec.onend=()=>{ listening=false; voice.classList.remove('listening'); };
+  rec.onerror=()=>{ listening=false; voice.classList.remove('listening'); };
+}
+voice.addEventListener('click', ()=>{
+  if (!SR){ setStatus('Voice typing isn\u2019t available here — please type instead.', 'err'); return; }
+  if (listening){ rec.stop(); return; }
+  listening=true; voice.classList.add('listening'); setStatus(''); try{ rec.start(); }catch(_){}
+});
+
+// ---- Document drop ----
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+const docStatus = document.getElementById('docstatus');
+function setDoc(msg, kind){ docStatus.textContent = msg; docStatus.className = 'docstatus' + (kind ? ' ' + kind : ''); }
+
+drop.addEventListener('click', ()=> fileInput.click());
+drop.addEventListener('keydown', e=>{ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); fileInput.click(); }});
+['dragenter','dragover'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e=>{ const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) uploadDoc(f); });
+fileInput.addEventListener('change', ()=>{ if (fileInput.files[0]) uploadDoc(fileInput.files[0]); });
+
+async function uploadDoc(file){
+  setDoc('Reading “' + file.name + '”…');
+  drop.style.pointerEvents = 'none';
+  try{
+    const fd = new FormData();
+    fd.append('file', file);
+    const headers = {};
+    if (REQUIRE_PASSCODE) headers['x-family-passcode'] = document.getElementById('passcode').value;
+    const r = await fetch(BACKEND + '/capture-doc', { method:'POST', headers, body: fd });
+    const data = await r.json();
+    if (r.ok && data.ok){
+      const bits = [];
+      if (data.saved)   bits.push(data.saved + (data.saved===1 ? ' memory added' : ' memories added'));
+      if (data.deduped) bits.push(data.deduped + ' already there');
+      let msg = 'Saved ✓  ' + bits.join(', ') + ' from “' + data.file + '”.';
+      if (data.truncated) msg += ' (Long file — only the first part was added.)';
+      setDoc(msg, 'ok');
+    } else {
+      setDoc(data.error || 'Could not add that file — please try again.', 'err');
+    }
+  }catch(e){ setDoc('Could not reach the server. Check your connection.', 'err'); }
+  drop.style.pointerEvents = '';
+  fileInput.value = '';
+}
+</script>
+</body>
+</html>
