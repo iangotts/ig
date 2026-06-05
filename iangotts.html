@@ -108,7 +108,8 @@
 
   /* WRITING / MEDIUM FEED */
   #writing{background:linear-gradient(180deg,rgba(123,47,224,.12) 0%,transparent 40%),var(--purple-deep);}
-  .articles{margin-top:0;}
+  .articles{margin-top:0; opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease;}
+  .articles.visible {opacity:1; transform:translateY(0);}
   .article{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:1.65rem 0;border-bottom:1px solid rgba(201,161,60,.1);transition:padding-left .2s;text-decoration:none;}
   .article:first-child{border-top:1px solid rgba(201,161,60,.1);}
   .article:hover{padding-left:.8rem;}
@@ -202,7 +203,6 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-glow"></div>
   <div class="hero-ring"></div>
@@ -233,7 +233,6 @@
   </div>
 </section>
 
-<!-- WHY IAN -->
 <section id="why">
   <div class="container">
     <div class="why-grid">
@@ -284,7 +283,6 @@
   </div>
 </section>
 
-<!-- ABOUT -->
 <section id="about">
   <div class="container">
     <div class="about-grid">
@@ -319,7 +317,6 @@
   </div>
 </section>
 
-<!-- BOOKS -->
 <section id="books">
   <div class="container">
     <div class="section-label fade-up">Books</div>
@@ -358,7 +355,6 @@
   </div>
 </section>
 
-<!-- WRITING / MEDIUM FEED -->
 <section id="writing">
   <div class="container">
     <div class="section-label fade-up">Latest Thinking</div>
@@ -376,8 +372,7 @@
       Could not load feed &#8212; <a href="https://medium.com/@iangotts" target="_blank" rel="noopener" style="color:var(--gold);">read on Medium directly</a>.
     </div>
 
-    <!-- Featured post -->
-    <a id="featured-post" class="featured-post fade-up" href="#" target="_blank" rel="noopener" style="display:none;">
+    <a id="featured-post" class="featured-post" href="#" target="_blank" rel="noopener" style="display:none; opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease;">
       <div class="featured-inner">
         <div class="featured-top">
           <span class="featured-label">Latest</span>
@@ -389,8 +384,7 @@
       </div>
     </a>
 
-    <!-- Article list -->
-    <div id="articles-list" class="articles" style="margin-top:0;"></div>
+    <div id="articles-list" class="articles"></div>
 
     <div style="text-align:center; margin-top:3rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
       <a href="https://medium.com/@iangotts" class="btn btn-gold" target="_blank" rel="noopener">All posts on Medium &#8599;</a>
@@ -400,7 +394,6 @@
   </div>
 </section>
 
-<!-- WATCH LIVE -->
 <section id="watch">
   <div class="container">
     <div class="video-grid">
@@ -433,7 +426,6 @@
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
   <div class="container">
     <div class="contact-glow"></div>
@@ -486,7 +478,9 @@
   function stripHtml(html) {
     var d = document.createElement('div');
     d.innerHTML = html;
-    return (d.textContent || d.innerText || '').replace(/\s+/g, ' ').trim();
+    var text = d.textContent || d.innerText || '';
+    // Clear out standard trailing baseline injection text from Medium distribution systems
+    return text.replace(/Continue reading on Medium.*/, '').replace(/\s+/g, ' ').trim();
   }
 
   function clip(html, max) {
@@ -495,14 +489,9 @@
   }
 
   function fmtDate(str) {
-    var d = new Date(str);
+    // Cross-browser normalization for date constructor engines (replaces dashes with forward slashes)
+    var d = new Date(str.replace(/-/g, '/'));
     return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-  }
-
-  function getThumb(item) {
-    if (item.thumbnail && /^https?:/.test(item.thumbnail)) return item.thumbnail;
-    var m = (item.content || '').match(/<img[^>]+src=["']([^"']+)["']/i);
-    return m ? m[1] : null;
   }
 
   function zeroPad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -510,7 +499,9 @@
   fetch(FEED)
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      document.getElementById('feed-loading').style.display = 'none';
+      var loadingEl = document.getElementById('feed-loading');
+      if (loadingEl) loadingEl.style.display = 'none';
+
       if (!data.items || !data.items.length) {
         document.getElementById('feed-error').style.display = 'block';
         return;
@@ -521,32 +512,42 @@
       // Featured — first item
       var first = items[0];
       var fp = document.getElementById('featured-post');
-      fp.href = first.link;
-      document.getElementById('featured-title').textContent = first.title;
-      document.getElementById('featured-excerpt').textContent = clip(first.content || first.description || '', 220);
-      document.getElementById('featured-date').textContent = 'Medium \u00b7 ' + fmtDate(first.pubDate);
-      fp.style.display = 'block';
-      setTimeout(function() { fp.classList.add('visible'); }, 60);
+      if (fp) {
+        fp.href = first.link;
+        document.getElementById('featured-title').textContent = first.title;
+        var rawContent = first.content || first.description || '';
+        document.getElementById('featured-excerpt').textContent = clip(rawContent, 220);
+        document.getElementById('featured-date').textContent = 'Medium \u00b7 ' + fmtDate(first.pubDate);
+        fp.style.display = 'block';
+        setTimeout(function() { 
+          fp.style.opacity = '1';
+          fp.style.transform = 'translateY(0)';
+        }, 60);
+      }
 
       // List — items 2 to 8
       var list = document.getElementById('articles-list');
-      items.slice(1, 8).forEach(function(item, i) {
-        var a = document.createElement('a');
-        a.href = item.link;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.className = 'article';
-        a.style.transitionDelay = (i * 0.07) + 's';
-        a.innerHTML =
-          '<span class="article-num">' + zeroPad(i + 2) + '</span>' +
-          '<span class="article-title">' + item.title + '</span>' +
-          '<span class="article-source">Medium \u00b7 ' + fmtDate(item.pubDate) + '</span>';
-        list.appendChild(a);
-      });
-      setTimeout(function() { list.classList.add('visible'); }, 120);
+      if (list) {
+        items.slice(1, 8).forEach(function(item, i) {
+          var a = document.createElement('a');
+          a.href = item.link;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.className = 'article';
+          a.style.transitionDelay = (i * 0.07) + 's';
+          a.innerHTML =
+            '<span class="article-num">' + zeroPad(i + 2) + '</span>' +
+            '<span class="article-title">' + item.title + '</span>' +
+            '<span class="article-source">Medium \u00b7 ' + fmtDate(item.pubDate) + '</span>';
+          list.appendChild(a);
+        });
+        setTimeout(function() { list.classList.add('visible'); }, 120);
+      }
     })
-    .catch(function() {
-      document.getElementById('feed-loading').style.display = 'none';
+    .catch(function(err) {
+      console.error("Medium feed failed to parse:", err);
+      var loadingEl = document.getElementById('feed-loading');
+      if (loadingEl) loadingEl.style.display = 'none';
       document.getElementById('feed-error').style.display = 'block';
     });
 
