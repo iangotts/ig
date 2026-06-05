@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ian Gotts - Industry Analyst, Author, Speaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple-deep:  #180830;
+    --purple-vivid: #7B2FE0;
+    --purple-mid:   #5019B0;
+    --purple-glow:  #A060F0;
+    --gold:         #C9A13C;
+    --gold-light:   #E2C36A;
+    --gold-pale:    #F5E9C5;
+    --cream:        #FAF6EE;
+    --white:        #FFFFFF;
+    --text-dark:    #180830;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--purple-deep);color:var(--cream);overflow-x:hidden;}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3rem;background:rgba(24,8,48,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,161,60,.18);}
+  .nav-logo{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.24em;color:var(--gold);text-decoration:none;}
+  .nav-links{display:flex;gap:2.2rem;list-style:none;align-items:center;}
+  .nav-links a{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-pale);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--gold);}
+  .nav-watch{color:var(--gold) !important;border:1px solid rgba(201,161,60,.4);padding:.3rem .9rem;border-radius:2px;}
+  .nav-watch:hover{background:rgba(201,161,60,.1) !important;}
+
+  /* HERO */
+  #hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:7rem 2rem 5rem;text-align:center;}
+  .hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:760px;height:760px;border-radius:50%;background:radial-gradient(circle,rgba(123,47,224,.6) 0%,rgba(123,47,224,.18) 40%,transparent 70%);pointer-events:none;animation:pulse 7s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:translate(-50%,-58%) scale(1);}50%{transform:translate(-50%,-58%) scale(1.07);}}
+  .hero-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:540px;height:540px;border-radius:50%;border:1px solid rgba(201,161,60,.15);pointer-events:none;animation:spin 50s linear infinite;}
+  .hero-ring-2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:380px;height:380px;border-radius:50%;border:1px solid rgba(123,47,224,.25);pointer-events:none;animation:spin 30s linear infinite reverse;}
+  @keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+  .corner{position:absolute;width:90px;height:90px;}
+  .corner.tl{top:5.5rem;left:2.5rem;border-top:1px solid rgba(201,161,60,.45);border-left:1px solid rgba(201,161,60,.45);}
+  .corner.tr{top:5.5rem;right:2.5rem;border-top:1px solid rgba(201,161,60,.45);border-right:1px solid rgba(201,161,60,.45);}
+  .corner.bl{bottom:2.5rem;left:2.5rem;border-bottom:1px solid rgba(201,161,60,.45);border-left:1px solid rgba(201,161,60,.45);}
+  .corner.br{bottom:2.5rem;right:2.5rem;border-bottom:1px solid rgba(201,161,60,.45);border-right:1px solid rgba(201,161,60,.45);}
+  .hero-inner{max-width:900px;position:relative;z-index:1;}
+  .hero-eyebrow{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;display:flex;align-items:center;gap:1.2rem;justify-content:center;}
+  .hero-eyebrow span{opacity:.35;}
+  h1{font-family:'Cormorant Garamond',serif;font-size:clamp(4.2rem,10.5vw,9rem);font-weight:300;line-height:.9;letter-spacing:.05em;text-transform:uppercase;color:var(--white);margin-bottom:.15em;}
+  h1 em{font-style:italic;color:var(--gold);display:inline;}
+  .hero-role{margin:2rem auto 0;display:inline-flex;overflow:hidden;border:1px solid rgba(201,161,60,.32);border-radius:2px;}
+  .role-pill{padding:.55rem 1.5rem;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-pale);border-right:1px solid rgba(201,161,60,.32);}
+  .role-pill:last-child{border-right:none;}
+  .role-pill.active{background:var(--gold);color:var(--text-dark);}
+  .hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:300;font-style:italic;color:var(--gold-pale);margin:2.2rem auto 0;max-width:660px;line-height:1.65;letter-spacing:.02em;}
+  .hero-cta{margin-top:3rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  /* BUTTONS */
+  .btn{display:inline-block;padding:.8rem 2rem;font-size:.73rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;text-decoration:none;border-radius:2px;transition:all .25s;cursor:pointer;}
+  .btn-gold{background:var(--gold);color:var(--text-dark);border:1px solid var(--gold);}
+  .btn-gold:hover{background:var(--gold-light);border-color:var(--gold-light);}
+  .btn-outline{background:transparent;color:var(--gold);border:1px solid rgba(201,161,60,.45);}
+  .btn-outline:hover{background:rgba(201,161,60,.1);border-color:var(--gold);}
+
+  /* SECTION BASICS */
+  section{padding:7rem 2rem;}
+  .container{max-width:1100px;margin:0 auto;}
+  .section-label{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:1rem;}
+  .section-label::after{content:'';flex:1;max-width:60px;height:1px;background:var(--gold);opacity:.4;}
+  h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:300;line-height:1.1;color:var(--white);margin-bottom:1.5rem;}
+  h2 em{font-style:italic;color:var(--gold);}
+  p{line-height:1.78;color:var(--gold-pale);font-weight:300;}
+
+  /* WHY */
+  #why{background:linear-gradient(155deg,rgba(123,47,224,.2) 0%,transparent 55%),var(--purple-deep);position:relative;overflow:hidden;}
+  #why::after{content:'';position:absolute;right:-100px;top:50%;transform:translateY(-50%);width:380px;height:380px;border-radius:50%;border:1px solid rgba(201,161,60,.06);pointer-events:none;}
+  .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;}
+  .why-left p{margin-bottom:1.2rem;}
+  .pull-quote{margin:2.5rem 0;padding:1.5rem 2rem;border-left:2px solid var(--purple-vivid);background:rgba(123,47,224,.1);font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;font-style:italic;color:var(--gold-light);line-height:1.55;}
+  .why-right{display:flex;flex-direction:column;gap:1.1rem;}
+  .value-item{padding:1.4rem 1.6rem;border:1px solid rgba(201,161,60,.16);background:rgba(201,161,60,.025);transition:border-color .25s,background .25s,transform .25s;}
+  .value-item:hover{border-color:rgba(123,47,224,.7);background:rgba(123,47,224,.1);transform:translateX(5px);}
+  .value-title{font-family:'Cinzel',serif;font-size:.74rem;letter-spacing:.11em;color:var(--gold);margin-bottom:.35rem;}
+  .value-item p{font-size:.86rem;}
+
+  /* ABOUT */
+  #about{background:var(--purple-deep);}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.5rem;}
+  .stat-box{padding:1.4rem;border:1px solid rgba(201,161,60,.18);position:relative;}
+  .stat-box::before{content:'';position:absolute;top:-1px;left:0;width:35%;height:1px;background:var(--purple-vivid);}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:2.7rem;font-weight:300;color:var(--gold);line-height:1;}
+  .stat-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-pale);margin-top:.25rem;font-weight:300;}
+  .about-right p{margin-bottom:1.2rem;}
+  .role-badge{display:inline-block;padding:.3rem .9rem;background:rgba(123,47,224,.2);border:1px solid rgba(123,47,224,.5);border-radius:100px;font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-pale);margin-bottom:1.5rem;}
+
+  /* BOOKS */
+  #books{background:linear-gradient(135deg,rgba(80,25,176,.35) 0%,var(--purple-deep) 60%);}
+  .books-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-top:3.5rem;}
+  .book-card{border:1px solid rgba(201,161,60,.18);overflow:hidden;transition:border-color .25s,transform .25s;}
+  .book-card:hover{border-color:var(--gold);transform:translateY(-6px);}
+  .book-spine{height:5px;background:linear-gradient(90deg,var(--purple-vivid),var(--gold));}
+  .book-body{padding:2rem;}
+  .book-tag{font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+  .book-title{font-family:'Cormorant Garamond',serif;font-size:1.38rem;font-weight:600;line-height:1.2;color:var(--white);margin-bottom:1rem;}
+  .book-desc{font-size:.84rem;line-height:1.65;}
+
+  /* WRITING / MEDIUM FEED */
+  #writing{background:linear-gradient(180deg,rgba(123,47,224,.12) 0%,transparent 40%),var(--purple-deep);}
+  .articles{margin-top:0;}
+  .article{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:1.65rem 0;border-bottom:1px solid rgba(201,161,60,.1);transition:padding-left .2s;text-decoration:none;}
+  .article:first-child{border-top:1px solid rgba(201,161,60,.1);}
+  .article:hover{padding-left:.8rem;}
+  .article:hover .article-title{color:var(--gold-light);}
+  .article-num{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--purple-glow);font-style:italic;min-width:2rem;}
+  .article-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--white);transition:color .2s;}
+  .article-source{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.6;white-space:nowrap;}
+
+  /* Featured post */
+  .featured-post{margin-bottom:2.5rem;text-decoration:none;display:block;}
+  .featured-inner{padding:2.5rem;border:1px solid rgba(201,161,60,.3);background:rgba(123,47,224,.08);transition:border-color .25s,background .25s;}
+  .featured-post:hover .featured-inner{border-color:var(--gold);background:rgba(123,47,224,.14);}
+  .featured-top{display:flex;align-items:center;margin-bottom:1.2rem;}
+  .featured-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dark);background:var(--gold);padding:.25rem .7rem;border-radius:1px;}
+  .featured-inner h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:400;color:var(--white);line-height:1.2;margin-bottom:.9rem;}
+  .featured-inner p{font-size:.9rem;line-height:1.75;max-width:680px;margin-bottom:1.4rem;color:var(--gold-pale);}
+  .featured-read{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+  .featured-img-wrap{display:none;}
+
+  /* Loading */
+  .feed-loading{display:flex;align-items:center;gap:1rem;padding:2rem 0;color:var(--gold-pale);font-size:.85rem;}
+  .feed-spinner{width:18px;height:18px;border:2px solid rgba(201,161,60,.2);border-top-color:var(--gold);border-radius:50%;animation:spins .8s linear infinite;flex-shrink:0;}
+  @keyframes spins{to{transform:rotate(360deg);}}
+
+  /* VIDEO */
+  #watch{background:linear-gradient(160deg,rgba(123,47,224,.22) 0%,transparent 60%),var(--purple-deep);position:relative;overflow:hidden;}
+  #watch::before{content:'';position:absolute;left:-150px;bottom:-150px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,161,60,.06);pointer-events:none;}
+  .video-grid{display:grid;grid-template-columns:1fr 1.8fr;gap:5rem;align-items:center;}
+  .video-left p{margin-bottom:1.2rem;}
+  .video-meta{display:flex;flex-direction:column;gap:.8rem;margin-top:2rem;}
+  .video-tag{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-pale);font-weight:300;}
+  .video-tag::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+  .video-wrap{position:relative;width:100%;padding-bottom:56.25%;border:1px solid rgba(201,161,60,.25);overflow:hidden;box-shadow:0 0 60px rgba(123,47,224,.3);}
+  .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+  .video-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple-vivid),var(--gold));z-index:1;}
+
+  /* CONTACT */
+  #contact{background:var(--purple-deep);text-align:center;position:relative;overflow:hidden;}
+  .contact-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:650px;height:420px;background:radial-gradient(ellipse,rgba(123,47,224,.35) 0%,transparent 70%);pointer-events:none;}
+  .cring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(201,161,60,.07);pointer-events:none;}
+  .cring-1{width:560px;height:560px;}
+  .cring-2{width:340px;height:340px;}
+  .contact-inner{position:relative;z-index:1;max-width:660px;margin:0 auto;}
+  #contact h2{margin-bottom:1rem;}
+  #contact p{margin-bottom:2.5rem;}
+  .contact-links{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem;}
+  .contact-link{display:inline-flex;align-items:center;padding:.55rem 1.3rem;border:1px solid rgba(201,161,60,.28);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-pale);text-decoration:none;border-radius:2px;transition:border-color .2s,color .2s,background .2s;}
+  .contact-link:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,161,60,.06);}
+
+  /* FOOTER */
+  footer{padding:2rem;text-align:center;border-top:1px solid rgba(201,161,60,.1);}
+  footer p{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.4;}
+
+  /* FADE */
+  .fade-up{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    nav{padding:1rem 1.5rem;}.nav-links{display:none;}
+    .why-grid,.about-grid,.video-grid{grid-template-columns:1fr;gap:3rem;}
+    .books-grid{grid-template-columns:1fr 1fr;}
+    .corner{display:none;}
+    .featured-inner{grid-template-columns:1fr;}
+    .featured-img-wrap{display:none !important;}
+  }
+  @media(max-width:600px){
+    section{padding:5rem 1.5rem;}
+    .books-grid{grid-template-columns:1fr;}
+    .stat-row{grid-template-columns:1fr 1fr;}
+    .article{grid-template-columns:1fr;gap:.4rem;}
+    .article-num{display:none;}
+    .hero-role{flex-wrap:wrap;}
+    .role-pill{border-right:none;border-bottom:1px solid rgba(201,161,60,.32);}
+    .role-pill:last-child{border-bottom:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">Ian Gotts</a>
+  <ul class="nav-links">
+    <li><a href="#why">Advisory</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#books">Books</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#watch">Watch</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#watch" class="nav-watch">Watch Live</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-ring-2"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span>&#183;</span>Salesforce Ecosystem<span>&#183;</span>ISV Strategy<span>&#183;</span>Go-to-Market<span>&#183;</span>
+    </div>
+    <h1>Ian <em>Gotts</em></h1>
+    <div class="hero-role">
+      <div class="role-pill active">Industry Analyst</div>
+      <div class="role-pill">Author</div>
+      <div class="role-pill">Speaker</div>
+      <div class="role-pill">Advisor</div>
+    </div>
+    <p class="hero-sub">
+      Pattern recognition built over decades. Strategic clarity that cuts through the noise.<br>
+      The advisor every Salesforce ISV needs &#8212; but rarely finds.
+    </p>
+    <div class="hero-cta">
+      <a href="#why" class="btn btn-gold">Why Ian?</a>
+      <a href="#contact" class="btn btn-outline">Work Together</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY IAN -->
+<section id="why">
+  <div class="container">
+    <div class="why-grid">
+      <div class="why-left fade-up">
+        <div class="section-label">Advisory Value</div>
+        <h2>The perspective you can't<br><em>buy from a consultant.</em></h2>
+        <p>Most advisors tell you what they read. Ian tells you what he has lived.
+           After decades working with ISVs on both sides of the chasm &#8212; and building
+           his own company from zero to acquisition &#8212; he brings something genuinely rare:
+           deep pattern recognition across every stage of the B2B tech journey.</p>
+        <blockquote class="pull-quote">
+          &#8220;The market determines the buyer. The buyer determines the operational culture.
+           The operational culture determines whether you win &#8212; or die slowly.&#8221;
+        </blockquote>
+        <p>For ISVs targeting the Salesforce ecosystem, the stakes are especially high right now.
+           Agentforce is reshaping every product category. The gap between companies that know
+           how to sell to Early Adopters versus the Early Majority &#8212; and align their operations
+           accordingly &#8212; is widening fast. Ian has mapped that gap better than anyone.</p>
+      </div>
+      <div class="why-right fade-up">
+        <div class="value-item">
+          <div class="value-title">Go-to-Market Clarity</div>
+          <p>Know exactly where your buyer sits in the buying cycle and which operational culture
+             you need to match it. The IMPACT framework has been battle-tested across hundreds of ISVs.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-title">Ecosystem Intelligence</div>
+          <p>Salesforce customer since 2002. Chairman at Elements.cloud. Constant access to what
+             is actually happening inside Salesforce orgs &#8212; not what the press releases say.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-title">Analyst Perspective</div>
+          <p>Category creation. Market positioning. What analysts look for before they put
+             you on a quadrant. Ian has been on both sides of that conversation.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-title">The Death Spiral Diagnosis</div>
+          <p>Pilot purgatory. Impossible forecasts. The wrong sales hire. Ian spots the warning
+             signs in one conversation. Most boards take two years.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-title">Board and Investor Ready</div>
+          <p>Communicates at executive and investor level. Frames market opportunity in terms
+             analysts and VCs understand. Brings credibility alongside the ideas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="fade-up">
+        <div class="section-label">About</div>
+        <h2>Decades of thinking.<br><em>Straight talking.</em></h2>
+        <p>Ian Gotts is an industry analyst, author, and advisor whose work sits at the intersection
+           of business strategy, the Salesforce ecosystem, and the future of AI-powered operations.</p>
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-num">10</div><div class="stat-label">Books written</div></div>
+          <div class="stat-box"><div class="stat-num">20+</div><div class="stat-label">Years in Salesforce</div></div>
+          <div class="stat-box"><div class="stat-num">15</div><div class="stat-label">Years running Nimbus</div></div>
+          <div class="stat-box"><div class="stat-num">1K+</div><div class="stat-label">Client engagements</div></div>
+        </div>
+      </div>
+      <div class="about-right fade-up">
+        <div class="role-badge">Chairman &#183; Elements.cloud</div>
+        <p>Ian spent 15 years as founder and CEO of Nimbus &#8212; a process mapping company &#8212; before its
+           acquisition by TIBCO Software. He knows what it takes to build an ISV from scratch,
+           cross the chasm, and create the conditions for a successful exit.</p>
+        <p>As an industry analyst, his focus is on where the Salesforce ecosystem is heading:
+           AI agents, context engineering, digital labor, and what all of it means for the
+           ISVs building on the platform. He writes regularly for Forbes Technology Council,
+           Medium, and the Elements.cloud blog.</p>
+        <p>Author of 10 books including Why Killer Products Don't Sell, IMPACT,
+           and Common Approach, Uncommon Results. Ian has a rare gift: making genuinely
+           complex strategic ideas feel obvious &#8212; and actionable &#8212; in the hands of the people
+           who need them most.</p>
+        <p>Based in San Jose, California. Member, Forbes Technology Council.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKS -->
+<section id="books">
+  <div class="container">
+    <div class="section-label fade-up">Books</div>
+    <h2 class="fade-up">Ideas that change how you<br><em>sell, lead, and think.</em></h2>
+    <div class="books-grid">
+      <div class="book-card fade-up">
+        <div class="book-spine"></div>
+        <div class="book-body">
+          <div class="book-tag">B2B Sales Strategy</div>
+          <div class="book-title">Why Killer Products Don't Sell</div>
+          <p class="book-desc">Four buying cultures. One brutal truth: if you're selling the wrong way
+             to the wrong buyer, your product's quality is irrelevant. The book that defined a
+             generation of ISV go-to-market thinking.</p>
+        </div>
+      </div>
+      <div class="book-card fade-up">
+        <div class="book-spine"></div>
+        <div class="book-body">
+          <div class="book-tag">Sales Process</div>
+          <div class="book-title">IMPACT</div>
+          <p class="book-desc">The six-phase universal buying process &#8212; Idea, Mentor, Position, Assessment,
+             Case, Transaction. Know the phase, know the play. The technology executive's guide to
+             selling disruptive solutions in B2B markets.</p>
+        </div>
+      </div>
+      <div class="book-card fade-up">
+        <div class="book-spine"></div>
+        <div class="book-body">
+          <div class="book-tag">Change Strategy</div>
+          <div class="book-title">Common Approach, Uncommon Results</div>
+          <p class="book-desc">Results = Initiatives x Adoption squared. Most companies obsess over the initiative
+             and ignore adoption &#8212; which is where results actually live. Simple formula. Profound implications.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WRITING / MEDIUM FEED -->
+<section id="writing">
+  <div class="container">
+    <div class="section-label fade-up">Latest Thinking</div>
+    <h2 class="fade-up">What Ian is <em>writing about now.</em></h2>
+    <p class="fade-up" style="max-width:540px; margin-bottom:3.5rem; margin-top:-.5rem;">
+      Live from Medium &#8212; click any title to read in full.
+    </p>
+
+    <div id="feed-loading" class="feed-loading fade-up">
+      <div class="feed-spinner"></div>
+      <span>Loading latest posts&#8230;</span>
+    </div>
+
+    <div id="feed-error" style="display:none; color:var(--gold-pale); padding:1rem 0; font-size:.9rem; opacity:.7;">
+      Could not load feed &#8212; <a href="https://medium.com/@iangotts" target="_blank" rel="noopener" style="color:var(--gold);">read on Medium directly</a>.
+    </div>
+
+    <!-- Featured post -->
+    <a id="featured-post" class="featured-post fade-up" href="#" target="_blank" rel="noopener" style="display:none;">
+      <div class="featured-inner">
+        <div class="featured-top">
+          <span class="featured-label">Latest</span>
+          <span id="featured-date" class="article-source" style="margin-left:1rem;"></span>
+        </div>
+        <h3 id="featured-title"></h3>
+        <p id="featured-excerpt"></p>
+        <span class="featured-read">Read in full on Medium &#8599;</span>
+      </div>
+    </a>
+
+    <!-- Article list -->
+    <div id="articles-list" class="articles" style="margin-top:0;"></div>
+
+    <div style="text-align:center; margin-top:3rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <a href="https://medium.com/@iangotts" class="btn btn-gold" target="_blank" rel="noopener">All posts on Medium &#8599;</a>
+      <a href="https://elements.cloud/blog" class="btn btn-outline" target="_blank" rel="noopener">Elements Blog</a>
+      <a href="https://www.forbes.com/councils/forbestechcouncil/people/iangotts/" class="btn btn-outline" target="_blank" rel="noopener">Forbes</a>
+    </div>
+  </div>
+</section>
+
+<!-- WATCH LIVE -->
+<section id="watch">
+  <div class="container">
+    <div class="video-grid">
+      <div class="video-left fade-up">
+        <div class="section-label">Watch Live</div>
+        <h2>See Ian<br><em>in action.</em></h2>
+        <p>The best way to understand what Ian brings to a room &#8212; or a board &#8212;
+           is to watch him work. Sharp thinking, plain English, and the kind of
+           insight that makes complex ideas feel obvious.</p>
+        <div class="video-meta">
+          <span class="video-tag">Conference Speaker</span>
+          <span class="video-tag">Industry Analyst</span>
+          <span class="video-tag">Salesforce Ecosystem</span>
+        </div>
+        <div style="margin-top:2rem;">
+          <a href="https://youtu.be/lowGgvLfNdI" target="_blank" rel="noopener" class="btn btn-outline">Open on YouTube &#8599;</a>
+        </div>
+      </div>
+      <div class="video-right fade-up">
+        <div class="video-wrap">
+          <iframe
+            src="https://www.youtube.com/embed/lowGgvLfNdI"
+            title="Ian Gotts in action"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-glow"></div>
+    <div class="cring cring-1"></div>
+    <div class="cring cring-2"></div>
+    <div class="contact-inner fade-up">
+      <div class="section-label" style="justify-content:center;">Work Together</div>
+      <h2>Ready for a conversation<br><em>of possibilities?</em></h2>
+      <p>Advisory engagements. Board positions. Conference keynotes. Analyst briefings.
+         If you are an ISV navigating the Salesforce ecosystem, fixing your go-to-market,
+         or making sense of AI agents &#8212; Ian is the person to call.</p>
+      <a href="javascript:void(0)" onclick="window.location='mai'+'lto:ian@elements.cloud'" class="btn btn-gold">ian @ elements.cloud</a>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/iangotts/" class="contact-link" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://medium.com/@iangotts" class="contact-link" target="_blank" rel="noopener">Medium</a>
+        <a href="https://elements.cloud" class="contact-link" target="_blank" rel="noopener">Elements.cloud</a>
+        <a href="https://iangotts.wordpress.com" class="contact-link" target="_blank" rel="noopener">Blog</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>2026 Ian Gotts &#183; Industry Analyst &#183; Author &#183; Speaker &#183; Chairman, Elements.cloud</p>
+</footer>
+
+<script>
+(function() {
+
+  // Scroll fade-in
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(function(el) { obs.observe(el); });
+
+  // Stagger card children
+  document.querySelectorAll('.why-right, .books-grid').forEach(function(grid) {
+    grid.querySelectorAll('.value-item, .book-card').forEach(function(el, i) {
+      el.style.transitionDelay = (i * 0.1) + 's';
+    });
+  });
+
+  // ── Medium RSS feed via rss2json ────────────────────
+  var FEED = 'https://api.rss2json.com/v1/api.json?rss_url=' +
+             encodeURIComponent('https://medium.com/feed/@iangotts') +
+             '&count=10';
+
+  function stripHtml(html) {
+    var d = document.createElement('div');
+    d.innerHTML = html;
+    return (d.textContent || d.innerText || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function clip(html, max) {
+    var t = stripHtml(html);
+    return t.length > max ? t.slice(0, max).replace(/\s\S*$/, '') + '\u2026' : t;
+  }
+
+  function fmtDate(str) {
+    var d = new Date(str);
+    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function getThumb(item) {
+    if (item.thumbnail && /^https?:/.test(item.thumbnail)) return item.thumbnail;
+    var m = (item.content || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+    return m ? m[1] : null;
+  }
+
+  function zeroPad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  fetch(FEED)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('feed-loading').style.display = 'none';
+      if (!data.items || !data.items.length) {
+        document.getElementById('feed-error').style.display = 'block';
+        return;
+      }
+
+      var items = data.items;
+
+      // Featured — first item
+      var first = items[0];
+      var fp = document.getElementById('featured-post');
+      fp.href = first.link;
+      document.getElementById('featured-title').textContent = first.title;
+      document.getElementById('featured-excerpt').textContent = clip(first.content || first.description || '', 220);
+      document.getElementById('featured-date').textContent = 'Medium \u00b7 ' + fmtDate(first.pubDate);
+      fp.style.display = 'block';
+      setTimeout(function() { fp.classList.add('visible'); }, 60);
+
+      // List — items 2 to 8
+      var list = document.getElementById('articles-list');
+      items.slice(1, 8).forEach(function(item, i) {
+        var a = document.createElement('a');
+        a.href = item.link;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'article';
+        a.style.transitionDelay = (i * 0.07) + 's';
+        a.innerHTML =
+          '<span class="article-num">' + zeroPad(i + 2) + '</span>' +
+          '<span class="article-title">' + item.title + '</span>' +
+          '<span class="article-source">Medium \u00b7 ' + fmtDate(item.pubDate) + '</span>';
+        list.appendChild(a);
+      });
+      setTimeout(function() { list.classList.add('visible'); }, 120);
+    })
+    .catch(function() {
+      document.getElementById('feed-loading').style.display = 'none';
+      document.getElementById('feed-error').style.display = 'block';
+    });
+
+})();
+</script>
+
+</body>
+</html>
