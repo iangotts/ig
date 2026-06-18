@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulting AI Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cinzel:wght@400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#180830; --bg-2:#1f0a3d; --bg-3:#260e4a;
+    --purple:#5019B0; --purple-vivid:#7B2FE0; --purple-glow:#A060F0;
+    --gold:#C9A13C; --gold-light:#E2C36A; --gold-pale:#F5E9C5;
+    --cream:#FAF6EE;
+    --hairline:rgba(201,161,60,.18); --hairline-strong:rgba(201,161,60,.34);
+    --muted:rgba(250,246,238,.62); --faint:rgba(250,246,238,.40);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--cream);
+    font-family:'DM Sans',system-ui,sans-serif; font-weight:300; line-height:1.65;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden; position:relative;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(900px 700px at 50% -12%, rgba(123,47,224,.30), transparent 60%),
+      radial-gradient(700px 600px at 92% 14%, rgba(80,25,176,.18), transparent 55%),
+      radial-gradient(800px 800px at 2% 82%, rgba(160,96,240,.10), transparent 55%);
+  }
+  .wrap{position:relative; z-index:1;}
+  .cinzel{font-family:'Cinzel',serif;}
+  .label{
+    font-family:'Cinzel',serif; font-weight:500; letter-spacing:.3em;
+    text-transform:uppercase; font-size:.62rem; color:var(--gold);
+  }
+
+  /* nav */
+  nav{
+    position:sticky; top:0; z-index:60; display:flex; align-items:center;
+    justify-content:space-between; padding:1rem clamp(1rem,4vw,3rem);
+    backdrop-filter:blur(14px); background:rgba(24,8,48,.66);
+    border-bottom:1px solid var(--hairline);
+  }
+  nav .brand{
+    font-family:'Cinzel',serif; font-weight:600; letter-spacing:.2em;
+    font-size:.78rem; text-transform:uppercase; color:var(--cream);
+  }
+  nav .brand span{color:var(--gold);}
+  nav .count{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);font-size:.95rem;}
+
+  /* hero */
+  header.hero{
+    position:relative; text-align:center; padding:4.5rem 1.5rem 2.5rem; overflow:hidden;
+  }
+  .rings{position:absolute;top:50%;left:50%;width:min(80vw,720px);height:min(80vw,720px);
+    transform:translate(-50%,-46%);pointer-events:none;z-index:0;}
+  .rings .ring{position:absolute;inset:0;border:1px solid var(--hairline);border-radius:50%;}
+  .rings .r2{inset:16%;border-color:rgba(201,161,60,.12);animation:spin 60s linear infinite;border-style:dashed;}
+  .rings .r3{inset:32%;border-color:rgba(160,96,240,.20);animation:spin 44s linear infinite reverse;}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){.rings .ring{animation:none!important;}}
+  .hero-inner{position:relative;z-index:2;max-width:780px;margin:0 auto;}
+  .hero .eyebrow{display:inline-flex;align-items:center;gap:.9rem;margin-bottom:1.4rem;}
+  .hero .eyebrow::before,.hero .eyebrow::after{content:"";width:38px;height:1px;background:var(--hairline-strong);}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.05;margin-bottom:1rem;}
+  .hero h1 em{font-style:italic;color:var(--gold-light);}
+  .hero .sub{color:var(--muted);max-width:540px;margin:0 auto;font-size:1.02rem;}
+
+  /* control bar */
+  .controls{
+    position:sticky; top:53px; z-index:55;
+    background:rgba(24,8,48,.82); backdrop-filter:blur(12px);
+    border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);
+    padding:.9rem clamp(1rem,4vw,3rem);
+    display:flex; flex-wrap:wrap; gap:1rem 1.4rem; align-items:center; justify-content:space-between;
+  }
+  .segmented{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:2px;overflow:hidden;}
+  .segmented button{
+    background:transparent;border:none;color:var(--muted);cursor:pointer;
+    font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:.6rem .95rem;transition:all .25s ease;white-space:nowrap;
+  }
+  .segmented button + button{border-left:1px solid var(--hairline);}
+  .segmented button:hover{color:var(--gold-light);}
+  .segmented button.on{background:linear-gradient(180deg,rgba(123,47,224,.35),rgba(80,25,176,.25));color:var(--gold-pale);}
+
+  .filters{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;}
+  .chip{
+    background:transparent;border:1px solid var(--hairline);color:var(--muted);
+    border-radius:999px;padding:.35rem .8rem;cursor:pointer;font-size:.72rem;
+    font-weight:400;transition:all .22s ease;font-family:'DM Sans',sans-serif;
+  }
+  .chip:hover{border-color:var(--hairline-strong);color:var(--cream);}
+  .chip.on{background:rgba(201,161,60,.14);border-color:var(--gold);color:var(--gold-pale);}
+  .search{
+    background:rgba(255,255,255,.04);border:1px solid var(--hairline);color:var(--cream);
+    border-radius:2px;padding:.5rem .8rem;font-family:'DM Sans',sans-serif;font-size:.82rem;
+    min-width:170px;outline:none;transition:border-color .2s ease;
+  }
+  .search:focus{border-color:var(--gold);}
+  .search::placeholder{color:var(--faint);}
+
+  /* page */
+  .page{max-width:1180px;margin:0 auto;padding:2.2rem clamp(1rem,4vw,2.4rem) 1rem;}
+  .view{display:none;}
+  .view.active{display:block;animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .empty-msg{text-align:center;color:var(--faint);font-family:'Cormorant Garamond',serif;
+    font-style:italic;font-size:1.2rem;padding:3rem 0;}
+
+  /* ---------- MATRIX ---------- */
+  .matrix-legend{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;margin-bottom:1.2rem;}
+  .matrix-legend .lg{display:flex;gap:.45rem;align-items:baseline;font-size:.76rem;color:var(--muted);}
+  .matrix-legend .lg b{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:1rem;}
+  .matrix-scroll{overflow-x:auto;border:1px solid var(--hairline);}
+  table.matrix{border-collapse:collapse;width:100%;min-width:920px;}
+  table.matrix th,table.matrix td{border-bottom:1px solid var(--hairline);border-right:1px solid var(--hairline);vertical-align:top;}
+  table.matrix th.corner{
+    position:sticky;left:0;top:0;z-index:5;background:var(--bg-2);
+    text-align:left;padding:.8rem 1rem;min-width:190px;
+    font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  }
+  table.matrix thead th.cat{
+    background:rgba(123,47,224,.14);text-align:center;padding:.7rem .4rem;
+    font-size:.62rem;line-height:1.25;color:var(--gold-pale);width:9.3%;
+  }
+  table.matrix thead th.cat .cnum{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--gold);display:block;}
+  table.matrix thead th.cat .clab{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .tier-band td{
+    background:var(--bg-3);padding:.45rem 1rem;
+    font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);
+    position:sticky;left:0;
+  }
+  td.firmcell{
+    position:sticky;left:0;z-index:2;background:var(--bg-2);padding:.7rem 1rem;min-width:190px;
+  }
+  td.firmcell .fn{font-weight:500;color:var(--cream);font-size:.92rem;}
+  td.firmcell .fm{font-size:.68rem;color:var(--faint);margin-top:.15rem;line-height:1.35;}
+  td.datacell{padding:.55rem .5rem;text-align:center;transition:background .2s ease;}
+  td.datacell.has{background:rgba(201,161,60,.045);}
+  td.datacell:hover{background:rgba(123,47,224,.16);}
+  td.datacell .pill{
+    display:block;font-size:.68rem;line-height:1.3;color:var(--gold-pale);
+    padding:.18rem .15rem;
+  }
+  td.datacell .pill + .pill{border-top:1px dotted var(--hairline);margin-top:.2rem;padding-top:.28rem;}
+  td.datacell .dash{color:rgba(250,246,238,.16);font-size:.9rem;}
+  tbody tr:hover td.firmcell{background:var(--bg-3);}
+
+  /* ---------- BY FIRM ---------- */
+  .firm-group{margin-bottom:2.4rem;}
+  .firm-group > .tier-head{
+    font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--gold);padding-bottom:.7rem;margin-bottom:1.1rem;border-bottom:1px solid var(--hairline);
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .firm-group > .tier-head .tc{color:var(--faint);font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:0;font-size:.95rem;text-transform:none;}
+  .firm-card{
+    border:1px solid var(--hairline);margin-bottom:1px;background:var(--bg);
+    padding:1.3rem 1.5rem;transition:background .3s ease;
+  }
+  .firm-card:hover{background:var(--bg-2);}
+  .firm-card .fhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.6rem 1rem;align-items:baseline;margin-bottom:.9rem;}
+  .firm-card .fhead h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.65rem;line-height:1;}
+  .firm-card .fhead .metric{font-size:.78rem;color:var(--gold-light);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1rem;text-align:right;max-width:340px;}
+  .firm-card .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);}
+  @media(max-width:680px){.firm-card .tools{grid-template-columns:1fr;}}
+  .firm-card .tool{background:var(--bg);padding:.7rem .9rem;}
+  .firm-card .tool .catbadge{
+    font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);display:inline-flex;align-items:center;gap:.35rem;margin-bottom:.25rem;
+  }
+  .firm-card .tool .catbadge .n{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;}
+  .firm-card .tool .tname{font-weight:500;font-size:.9rem;color:var(--cream);}
+  .firm-card .tool .tdesc{font-size:.78rem;color:var(--muted);margin-top:.2rem;line-height:1.45;}
+
+  /* ---------- BY CATEGORY ---------- */
+  .cat-block{border:1px solid var(--hairline);margin-bottom:1px;background:var(--bg);padding:1.4rem 1.6rem;transition:background .3s ease;}
+  .cat-block:hover{background:var(--bg-2);}
+  .cat-block .chead{display:flex;gap:1.2rem;align-items:flex-start;margin-bottom:1rem;}
+  .cat-block .cnum{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2.6rem;line-height:.8;color:var(--gold);min-width:2rem;}
+  .cat-block .chead h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.5rem;line-height:1.1;}
+  .cat-block .chead .ctag{font-size:.82rem;color:var(--muted);margin-top:.2rem;}
+  .cat-block .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);}
+  @media(max-width:680px){.cat-block .tools{grid-template-columns:1fr;}}
+  .cat-block .tool{background:var(--bg);padding:.7rem .9rem;}
+  .cat-block .tool .firmbadge{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
+  .cat-block .tool .tname{font-weight:500;font-size:.9rem;}
+  .cat-block .tool .tdesc{font-size:.78rem;color:var(--muted);margin-top:.2rem;line-height:1.45;}
+
+  /* footer */
+  footer{border-top:1px solid var(--hairline);margin-top:3rem;padding:2.4rem 1.5rem;text-align:center;}
+  footer .fr{margin:0 auto 1.1rem;width:42px;height:42px;border:1px solid var(--hairline-strong);border-radius:50%;position:relative;}
+  footer .fr::after{content:"";position:absolute;inset:9px;border:1px solid var(--hairline);border-radius:50%;}
+  footer p{font-family:'Cinzel',serif;letter-spacing:.16em;font-size:.56rem;text-transform:uppercase;color:var(--faint);line-height:2;}
+  .hl{outline:1px solid var(--gold);outline-offset:-1px;}
+
+  /* ============================================================
+     LIGHT BODY THEME — header stays purple/gold, body goes pale
+     ============================================================ */
+  :root{
+    --paper:#F6F2EA; --surface:#FFFFFF; --surface-2:#FBF7EF;
+    --ink:#241038; --ink-soft:#675579; --ink-faint:#9c8fae;
+    --gold-d:#A67C1E; --gold-line:rgba(166,124,30,.30);
+    --purple-a:#5019B0; --purple-line:rgba(80,25,176,.16);
+  }
+  body{background:var(--paper); color:var(--ink);}
+  body::before{display:none;}
+
+  /* --- header zone stays dark --- */
+  nav{background:#180830; backdrop-filter:none; border-bottom:1px solid var(--gold-line);}
+  nav .brand{color:var(--cream);}
+  nav .brand span{color:var(--gold);}
+  nav .count{color:rgba(250,246,238,.6);}
+  header.hero{
+    background:radial-gradient(62% 82% at 50% 0%, #2a0d52 0%, #180830 70%);
+    border-bottom:1px solid var(--gold-line);
+  }
+  .hero h1{color:var(--cream);}
+  .hero h1 em{color:var(--gold-light);}
+  .hero .sub{color:rgba(250,246,238,.66);}
+
+  /* --- controls --- */
+  .controls{
+    background:rgba(255,255,255,.93); backdrop-filter:blur(10px);
+    border-top:1px solid var(--purple-line); border-bottom:1px solid var(--purple-line);
+  }
+  .segmented{border-color:var(--purple-line);}
+  .segmented button{color:var(--ink-soft);}
+  .segmented button + button{border-left-color:var(--purple-line);}
+  .segmented button:hover{color:var(--purple-a);}
+  .segmented button.on{background:rgba(80,25,176,.10); color:var(--purple-a);}
+  .chip{border-color:var(--purple-line); color:var(--ink-soft);}
+  .chip:hover{border-color:var(--gold-d); color:var(--ink);}
+  .chip.on{background:rgba(166,124,30,.15); border-color:var(--gold-d); color:#7a5a12;}
+  .search{background:#fff; border-color:var(--purple-line); color:var(--ink);}
+  .search:focus{border-color:var(--gold-d);}
+  .search::placeholder{color:var(--ink-faint);}
+
+  /* --- matrix --- */
+  .matrix-legend .lg{color:var(--ink-soft);}
+  .matrix-legend .lg b{color:var(--gold-d);}
+  .matrix-scroll{border-color:var(--purple-line);}
+  table.matrix th,table.matrix td{border-bottom-color:var(--purple-line); border-right-color:var(--purple-line);}
+  table.matrix th.corner{background:var(--surface-2); color:var(--gold-d);}
+  table.matrix thead th.cat{background:rgba(80,25,176,.07); color:var(--ink);}
+  table.matrix thead th.cat .cnum{color:var(--gold-d);}
+  table.matrix thead th.cat .clab{color:var(--ink-soft);}
+  .tier-band td{background:rgba(80,25,176,.08); color:var(--purple-a);}
+  td.firmcell{background:var(--surface);}
+  td.firmcell .fn{color:var(--ink);}
+  td.firmcell .fm{color:var(--ink-faint);}
+  td.datacell.has{background:rgba(166,124,30,.09);}
+  td.datacell:hover{background:rgba(80,25,176,.09);}
+  td.datacell .pill{color:var(--purple-a);}
+  td.datacell .pill + .pill{border-top-color:var(--purple-line);}
+  td.datacell .dash{color:rgba(36,16,56,.18);}
+  tbody tr:hover td.firmcell{background:var(--surface-2);}
+
+  /* --- by firm --- */
+  .firm-group > .tier-head{color:var(--gold-d); border-bottom-color:var(--purple-line);}
+  .firm-group > .tier-head .tc{color:var(--ink-faint);}
+  .firm-card{background:var(--surface); border-color:var(--purple-line);}
+  .firm-card:hover{background:var(--surface-2);}
+  .firm-card .fhead h3{color:var(--ink);}
+  .firm-card .fhead .metric{color:var(--gold-d);}
+  .firm-card .tools{background:var(--purple-line); border-color:var(--purple-line);}
+  .firm-card .tool{background:var(--surface);}
+  .firm-card .tool .catbadge{color:var(--gold-d);}
+  .firm-card .tool .tname{color:var(--ink);}
+  .firm-card .tool .tdesc{color:var(--ink-soft);}
+
+  /* --- by category --- */
+  .cat-block{background:var(--surface); border-color:var(--purple-line);}
+  .cat-block:hover{background:var(--surface-2);}
+  .cat-block .cnum{color:var(--gold-d);}
+  .cat-block .chead h3{color:var(--ink);}
+  .cat-block .chead .ctag{color:var(--ink-soft);}
+  .cat-block .tools{background:var(--purple-line); border-color:var(--purple-line);}
+  .cat-block .tool{background:var(--surface);}
+  .cat-block .tool .firmbadge{color:var(--gold-d);}
+  .cat-block .tool .tname{color:var(--ink);}
+  .cat-block .tool .tdesc{color:var(--ink-soft);}
+
+  /* --- empty + footer --- */
+  .empty-msg{color:var(--ink-faint);}
+  footer{border-top-color:var(--purple-line);}
+  footer .fr{border-color:var(--gold-line);}
+  footer .fr::after{border-color:var(--purple-line);}
+  footer p{color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <div class="brand">iangotts<span>.com</span></div>
+    <div class="count cinzel" id="navcount"></div>
+  </nav>
+
+  <header class="hero">
+    <div class="rings" aria-hidden="true"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div></div>
+    <div class="hero-inner">
+      <div class="eyebrow label">Cross-Firm Synthesis</div>
+      <h1>Consulting <em>AI Tools</em></h1>
+      <p class="sub">One dataset, three cuts. Slice the tooling across fifteen consulting firms by firm or by functional category — or read the full cross-tab at a glance.</p>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="segmented" role="tablist">
+      <button data-view="matrix" class="on">Pivot Matrix</button>
+      <button data-view="firm">By Firm</button>
+      <button data-view="category">By Category</button>
+    </div>
+    <div class="filters">
+      <button class="chip on" data-tier="all">All tiers</button>
+      <button class="chip" data-tier="Strategy">Strategy</button>
+      <button class="chip" data-tier="Integrator">Integrator</button>
+      <button class="chip" data-tier="Big 4">Big&nbsp;4</button>
+      <button class="chip" data-tier="Boutique">Boutique</button>
+      <button class="chip" data-tier="Salesforce SI">Salesforce&nbsp;SI</button>
+      <input class="search" id="search" type="text" placeholder="Search tool or firm…" aria-label="Search">
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="view active" id="view-matrix">
+      <div class="matrix-legend" id="legend"></div>
+      <div class="matrix-scroll"><table class="matrix" id="matrixTable"></table></div>
+    </div>
+    <div class="view" id="view-firm"></div>
+    <div class="view" id="view-category"></div>
+  </div>
+
+  <footer>
+    <div class="fr" aria-hidden="true"></div>
+    <p>15 Firms · 9 Functional Categories · 50+ Tools<br>Productivity figures are firm- or client-reported best cases, not audited averages</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const CATS = [
+  {n:1, short:"Knowledge",  full:"Knowledge Capture & Retrieval",        tag:"Ask the firm's own knowledge base"},
+  {n:2, short:"Documents",  full:"Document & Deliverable Production",     tag:"Draft slides, proposals, content"},
+  {n:3, short:"Data/Insight",full:"Data Analysis & Insight Extraction",  tag:"Unstructured data → structured insight"},
+  {n:4, short:"Agentic",    full:"Agentic Platforms & Digital Workforce", tag:"Autonomous multi-step execution"},
+  {n:5, short:"MLOps",      full:"AI Engineering & MLOps / Build",        tag:"Industrialise model & agent build"},
+  {n:6, short:"Citizen GPTs",full:"Citizen Development & Custom-GPTs",    tag:"Every employee builds bots"},
+  {n:7, short:"Code",       full:"Software Engineering & Code Modernization", tag:"AI-assisted coding & migration"},
+  {n:8, short:"Domain",     full:"Domain / Industry-Specific",            tag:"Vertical problems generic AI can't solve"},
+  {n:9, short:"Skilling/Gov",full:"Workforce Enablement, Skilling & Governance", tag:"Adoption, certification, responsible AI"},
+];
+
+const FIRMS = [
+  {name:"McKinsey",        tier:"Strategy",     metric:"75%+ of ~43k staff use Lilli monthly"},
+  {name:"BCG",             tier:"Strategy",     metric:"~20% of revenue from AI; 450k+ Deckster slide builds"},
+  {name:"Bain",            tier:"Strategy",     metric:"Majority of projects use GenAI; 19k+ custom GPTs"},
+  {name:"Accenture",       tier:"Integrator",   metric:"~$3B initial; $5.9B AI bookings / $2.7B AI revenue (FY25)"},
+  {name:"Deloitte",        tier:"Big 4",        metric:"Claude to 470k staff; ~25% cost cut / ~40% productivity"},
+  {name:"PwC",             tier:"Big 4",        metric:"$1B 3-yr roadmap; 100k+ on ChatGPT Enterprise"},
+  {name:"EY",              tier:"Big 4",        metric:"$1.4B platform; EYQ 92M+ prompts; AI in 160k+ audits"},
+  {name:"KPMG",            tier:"Big 4",        metric:"Claude across 276k staff; agent build weeks → minutes"},
+  {name:"West Monroe",     tier:"Boutique",     metric:"AI-native; 50+ AI tools; 92% employee AI engagement"},
+  {name:"Slalom",          tier:"Boutique",     metric:"~$3B; founding Agentforce partner; 1,400% cert rise"},
+  {name:"Perficient",      tier:"Boutique",     metric:"AI-first; 360° Salesforce partnership; EQT-backed"},
+  {name:"NeuraFlash",      tier:"Salesforce SI",metric:"Top SF+AWS AI partner; first Einstein Service Agent pilots"},
+  {name:"Uptima",          tier:"Salesforce SI",metric:"#4 Agentforce partner; 7× faster quoting; ~92% shorter calls"},
+  {name:"Spaulding Ridge", tier:"Salesforce SI",metric:"Finance/legal RevOps lean; ~90% sales tasks automated (Dext)"},
+  {name:"Nebula",          tier:"Salesforce SI",metric:"Among first in Europe on Marketing Cloud Next"},
+];
+
+// tool = {firm, cat, name, desc}
+const TOOLS = [
+  // 1 Knowledge
+  {firm:"McKinsey",cat:1,name:"Lilli",desc:"Synthesises 100,000+ docs across ~40 curated knowledge systems"},
+  {firm:"BCG",cat:1,name:"GENE",desc:"GPT-4o based, fed proprietary research and non-public interviews"},
+  {firm:"Bain",cat:1,name:"Sage",desc:"GPT-4; case insights, research summaries, connects to experts"},
+  {firm:"EY",cat:1,name:"EYQ",desc:"Secure in-house LLM"},
+  {firm:"PwC",cat:1,name:"ChatPwC",desc:"Multi-model (Claude + GPT), fine-tuned on tax & regulations"},
+  {firm:"KPMG",cat:1,name:"Digital Gateway / Workbench",desc:"Unifies tax content, proprietary tools, and client data"},
+  {firm:"Slalom",cat:1,name:"Knowledge Query",desc:"Natural-language search across the firm's knowledge base"},
+  // 2 Documents
+  {firm:"BCG",cat:2,name:"Deckster",desc:"GenAI PowerPoint plugin generating & editing slides from prompts"},
+  {firm:"McKinsey",cat:2,name:"Lilli",desc:"Now drafts proposals and builds PowerPoint decks"},
+  {firm:"Bain",cat:2,name:"Sage",desc:"Extends into drafting and research summarisation"},
+  // 3 Data / Insight
+  {firm:"Bain",cat:3,name:"Dataset / sentiment / call tools",desc:"Categorise datasets, sentiment analysis, customer-call mining"},
+  {firm:"Slalom",cat:3,name:"enhanceIQ",desc:"Role-augmenting accelerator + Quote-to-Cash accelerator"},
+  {firm:"Spaulding Ridge",cat:3,name:"Automated call summaries",desc:"Call summarisation within Agentforce deployments"},
+  {firm:"West Monroe",cat:3,name:"AI software diligence",desc:"Applied across 200–300 PE diligences per year"},
+  // 4 Agentic
+  {firm:"Deloitte",cat:4,name:"Zora AI",desc:"Ready-to-deploy agents across finance, HR, supply chain, service"},
+  {firm:"KPMG",cat:4,name:"Workbench agents",desc:"~50 agents live, ~1,000 in development, agent-to-agent comms"},
+  {firm:"EY",cat:4,name:"EY.ai Agentic Platform",desc:"Built with NVIDIA, starting in tax, risk, and finance"},
+  {firm:"Accenture",cat:4,name:"AI Refinery / Physical AI Orchestrator",desc:"Latter combines AI Refinery with NVIDIA Omniverse"},
+  {firm:"West Monroe",cat:4,name:"Intellio Agent",desc:"Finds high-value processes, generates build-ready plans"},
+  {firm:"Slalom",cat:4,name:"Agentforce builds",desc:"Launch Pad for Agentforce; agents on the Salesforce stack"},
+  {firm:"Perficient",cat:4,name:"Agentforce builds",desc:"Agentforce launch partner; 160+ certified AI consultants"},
+  {firm:"NeuraFlash",cat:4,name:"Agentforce / Einstein builds",desc:"Service & contact-centre agents on Agentforce/Einstein"},
+  {firm:"Uptima",cat:4,name:"Agentforce builds",desc:"Asset-focused field-service agents; deploy in ≤6 weeks"},
+  {firm:"Spaulding Ridge",cat:4,name:"Agentforce builds",desc:"Sales/Service agents across 10+ organisations"},
+  {firm:"Nebula",cat:4,name:"Agentforce Marketing",desc:"Early EU builder on Marketing Cloud Next + Data Cloud"},
+  // 5 MLOps
+  {firm:"McKinsey",cat:5,name:"QuantumBlack Horizon",desc:"Modular MLOps suite — Kedro, Brix, Studio"},
+  {firm:"Accenture",cat:5,name:"AI Refinery",desc:"Platform for building & scaling enterprise AI and agents"},
+  {firm:"KPMG",cat:5,name:"Workbench foundation",desc:"Azure AI Foundry layer under all client-delivery platforms"},
+  // 6 Citizen GPTs
+  {firm:"Bain",cat:6,name:"Custom GPTs (19,000+)",desc:"ChatGPT Enterprise for every employee"},
+  {firm:"BCG",cat:6,name:"Custom GPTs (6,000+)",desc:"Firm-wide enterprise access"},
+  {firm:"PwC",cat:6,name:"ChatGPT Enterprise",desc:"Deployed to 100,000+ employees"},
+  {firm:"Deloitte",cat:6,name:"Claude personas",desc:"Claude to 470,000 employees with role-specific personas"},
+  {firm:"KPMG",cat:6,name:"Claude on Workbench",desc:"Claude across 276,000+ staff"},
+  // 7 Code
+  {firm:"West Monroe",cat:7,name:"Hopper",desc:"Proprietary legacy-code migration, aligned to Databricks"},
+  {firm:"PwC",cat:7,name:"Claude Code",desc:"Frontier coding agent rolled out to engineering teams"},
+  {firm:"Deloitte",cat:7,name:"Claude Code",desc:"Frontier coding agent rolled out to engineering teams"},
+  {firm:"EY",cat:7,name:"EY.ai PDLC",desc:"AI-native software-delivery platform, built with 8090"},
+  // 8 Domain
+  {firm:"McKinsey",cat:8,name:"Claims triage / supply chain",desc:"Industry-specific QuantumBlack applications"},
+  {firm:"BCG",cat:8,name:"CO2 AI / RGM AI",desc:"Carbon abatement (400M+ tonnes) + revenue-growth pricing"},
+  {firm:"Uptima",cat:8,name:"Elle / AskElevate",desc:"Visual intelligence reading schematics; expert-on-demand"},
+  {firm:"NeuraFlash",cat:8,name:"UX Enhancer + analytics",desc:"Branded agent experiences & performance dashboards"},
+  {firm:"Deloitte",cat:8,name:"Zora for Finance / Alfred",desc:"Finance-specific agentic solution (with HPE)"},
+  {firm:"Nebula",cat:8,name:"AI-driven segmentation",desc:"Marketing-Cloud-Next segmentation & engagement"},
+  // 9 Skilling / Gov
+  {firm:"EY",cat:9,name:"Skills Foundry Academy",desc:"1,000+ AI skills; 100,000+ credentials awarded"},
+  {firm:"West Monroe",cat:9,name:"Degreed + AI Week",desc:"Learning platform; 92% employee AI engagement"},
+  {firm:"Slalom",cat:9,name:"Certification push",desc:"~1,400% increase in AI certifications in some regions"},
+  {firm:"BCG",cat:9,name:"Responsible AI + FACET",desc:"Responsible-AI program and open-source tooling"},
+  {firm:"Deloitte",cat:9,name:"Trustworthy AI + Claude CoE",desc:"Governance framework; 15,000 to be certified"},
+  {firm:"PwC",cat:9,name:"Joint Center of Excellence",desc:"30,000 to be certified on Claude"},
+  {firm:"Bain",cat:9,name:"OpenAI Center of Excellence",desc:"Dedicated technical team for solution delivery"},
+  {firm:"KPMG",cat:9,name:"Governance-first posture",desc:"Security, trust, and governance across Workbench"},
+];
+
+const TIER_ORDER = ["Strategy","Integrator","Big 4","Boutique","Salesforce SI"];
+const TIER_DESC = {
+  "Strategy":"Frontier builders — proprietary platforms, near-universal adoption",
+  "Integrator":"Largest absolute commitment; AI embedded everywhere",
+  "Big 4":"$1B+ programs embedding frontier models into delivery platforms",
+  "Boutique":"AI-native / strategy-led specialists punching above size",
+  "Salesforce SI":"Build proprietary IP on top of the Agentforce stack"
+};
+
+/* ---------- STATE ---------- */
+let tier = "all";
+let query = "";
+
+const firmByName = Object.fromEntries(FIRMS.map(f=>[f.name,f]));
+function tierOf(name){ return firmByName[name] ? firmByName[name].tier : ""; }
+function matchTool(t){
+  if(tier!=="all" && tierOf(t.firm)!==tier) return false;
+  if(query){
+    const q=query.toLowerCase();
+    if(!(t.name.toLowerCase().includes(q)||t.firm.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q))) return false;
+  }
+  return true;
+}
+function visibleTools(){ return TOOLS.filter(matchTool); }
+
+/* ---------- RENDER: MATRIX ---------- */
+function renderMatrix(){
+  const legend = document.getElementById("legend");
+  legend.innerHTML = CATS.map(c=>`<span class="lg"><b>${c.n}</b> ${c.full}</span>`).join("");
+
+  const vt = visibleTools();
+  const firms = FIRMS.filter(f=> (tier==="all"||f.tier===tier) && vt.some(t=>t.firm===f.name) );
+
+  let html = `<thead><tr><th class="corner">Firm \\ Category</th>`;
+  CATS.forEach(c=> html += `<th class="cat" title="${c.full}"><span class="cnum">${c.n}</span><span class="clab">${c.short}</span></th>`);
+  html += `</tr></thead><tbody>`;
+
+  TIER_ORDER.forEach(tr=>{
+    const tf = firms.filter(f=>f.tier===tr);
+    if(!tf.length) return;
+    html += `<tr class="tier-band"><td colspan="10">${tr}</td></tr>`;
+    tf.forEach(f=>{
+      html += `<tr><td class="firmcell"><div class="fn">${f.name}</div><div class="fm">${f.metric}</div></td>`;
+      CATS.forEach(c=>{
+        const cell = vt.filter(t=>t.firm===f.name && t.cat===c.n);
+        if(cell.length){
+          html += `<td class="datacell has">`+cell.map(t=>`<span class="pill" title="${t.desc.replace(/"/g,'&quot;')}">${t.name}</span>`).join("")+`</td>`;
+        } else {
+          html += `<td class="datacell"><span class="dash">·</span></td>`;
+        }
+      });
+      html += `</tr>`;
+    });
+  });
+  html += `</tbody>`;
+  const tbl = document.getElementById("matrixTable");
+  tbl.innerHTML = html;
+  if(!firms.length){ tbl.innerHTML = `<tbody><tr><td class="empty-msg">No tools match this filter.</td></tr></tbody>`; }
+}
+
+/* ---------- RENDER: BY FIRM ---------- */
+function renderFirm(){
+  const vt = visibleTools();
+  const root = document.getElementById("view-firm");
+  let html = "";
+  TIER_ORDER.forEach(tr=>{
+    const tf = FIRMS.filter(f=>f.tier===tr && (tier==="all"||f.tier===tier) && vt.some(t=>t.firm===f.name));
+    if(!tf.length) return;
+    html += `<div class="firm-group"><div class="tier-head"><span>${tr}</span><span class="tc">${TIER_DESC[tr]}</span></div>`;
+    tf.forEach(f=>{
+      const tools = vt.filter(t=>t.firm===f.name).sort((a,b)=>a.cat-b.cat);
+      html += `<div class="firm-card"><div class="fhead"><h3>${f.name}</h3><div class="metric">${f.metric}</div></div><div class="tools">`;
+      tools.forEach(t=>{
+        const c = CATS[t.cat-1];
+        html += `<div class="tool"><div class="catbadge"><span class="n">${c.n}</span> ${c.short}</div><div class="tname">${t.name}</div><div class="tdesc">${t.desc}</div></div>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  });
+  root.innerHTML = html || `<p class="empty-msg">No firms match this filter.</p>`;
+}
+
+/* ---------- RENDER: BY CATEGORY ---------- */
+function renderCategory(){
+  const vt = visibleTools();
+  const root = document.getElementById("view-category");
+  let html = "";
+  CATS.forEach(c=>{
+    const tools = vt.filter(t=>t.cat===c.n);
+    if(!tools.length) return;
+    html += `<div class="cat-block"><div class="chead"><div class="cnum">${c.n}</div><div><h3>${c.full}</h3><div class="ctag">${c.tag}</div></div></div><div class="tools">`;
+    tools.forEach(t=>{
+      html += `<div class="tool"><div class="firmbadge">${t.firm}</div><div class="tname">${t.name}</div><div class="tdesc">${t.desc}</div></div>`;
+    });
+    html += `</div></div>`;
+  });
+  root.innerHTML = html || `<p class="empty-msg">No tools match this filter.</p>`;
+}
+
+/* ---------- ORCHESTRATION ---------- */
+function renderAll(){
+  renderMatrix(); renderFirm(); renderCategory();
+  const n = visibleTools().length;
+  document.getElementById("navcount").textContent = n + (n===1?" tool":" tools");
+}
+
+document.querySelectorAll('.segmented button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.segmented button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+b.dataset.view).classList.add('active');
+  });
+});
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+    tier = c.dataset.tier;
+    renderAll();
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{
+  query = e.target.value.trim();
+  renderAll();
+});
+
+renderAll();
+</script>
+</body>
+</html>
