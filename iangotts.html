@@ -106,7 +106,7 @@
   .book-title{font-family:'Cormorant Garamond',serif;font-size:1.38rem;font-weight:600;line-height:1.2;color:var(--white);margin-bottom:1rem;}
   .book-desc{font-size:.84rem;line-height:1.65;}
 
-  /* WRITING / MEDIUM FEED */
+  /* WRITING / BLOG FEED */
   #writing{background:linear-gradient(180deg,rgba(123,47,224,.12) 0%,transparent 40%),var(--purple-deep);}
   .articles{margin-top:0; opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease;}
   .articles.visible {opacity:1; transform:translateY(0);}
@@ -185,6 +185,53 @@
     .hero-role{flex-wrap:wrap;}
     .role-pill{border-right:none;border-bottom:1px solid rgba(201,161,60,.32);}
     .role-pill:last-child{border-bottom:none;}
+  }
+
+  /* ---- BLOG ARTICLE MODAL ---- */
+  .ig-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .ig-modal[hidden]{display:none;}
+  .ig-modal__backdrop{position:absolute;inset:0;background:rgba(8,3,18,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:ig-fade .18s ease;}
+  .ig-modal__dialog{position:relative;width:100%;max-width:780px;max-height:90vh;background:#22113f;border:1px solid rgba(201,161,60,.3);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 60px rgba(123,47,224,.25);animation:ig-pop .2s ease;}
+  .ig-modal__dialog::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple-vivid),var(--gold));z-index:2;}
+  .ig-modal__close{position:absolute;top:14px;right:14px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,161,60,.3);cursor:pointer;background:rgba(24,8,48,.7);color:var(--gold-pale);font-size:22px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,color .15s,border-color .15s;}
+  .ig-modal__close:hover{background:rgba(123,47,224,.3);color:var(--gold);border-color:var(--gold);}
+  .ig-modal__scroll{overflow-y:auto;}
+  .ig-modal__header{padding:2.6rem 2.6rem 0;}
+  .ig-modal__header .article-source{opacity:.7;}
+  .ig-modal__title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:400;line-height:1.18;color:var(--white);margin:.6rem 0 0;}
+  .ig-modal__body{padding:1.6rem 2.6rem .5rem;color:var(--gold-pale);font-size:1rem;line-height:1.8;font-weight:300;}
+  .ig-modal__body p{margin:0 0 1.1rem;color:var(--gold-pale);}
+  .ig-modal__body img,.ig-modal__body iframe{max-width:100%;height:auto;border-radius:6px;margin:.4rem 0 1.1rem;}
+  .ig-modal__body h2,.ig-modal__body h3{font-family:'Cormorant Garamond',serif;color:var(--white);font-weight:400;line-height:1.25;margin:1.8rem 0 .6rem;}
+  .ig-modal__body h2{font-size:1.6rem;}
+  .ig-modal__body h3{font-size:1.3rem;color:var(--gold-light);}
+  .ig-modal__body a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;}
+  .ig-modal__body a:hover{color:var(--gold-light);}
+  .ig-modal__body ul,.ig-modal__body ol{padding-left:1.4rem;margin:0 0 1.1rem;}
+  .ig-modal__body li{margin-bottom:.4rem;color:var(--gold-pale);}
+  .ig-modal__body blockquote{margin:0 0 1.1rem;padding:.5rem 0 .5rem 1.2rem;border-left:2px solid var(--purple-vivid);color:var(--gold-light);font-style:italic;}
+  .ig-modal__body pre{background:rgba(8,3,18,.6);border:1px solid rgba(201,161,60,.14);padding:1rem 1.1rem;border-radius:6px;overflow-x:auto;font-size:.85rem;margin:0 0 1.1rem;}
+  .ig-modal__body code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;background:rgba(8,3,18,.6);padding:2px 6px;border-radius:4px;}
+  .ig-modal__body pre code{background:none;padding:0;}
+  .ig-modal__body figure{margin:0 0 1.1rem;}
+  .ig-modal__body figcaption{font-size:.78rem;color:var(--gold);opacity:.7;margin-top:.4rem;text-align:center;}
+  .ig-modal__loading{padding:2rem 0;color:var(--gold-pale);opacity:.7;display:flex;align-items:center;gap:1rem;}
+  .ig-modal__err a{color:var(--gold);}
+  .ig-modal__footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.2rem 2.6rem 2rem;margin-top:.6rem;border-top:1px solid rgba(201,161,60,.12);}
+  .ig-modal__closebtn{font-family:'DM Sans',sans-serif;font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:.6rem 1.5rem;border-radius:2px;border:1px solid rgba(201,161,60,.45);background:transparent;color:var(--gold);cursor:pointer;transition:background .2s,border-color .2s;}
+  .ig-modal__closebtn:hover{background:rgba(201,161,60,.1);border-color:var(--gold);}
+  @keyframes ig-fade{from{opacity:0;}to{opacity:1;}}
+  @keyframes ig-pop{from{opacity:0;transform:translateY(10px) scale(.99);}to{opacity:1;transform:none;}}
+  body.ig-modal-open{overflow:hidden;}
+  @media(max-width:600px){
+    .ig-modal{padding:0;}
+    .ig-modal__dialog{max-width:none;max-height:100vh;height:100vh;border-radius:0;}
+    .ig-modal__header{padding:2.4rem 1.4rem 0;}
+    .ig-modal__body{padding:1.4rem 1.4rem .5rem;}
+    .ig-modal__footer{padding:1.2rem 1.4rem 1.6rem;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .ig-modal__backdrop,.ig-modal__dialog{animation:none;}
   }
 </style>
 </head>
@@ -360,7 +407,7 @@
     <div class="section-label fade-up">Latest Thinking</div>
     <h2 class="fade-up">What Ian is <em>writing about now.</em></h2>
     <p class="fade-up" style="max-width:540px; margin-bottom:3.5rem; margin-top:-.5rem;">
-      Live from Medium &#8212; click any title to read in full.
+      Straight from the blog &#8212; click any title to read in full.
     </p>
 
     <div id="feed-loading" class="feed-loading fade-up">
@@ -369,7 +416,7 @@
     </div>
 
     <div id="feed-error" style="display:none; color:var(--gold-pale); padding:1rem 0; font-size:.9rem; opacity:.7;">
-      Could not load feed &#8212; <a href="https://medium.com/@iangotts" target="_blank" rel="noopener" style="color:var(--gold);">read on Medium directly</a>.
+      Could not load posts &#8212; <a href="https://iangotts.wordpress.com" target="_blank" rel="noopener" style="color:var(--gold);">read on the blog directly</a>.
     </div>
 
     <a id="featured-post" class="featured-post" href="#" target="_blank" rel="noopener" style="display:none; opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease;">
@@ -380,15 +427,34 @@
         </div>
         <h3 id="featured-title"></h3>
         <p id="featured-excerpt"></p>
-        <span class="featured-read">Read in full on Medium &#8599;</span>
+        <span class="featured-read">Read in full &#8599;</span>
       </div>
     </a>
 
     <div id="articles-list" class="articles"></div>
 
     <div style="text-align:center; margin-top:3rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-      <a href="https://medium.com/@iangotts" class="btn btn-gold" target="_blank" rel="noopener">All posts on Medium &#8599;</a>
+      <a href="https://iangotts.wordpress.com" class="btn btn-gold" target="_blank" rel="noopener">All posts on the blog &#8599;</a>
       <a href="https://www.forbes.com/councils/forbestechcouncil/people/iangotts/" class="btn btn-outline" target="_blank" rel="noopener">Forbes</a>
+    </div>
+
+    <!-- Blog article modal -->
+    <div id="post-modal" class="ig-modal" hidden aria-hidden="true">
+      <div class="ig-modal__backdrop" data-close></div>
+      <div class="ig-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="ig-modal-title">
+        <button class="ig-modal__close" type="button" data-close aria-label="Close article">&#215;</button>
+        <div class="ig-modal__scroll">
+          <div class="ig-modal__header">
+            <span id="ig-modal-date" class="article-source"></span>
+            <h2 class="ig-modal__title" id="ig-modal-title"></h2>
+          </div>
+          <div class="ig-modal__body" id="ig-modal-body"></div>
+          <div class="ig-modal__footer">
+            <a id="ig-modal-source" class="featured-read" href="#" target="_blank" rel="noopener">Open on the blog &#8599;</a>
+            <button class="ig-modal__closebtn" type="button" data-close>Close</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -469,17 +535,22 @@
     });
   });
 
-  // ── Medium RSS feed via rss2json ────────────────────
-  var FEED = 'https://api.rss2json.com/v1/api.json?rss_url=' +
-             encodeURIComponent('https://medium.com/feed/@iangotts') +
-             '&count=10';
+  // ── WordPress.com REST API (no proxy needed) ────────
+  // Public post reads return CORS headers, so the browser
+  // can fetch this directly — unlike Medium's RSS feed.
+  var SITE = 'iangotts.wordpress.com';
+  var FEED = 'https://public-api.wordpress.com/rest/v1.1/sites/' + SITE +
+             '/posts/?number=8&fields=ID,title,URL,excerpt,date';
+  function postEndpoint(id) {
+    return 'https://public-api.wordpress.com/rest/v1.1/sites/' + SITE +
+           '/posts/' + id + '?fields=ID,content';
+  }
 
   function stripHtml(html) {
     var d = document.createElement('div');
-    d.innerHTML = html;
+    d.innerHTML = html || '';
     var text = d.textContent || d.innerText || '';
-    // Clear out standard trailing baseline injection text from Medium distribution systems
-    return text.replace(/Continue reading on Medium.*/, '').replace(/\s+/g, ' ').trim();
+    return text.replace(/Continue reading.*/, '').replace(/\s+/g, ' ').trim();
   }
 
   function clip(html, max) {
@@ -488,48 +559,170 @@
   }
 
   function fmtDate(str) {
-    // Cross-browser normalization for date constructor engines (replaces dashes with forward slashes)
-    var d = new Date(str.replace(/-/g, '/'));
-    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+    // WordPress returns ISO 8601 (e.g. 2025-11-09T08:30:00+00:00) — parse directly.
+    var d = new Date(str);
+    return isNaN(d) ? '' : d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
   }
 
   function zeroPad(n) { return n < 10 ? '0' + n : '' + n; }
 
+  // ── Modal ───────────────────────────────────────────
+  var modalOpen = false;
+  var lastFocused = null;
+  var contentCache = {}; // id -> html, cached for the session
+
+  function modalEls() {
+    return {
+      modal:  document.getElementById('post-modal'),
+      title:  document.getElementById('ig-modal-title'),
+      date:   document.getElementById('ig-modal-date'),
+      body:   document.getElementById('ig-modal-body'),
+      source: document.getElementById('ig-modal-source')
+    };
+  }
+
+  function fetchContent(id) {
+    if (contentCache[id] !== undefined) return Promise.resolve(contentCache[id]);
+    return fetch(postEndpoint(id), { cache: 'no-store' })
+      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(data) {
+        var html = (data && data.content) || '';
+        contentCache[id] = html;
+        return html;
+      });
+  }
+
+  // post = { id, title, url, date }
+  function openModal(post) {
+    var m = modalEls();
+    if (!m.modal || !m.body || !m.title) return;
+
+    lastFocused = document.activeElement;
+    m.title.innerHTML = post.title;
+    if (m.date) m.date.textContent = 'Blog \u00b7 ' + fmtDate(post.date);
+    if (m.source) m.source.href = post.url;
+    m.body.innerHTML = '<div class="ig-modal__loading"><div class="feed-spinner"></div><span>Loading article\u2026</span></div>';
+    var scroll = m.modal.querySelector('.ig-modal__scroll');
+    if (scroll) scroll.scrollTop = 0;
+
+    m.modal.hidden = false;
+    m.modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('ig-modal-open');
+    modalOpen = true;
+    history.pushState({ igModal: true }, '');
+    var closeBtn = m.modal.querySelector('.ig-modal__close');
+    if (closeBtn) closeBtn.focus();
+    document.addEventListener('keydown', onKeydown);
+
+    fetchContent(post.id)
+      .then(function(html) {
+        if (!modalOpen || !m.body) return;
+        m.body.innerHTML = html || '<p>No content available for this article.</p>';
+      })
+      .catch(function(err) {
+        console.error('[blog] failed to load article body:', err);
+        if (!m.body) return;
+        m.body.innerHTML =
+          '<p class="ig-modal__err">Couldn\u2019t load this article. ' +
+          '<a href="' + post.url + '" target="_blank" rel="noopener">Open it on the blog \u2197</a></p>';
+      });
+  }
+
+  function closeModal() {
+    var m = modalEls();
+    if (!m.modal) return;
+    m.modal.hidden = true;
+    m.modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('ig-modal-open');
+    modalOpen = false;
+    document.removeEventListener('keydown', onKeydown);
+    if (m.body) m.body.innerHTML = ''; // stop any embedded media
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  // Route closes through history so the Back button and the close
+  // controls behave identically.
+  function requestClose() {
+    if (history.state && history.state.igModal) history.back();
+    else closeModal();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); requestClose(); return; }
+    if (e.key === 'Tab') trapFocus(e);
+  }
+
+  function trapFocus(e) {
+    var m = modalEls();
+    if (!m.modal) return;
+    var nodes = m.modal.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+    var focusables = Array.prototype.filter.call(nodes, function(el) { return el.offsetParent !== null; });
+    if (!focusables.length) return;
+    var first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  function wireModal() {
+    var m = modalEls();
+    if (!m.modal) return;
+    var closers = m.modal.querySelectorAll('[data-close]');
+    Array.prototype.forEach.call(closers, function(el) {
+      el.addEventListener('click', requestClose);
+    });
+    window.addEventListener('popstate', function() { if (modalOpen) closeModal(); });
+  }
+
+  // Intercept a plain left-click to open the modal; let modified clicks
+  // (new tab/window) follow the real link to the blog.
+  function attachOpen(el, post) {
+    el.addEventListener('click', function(e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      openModal(post);
+    });
+  }
+
+  // ── Load the feed ───────────────────────────────────
+  wireModal();
+
   fetch(FEED)
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data) {
       var loadingEl = document.getElementById('feed-loading');
       if (loadingEl) loadingEl.style.display = 'none';
 
-      if (!data.items || !data.items.length) {
+      var items = data && data.posts;
+      if (!items || !items.length) {
         document.getElementById('feed-error').style.display = 'block';
         return;
       }
 
-      var items = data.items;
-
-      // Featured — first item
+      // Featured — first (most recent) post
       var first = items[0];
       var fp = document.getElementById('featured-post');
       if (fp) {
-        fp.href = first.link;
-        document.getElementById('featured-title').textContent = first.title;
-        var rawContent = first.content || first.description || '';
-        document.getElementById('featured-excerpt').textContent = clip(rawContent, 220);
-        document.getElementById('featured-date').textContent = 'Medium \u00b7 ' + fmtDate(first.pubDate);
+        fp.href = first.URL;
+        document.getElementById('featured-title').innerHTML = first.title;
+        document.getElementById('featured-excerpt').textContent = clip(first.excerpt, 220);
+        document.getElementById('featured-date').textContent = 'Blog \u00b7 ' + fmtDate(first.date);
+        attachOpen(fp, { id: first.ID, title: first.title, url: first.URL, date: first.date });
         fp.style.display = 'block';
-        setTimeout(function() { 
+        setTimeout(function() {
           fp.style.opacity = '1';
           fp.style.transform = 'translateY(0)';
         }, 60);
       }
 
-      // List — items 2 to 8
+      // List — posts 2 to 8
       var list = document.getElementById('articles-list');
       if (list) {
         items.slice(1, 8).forEach(function(item, i) {
           var a = document.createElement('a');
-          a.href = item.link;
+          a.href = item.URL;
           a.target = '_blank';
           a.rel = 'noopener';
           a.className = 'article';
@@ -537,14 +730,15 @@
           a.innerHTML =
             '<span class="article-num">' + zeroPad(i + 2) + '</span>' +
             '<span class="article-title">' + item.title + '</span>' +
-            '<span class="article-source">Medium \u00b7 ' + fmtDate(item.pubDate) + '</span>';
+            '<span class="article-source">Blog \u00b7 ' + fmtDate(item.date) + '</span>';
+          attachOpen(a, { id: item.ID, title: item.title, url: item.URL, date: item.date });
           list.appendChild(a);
         });
         setTimeout(function() { list.classList.add('visible'); }, 120);
       }
     })
     .catch(function(err) {
-      console.error("Medium feed failed to parse:", err);
+      console.error("WordPress feed failed to load:", err);
       var loadingEl = document.getElementById('feed-loading');
       if (loadingEl) loadingEl.style.display = 'none';
       document.getElementById('feed-error').style.display = 'block';
