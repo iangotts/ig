@@ -195,21 +195,35 @@
   }
 
   /* SUBSCRIBE */
-  .subscribe-card{margin-top:3.5rem;padding:2.5rem;border:1px solid rgba(201,161,60,.3);background:rgba(123,47,224,.08);border-radius:4px;position:relative;overflow:hidden;}
-  .subscribe-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple-vivid),var(--gold));}
-  .subscribe-eyebrow{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;}
-  .subscribe-card h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:400;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
-  .subscribe-card .sub-intro{font-size:.9rem;line-height:1.7;max-width:580px;margin-bottom:1.7rem;color:var(--gold-pale);}
-  .subscribe-form{display:flex;gap:.8rem;flex-wrap:wrap;max-width:580px;align-items:stretch;}
-  .subscribe-form input[type=email]{flex:1;min-width:220px;padding:.85rem 1.1rem;background:rgba(8,3,18,.5);border:1px solid rgba(201,161,60,.3);border-radius:2px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+  .writing-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+  .writing-head h2{margin-bottom:0;}
+  .subscribe-trigger{flex-shrink:0;}
+  .sub-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .sub-modal[hidden]{display:none;}
+  .sub-modal__backdrop{position:absolute;inset:0;background:rgba(8,3,18,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:ig-fade .18s ease;}
+  .sub-modal__dialog{position:relative;width:100%;max-width:480px;background:#22113f;border:1px solid rgba(201,161,60,.3);border-radius:6px;overflow:hidden;padding:2.6rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 60px rgba(123,47,224,.25);animation:ig-pop .2s ease;}
+  .sub-modal__dialog::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple-vivid),var(--gold));}
+  .sub-modal__close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,161,60,.3);cursor:pointer;background:rgba(24,8,48,.7);color:var(--gold-pale);font-size:22px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,color .15s,border-color .15s;}
+  .sub-modal__close:hover{background:rgba(123,47,224,.3);color:var(--gold);border-color:var(--gold);}
+  .sub-modal__eyebrow{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;}
+  .sub-modal__dialog h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:400;color:var(--white);line-height:1.2;margin-bottom:.75rem;}
+  .sub-modal__dialog .sub-intro{font-size:.9rem;line-height:1.7;margin-bottom:1.6rem;color:var(--gold-pale);}
+  .subscribe-form{display:flex;flex-direction:column;gap:.8rem;}
+  .subscribe-form input[type=email]{padding:.85rem 1.1rem;background:rgba(8,3,18,.5);border:1px solid rgba(201,161,60,.3);border-radius:2px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
   .subscribe-form input[type=email]::placeholder{color:rgba(245,233,197,.4);}
   .subscribe-form input[type=email]:focus{border-color:var(--gold);}
-  .subscribe-form button{white-space:nowrap;}
+  .subscribe-form button{width:100%;}
   .subscribe-form button:disabled{opacity:.55;cursor:default;}
   .subscribe-note{margin-top:1rem;font-size:.82rem;line-height:1.6;min-height:1.1em;}
   .subscribe-note.ok{color:var(--gold-light);}
   .subscribe-note.err{color:#e6a98a;}
   .subscribe-note.muted{color:var(--gold-pale);opacity:.6;}
+  body.sub-modal-open{overflow:hidden;}
+  @media(max-width:600px){
+    .sub-modal{padding:16px;}
+    .sub-modal__dialog{padding:2.2rem 1.5rem;}
+    .writing-head{align-items:flex-start;}
+  }
 
   /* ---- BLOG ARTICLE MODAL ---- */
   .ig-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;}
@@ -429,7 +443,10 @@
 <section id="writing">
   <div class="container">
     <div class="section-label fade-up">Latest Thinking</div>
-    <h2 class="fade-up">What Ian is <em>writing about now.</em></h2>
+    <div class="writing-head fade-up">
+      <h2>What Ian is <em>writing about now.</em></h2>
+      <button type="button" class="btn btn-gold subscribe-trigger" id="subscribe-open">Subscribe</button>
+    </div>
     <p class="fade-up" style="max-width:540px; margin-bottom:3.5rem; margin-top:-.5rem;">
       Straight from the blog &#8212; click any title to read in full.
     </p>
@@ -457,27 +474,31 @@
 
     <div id="articles-list" class="articles"></div>
 
-    <!-- Subscribe by email (native WordPress.com subscription) -->
-    <div class="subscribe-card fade-up">
-      <div class="subscribe-eyebrow">Subscribe</div>
-      <h3>Never miss a post</h3>
-      <p class="sub-intro">New thinking on the Salesforce ecosystem, AI agents, and go-to-market strategy &#8212; delivered to your inbox. Enter your email and confirm via the link WordPress sends you.</p>
-      <form id="subscribe-form" class="subscribe-form" action="https://subscribe.wordpress.com" method="post" accept-charset="utf-8" target="subscribe-iframe">
-        <input type="email" name="email" id="subscribe-email" placeholder="Your email address" required autocomplete="email" aria-label="Email address">
-        <input type="hidden" name="action" value="subscribe">
-        <input type="hidden" name="blog_id" id="subscribe-blog-id" value="">
-        <input type="hidden" name="source" value="https://iangotts.com/#writing">
-        <input type="hidden" name="sub-type" value="widget">
-        <input type="hidden" name="redirect_fragment" value="writing">
-        <button type="submit" class="btn btn-gold" id="subscribe-submit">Subscribe</button>
-      </form>
-      <p class="subscribe-note muted" id="subscribe-note" role="status" aria-live="polite"></p>
-      <iframe name="subscribe-iframe" id="subscribe-iframe" title="Subscription" style="display:none;width:0;height:0;border:0;"></iframe>
-    </div>
-
     <div style="text-align:center; margin-top:3rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
       <a href="https://iangotts.wordpress.com" class="btn btn-gold" target="_blank" rel="noopener">All posts on the blog &#8599;</a>
       <a href="https://www.forbes.com/councils/forbestechcouncil/people/iangotts/" class="btn btn-outline" target="_blank" rel="noopener">Forbes</a>
+    </div>
+
+    <!-- Subscribe modal -->
+    <div id="subscribe-modal" class="sub-modal" hidden aria-hidden="true">
+      <div class="sub-modal__backdrop" data-sub-close></div>
+      <div class="sub-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="sub-modal-title">
+        <button class="sub-modal__close" type="button" data-sub-close aria-label="Close">&#215;</button>
+        <div class="sub-modal__eyebrow">Subscribe</div>
+        <h3 id="sub-modal-title">Never miss a post</h3>
+        <p class="sub-intro">New thinking on the Salesforce ecosystem, AI agents, and go-to-market strategy &#8212; delivered to your inbox. Confirm via the link WordPress sends you.</p>
+        <form id="subscribe-form" class="subscribe-form" action="https://subscribe.wordpress.com" method="post" accept-charset="utf-8" target="subscribe-iframe">
+          <input type="email" name="email" id="subscribe-email" placeholder="Your email address" required autocomplete="email" aria-label="Email address">
+          <input type="hidden" name="action" value="subscribe">
+          <input type="hidden" name="blog_id" id="subscribe-blog-id" value="">
+          <input type="hidden" name="source" value="https://iangotts.com/#writing">
+          <input type="hidden" name="sub-type" value="widget">
+          <input type="hidden" name="redirect_fragment" value="writing">
+          <button type="submit" class="btn btn-gold" id="subscribe-submit">Subscribe</button>
+        </form>
+        <p class="subscribe-note muted" id="subscribe-note" role="status" aria-live="polite"></p>
+        <iframe name="subscribe-iframe" id="subscribe-iframe" title="Subscription" style="display:none;width:0;height:0;border:0;"></iframe>
+      </div>
     </div>
 
     <!-- Blog article modal -->
@@ -723,60 +744,76 @@
     });
   }
 
-  // ── Email subscribe (native WordPress.com) ──────────
+  // ── Load the feed ───────────────────────────────────
+  // Email subscribe (native WordPress.com, popup modal).
   // Posts to subscribe.wordpress.com (double opt-in). The numeric
   // blog_id is fetched client-side from the same CORS-enabled API
-  // used by the feed, so there is nothing to hardcode or maintain.
+  // used by the feed, so nothing is hardcoded or maintained.
   (function wireSubscribe() {
+    var modal   = document.getElementById('subscribe-modal');
+    var openBtn = document.getElementById('subscribe-open');
     var form    = document.getElementById('subscribe-form');
     var emailEl = document.getElementById('subscribe-email');
     var idEl    = document.getElementById('subscribe-blog-id');
     var btn     = document.getElementById('subscribe-submit');
     var note    = document.getElementById('subscribe-note');
-    if (!form || !emailEl || !idEl) return;
+    if (!modal || !form || !emailEl || !idEl) return;
 
     var blogIdReady = false;
+    var subLastFocus = null;
 
     function setNote(msg, cls) {
       if (!note) return;
       note.textContent = msg;
       note.className = 'subscribe-note ' + (cls || 'muted');
     }
+    function openSub() {
+      subLastFocus = document.activeElement;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('sub-modal-open');
+      document.addEventListener('keydown', onSubKey);
+      setTimeout(function() { emailEl.focus(); }, 30);
+    }
+    function closeSub() {
+      modal.hidden = true;
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('sub-modal-open');
+      document.removeEventListener('keydown', onSubKey);
+      if (subLastFocus && subLastFocus.focus) subLastFocus.focus();
+    }
+    function onSubKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); closeSub(); }
+    }
 
-    // Resolve the blog_id (e.g. iangotts.wordpress.com -> 123456789)
+    if (openBtn) openBtn.addEventListener('click', openSub);
+    Array.prototype.forEach.call(modal.querySelectorAll('[data-sub-close]'), function(el) {
+      el.addEventListener('click', closeSub);
+    });
+
     fetch('https://public-api.wordpress.com/rest/v1.1/sites/' + SITE + '?fields=ID')
       .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(d) {
-        if (d && d.ID) { idEl.value = d.ID; blogIdReady = true; }
-      })
+      .then(function(d) { if (d && d.ID) { idEl.value = d.ID; blogIdReady = true; } })
       .catch(function(err) { console.error('[subscribe] blog id load failed:', err); });
 
     form.addEventListener('submit', function(e) {
       var email = (emailEl.value || '').trim();
       if (!email) return;
-
-      // If the blog_id hasn't resolved yet, send them to the blog to
-      // subscribe there rather than posting an incomplete request.
       if (!blogIdReady || !idEl.value) {
         e.preventDefault();
-        setNote('Opening the blog so you can subscribe there…', 'muted');
+        setNote('Opening the blog so you can subscribe there\u2026', 'muted');
         window.open('https://iangotts.wordpress.com/', '_blank', 'noopener');
         return;
       }
-
-      // Otherwise let the real POST go to the hidden iframe and show
-      // our own confirmation. WordPress sends a confirmation email.
-      if (btn) { btn.disabled = true; btn.textContent = 'Subscribing…'; }
-      setNote('Almost there — check your inbox and click the link to confirm your subscription.', 'ok');
+      if (btn) { btn.disabled = true; btn.textContent = 'Subscribing\u2026'; }
+      setNote('Almost there \u2014 check your inbox and click the link to confirm.', 'ok');
       setTimeout(function() {
         if (btn) { btn.disabled = false; btn.textContent = 'Subscribe'; }
         form.reset();
       }, 1600);
-      // No preventDefault: the form submits to the hidden iframe.
     });
   })();
 
-  // ── Load the feed ───────────────────────────────────
   wireModal();
 
   fetch(FEED)
