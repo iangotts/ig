@@ -141,6 +141,28 @@
   .feed-spinner{width:18px;height:18px;border:2px solid rgba(201,161,60,.2);border-top-color:var(--gold);border-radius:50%;animation:spins .8s linear infinite;flex-shrink:0;}
   @keyframes spins{to{transform:rotate(360deg);}}
 
+  /* SEARCH + CATEGORY FILTER */
+  .writing-controls{margin:0 0 2.5rem;opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+  .writing-controls[hidden]{display:none;}
+  .writing-controls.visible{opacity:1;transform:translateY(0);}
+  .writing-search{position:relative;max-width:480px;margin:0 0 1.3rem;}
+  .writing-search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--gold);opacity:.6;pointer-events:none;}
+  .writing-search input{width:100%;box-sizing:border-box;font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.9rem 2.7rem .9rem 3rem;background:rgba(8,3,18,.5);border:1px solid rgba(201,161,60,.3);border-radius:3px;color:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;}
+  .writing-search input::placeholder{color:rgba(245,233,197,.4);}
+  .writing-search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,60,.12);}
+  .writing-search input::-webkit-search-cancel-button{-webkit-appearance:none;}
+  .writing-search__clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:none;background:transparent;border-radius:6px;color:var(--gold-pale);cursor:pointer;font-size:20px;line-height:1;display:none;align-items:center;justify-content:center;transition:background .15s,color .15s;}
+  .writing-search__clear:hover{background:rgba(123,47,224,.3);color:var(--gold);}
+  .writing-search--has-value .writing-search__clear{display:inline-flex;}
+  .writing-chips{display:flex;flex-wrap:wrap;gap:.55rem;}
+  .writing-chip{font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.06em;font-weight:400;padding:.5rem 1.1rem;border-radius:100px;cursor:pointer;border:1px solid rgba(201,161,60,.28);background:transparent;color:var(--gold-pale);transition:background .2s,border-color .2s,color .2s;}
+  .writing-chip:hover{background:rgba(201,161,60,.08);border-color:rgba(201,161,60,.5);}
+  .writing-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .writing-chip--active{background:var(--gold);border-color:var(--gold);color:var(--text-dark);font-weight:500;}
+  .writing-chip--active:hover{background:var(--gold-light);border-color:var(--gold-light);}
+  .writing-count{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);opacity:.55;margin:0 0 1.4rem;}
+  .no-posts{padding:1.4rem 0;color:var(--gold-pale);opacity:.75;font-size:.95rem;line-height:1.6;}
+
   /* VIDEO */
   #watch{background:linear-gradient(160deg,rgba(123,47,224,.22) 0%,transparent 60%),var(--purple-deep);position:relative;overflow:hidden;}
   #watch::before{content:'';position:absolute;left:-150px;bottom:-150px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,161,60,.06);pointer-events:none;}
@@ -447,9 +469,24 @@
       <h2>What Ian is <em>writing about now.</em></h2>
       <button type="button" class="btn btn-gold subscribe-trigger" id="subscribe-open">Subscribe</button>
     </div>
-    <p class="fade-up" style="max-width:540px; margin-bottom:3.5rem; margin-top:-.5rem;">
-      Straight from the blog &#8212; click any title to read in full.
+    <p class="fade-up" style="max-width:540px; margin-bottom:2.2rem; margin-top:-.5rem;">
+      Straight from the blog &#8212; the latest 20 posts. Search or filter by topic, then click any title to read in full.
     </p>
+
+    <!-- Search + category filter (revealed once posts load) -->
+    <div id="writing-controls" class="writing-controls" hidden>
+      <div id="writing-search" class="writing-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="writing-search-input" type="search" autocomplete="off" placeholder="Search posts&#8230;" aria-label="Search posts by title or excerpt">
+        <button id="writing-search-clear" class="writing-search__clear" type="button" aria-label="Clear search">&#215;</button>
+      </div>
+      <div id="writing-chips" class="writing-chips" role="group" aria-label="Filter by category"></div>
+    </div>
+
+    <p id="feed-count" class="writing-count" style="display:none;"></p>
 
     <div id="feed-loading" class="feed-loading fade-up">
       <div class="feed-spinner"></div>
@@ -459,6 +496,8 @@
     <div id="feed-error" style="display:none; color:var(--gold-pale); padding:1rem 0; font-size:.9rem; opacity:.7;">
       Could not load posts &#8212; <a href="https://iangotts.wordpress.com" target="_blank" rel="noopener" style="color:var(--gold);">read on the blog directly</a>.
     </div>
+
+    <div id="feed-noresults" class="no-posts" style="display:none;"></div>
 
     <a id="featured-post" class="featured-post" href="#" target="_blank" rel="noopener" style="display:none; opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease;">
       <div class="featured-inner">
@@ -601,7 +640,7 @@
   // can fetch this directly — unlike Medium's RSS feed.
   var SITE = 'iangotts.wordpress.com';
   var FEED = 'https://public-api.wordpress.com/rest/v1.1/sites/' + SITE +
-             '/posts/?number=8&fields=ID,title,URL,excerpt,date';
+             '/posts/?number=20&fields=ID,title,URL,excerpt,date,categories';
   function postEndpoint(id) {
     return 'https://public-api.wordpress.com/rest/v1.1/sites/' + SITE +
            '/posts/' + id + '?fields=ID,content';
@@ -626,6 +665,41 @@
   }
 
   function zeroPad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  // Decode HTML entities (e.g. &#8217; &amp;) to plain text — used for search.
+  function decodeEntities(s) {
+    var t = document.createElement('textarea');
+    t.innerHTML = s || '';
+    return t.value;
+  }
+
+  // Categories we never surface as chips or labels (case-insensitive).
+  var HIDDEN_CATEGORIES = { 'uncategorized': true };
+  function categoryNames(cats) {
+    if (!cats) return [];
+    return Object.keys(cats)
+      .map(function(k) { return cats[k] && cats[k].name; })
+      .filter(function(n) { return n && !HIDDEN_CATEGORIES[n.toLowerCase()]; });
+  }
+
+  // Normalise a raw WordPress post into the shape the UI uses.
+  function prepare(post) {
+    var title = post.title || '';        // raw HTML (entities preserved for display)
+    var excerpt = post.excerpt || '';
+    var titleText = decodeEntities(title).replace(/\s+/g, ' ').trim();
+    return {
+      id: post.ID,
+      title: title,
+      url: post.URL,
+      excerpt: excerpt,
+      date: post.date,
+      categories: categoryNames(post.categories),
+      // search scope: title + excerpt only, lowercased
+      haystack: (titleText + ' ' + stripHtml(excerpt)).toLowerCase()
+    };
+  }
+
+  function sourceLabel(p) { return (p.categories && p.categories[0]) || 'Blog'; }
 
   // ── Modal ───────────────────────────────────────────
   var modalOpen = false;
@@ -816,6 +890,156 @@
 
   wireModal();
 
+  // ── Feed state ──────────────────────────────────────
+  var allPosts = [];            // prepared posts (newest first)
+  var activeCategory = null;    // null = "All"
+
+  // Featured card = newest post; only shown in the default (unfiltered) view.
+  function showFeatured(post) {
+    var fp = document.getElementById('featured-post');
+    if (!fp) return;
+    fp.href = post.url;
+    document.getElementById('featured-title').innerHTML = post.title;
+    document.getElementById('featured-excerpt').textContent = clip(post.excerpt, 220);
+    document.getElementById('featured-date').textContent = sourceLabel(post) + ' \u00b7 ' + fmtDate(post.date);
+    // Direct assignment (not addEventListener) so re-renders don't stack handlers.
+    fp.onclick = function(e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      openModal({ id: post.id, title: post.title, url: post.url, date: post.date });
+    };
+    fp.style.display = 'block';
+    requestAnimationFrame(function() {
+      fp.style.opacity = '1';
+      fp.style.transform = 'translateY(0)';
+    });
+  }
+  function hideFeatured() {
+    var fp = document.getElementById('featured-post');
+    if (fp) fp.style.display = 'none';
+  }
+
+  function renderList(posts, startNum) {
+    var list = document.getElementById('articles-list');
+    if (!list) return;
+    list.innerHTML = '';
+    posts.forEach(function(item, i) {
+      var a = document.createElement('a');
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'article';
+      a.innerHTML =
+        '<span class="article-num">' + zeroPad(startNum + i) + '</span>' +
+        '<span class="article-title">' + item.title + '</span>' +
+        '<span class="article-source">' + sourceLabel(item) + ' \u00b7 ' + fmtDate(item.date) + '</span>';
+      attachOpen(a, { id: item.id, title: item.title, url: item.url, date: item.date });
+      list.appendChild(a);
+    });
+    requestAnimationFrame(function() { list.classList.add('visible'); });
+  }
+
+  // ── Combined filter (category + text), then render ──
+  function render() {
+    var input = document.getElementById('writing-search-input');
+    var raw = (input && input.value || '').trim();
+    var terms = raw ? raw.toLowerCase().split(/\s+/) : [];
+    var filtering = !!(raw || activeCategory);
+
+    var matches = allPosts.filter(function(p) {
+      return (!activeCategory || p.categories.indexOf(activeCategory) !== -1) &&
+             terms.every(function(t) { return p.haystack.indexOf(t) !== -1; });
+    });
+
+    var nores = document.getElementById('feed-noresults');
+    var count = document.getElementById('feed-count');
+
+    if (!matches.length) {
+      hideFeatured();
+      var listEl = document.getElementById('articles-list');
+      if (listEl) listEl.innerHTML = '';
+      if (nores) {
+        nores.textContent = raw
+          ? 'Nothing matched \u201c' + raw + '\u201d' + (activeCategory ? ' in ' + activeCategory : '') +
+            '. Try another word or clear the filters.'
+          : 'No posts in ' + activeCategory + '.';
+        nores.style.display = 'block';
+      }
+      if (count) count.style.display = 'none';
+      return;
+    }
+    if (nores) nores.style.display = 'none';
+
+    if (!filtering) {
+      // Default view: newest post featured, the rest numbered from 02.
+      showFeatured(matches[0]);
+      renderList(matches.slice(1), 2);
+    } else {
+      // Filtered view: no featured card, matches numbered from 01.
+      hideFeatured();
+      renderList(matches, 1);
+    }
+
+    if (count) {
+      count.style.display = 'block';
+      if (filtering) {
+        count.textContent = matches.length + (matches.length === 1 ? ' post' : ' posts') +
+          (activeCategory ? ' in ' + activeCategory : '') +
+          (raw ? ' matching \u201c' + raw + '\u201d' : '');
+      } else {
+        count.textContent = 'Showing the latest ' + matches.length + ' posts';
+      }
+    }
+  }
+
+  // ── Category chips ──────────────────────────────────
+  function renderChips() {
+    var chips = document.getElementById('writing-chips');
+    if (!chips) return;
+    var names = [];
+    allPosts.forEach(function(p) {
+      p.categories.forEach(function(n) { if (names.indexOf(n) === -1) names.push(n); });
+    });
+    names.sort(function(a, b) { return a.localeCompare(b); });
+    if (!names.length) return;
+
+    function makeChip(label, value) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'writing-chip' + (value === activeCategory ? ' writing-chip--active' : '');
+      b.textContent = label;
+      b.setAttribute('aria-pressed', String(value === activeCategory));
+      b.addEventListener('click', function() {
+        activeCategory = value;
+        Array.prototype.forEach.call(chips.querySelectorAll('.writing-chip'), function(c) {
+          var on = c === b;
+          c.classList.toggle('writing-chip--active', on);
+          c.setAttribute('aria-pressed', String(on));
+        });
+        render();
+      });
+      return b;
+    }
+
+    chips.appendChild(makeChip('All', null));
+    names.forEach(function(n) { chips.appendChild(makeChip(n, n)); });
+  }
+
+  // ── Search wiring ───────────────────────────────────
+  function wireSearch() {
+    var wrap  = document.getElementById('writing-search');
+    var input = document.getElementById('writing-search-input');
+    var clear = document.getElementById('writing-search-clear');
+    if (!wrap || !input) return;
+    function sync() {
+      wrap.classList.toggle('writing-search--has-value', input.value.length > 0);
+      render();
+    }
+    input.addEventListener('input', sync);
+    if (clear) clear.addEventListener('click', function() { input.value = ''; sync(); input.focus(); });
+  }
+
+  // ── Load the feed ───────────────────────────────────
   fetch(FEED)
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -831,41 +1055,14 @@
         return;
       }
 
-      // Featured — first (most recent) post
-      var first = items[0];
-      var fp = document.getElementById('featured-post');
-      if (fp) {
-        fp.href = first.URL;
-        document.getElementById('featured-title').innerHTML = first.title;
-        document.getElementById('featured-excerpt').textContent = clip(first.excerpt, 220);
-        document.getElementById('featured-date').textContent = 'Blog \u00b7 ' + fmtDate(first.date);
-        attachOpen(fp, { id: first.ID, title: first.title, url: first.URL, date: first.date });
-        fp.style.display = 'block';
-        setTimeout(function() {
-          fp.style.opacity = '1';
-          fp.style.transform = 'translateY(0)';
-        }, 60);
-      }
+      allPosts = items.filter(function(p) { return p.URL && p.title; }).map(prepare);
 
-      // List — posts 2 to 8
-      var list = document.getElementById('articles-list');
-      if (list) {
-        items.slice(1, 8).forEach(function(item, i) {
-          var a = document.createElement('a');
-          a.href = item.URL;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          a.className = 'article';
-          a.style.transitionDelay = (i * 0.07) + 's';
-          a.innerHTML =
-            '<span class="article-num">' + zeroPad(i + 2) + '</span>' +
-            '<span class="article-title">' + item.title + '</span>' +
-            '<span class="article-source">Blog \u00b7 ' + fmtDate(item.date) + '</span>';
-          attachOpen(a, { id: item.ID, title: item.title, url: item.URL, date: item.date });
-          list.appendChild(a);
-        });
-        setTimeout(function() { list.classList.add('visible'); }, 120);
-      }
+      var controls = document.getElementById('writing-controls');
+      if (controls) { controls.hidden = false; controls.classList.add('visible'); }
+
+      renderChips();
+      wireSearch();
+      render();
     })
     .catch(function(err) {
       console.error("WordPress feed failed to load:", err);
