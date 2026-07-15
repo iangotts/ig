@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decision Engine: Automation Review</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1d24; --muted: #5b6270; --line: #e3e6ec; --card: #f7f8fa;
+    --accent: #2f6bff; --crit: #d64545; --warn: #c77700; --info: #2f6bff; --ok: #1a8f5a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171c; --fg:#e7eaf0; --muted:#9aa2b1; --line:#2a2f38; --card:#1c2028;
+            --accent:#6a9bff; --crit:#ff6b6b; --warn:#e0a03a; --info:#6a9bff; --ok:#3ecf8e; }
+  }
+  :root[data-theme="dark"] { --bg:#14171c; --fg:#e7eaf0; --muted:#9aa2b1; --line:#2a2f38; --card:#1c2028;
+            --accent:#6a9bff; --crit:#ff6b6b; --warn:#e0a03a; --info:#6a9bff; --ok:#3ecf8e; }
+  :root[data-theme="light"] { --bg:#fff; --fg:#1a1d24; --muted:#5b6270; --line:#e3e6ec; --card:#f7f8fa;
+            --accent:#2f6bff; --crit:#d64545; --warn:#c77700; --info:#2f6bff; --ok:#1a8f5a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .de-report { max-width: 920px; margin: 0 auto; padding: 24px 20px 64px; }
+  header.de-head h1 { font-size: 20px; margin: 0 0 2px; }
+  header.de-head .sub { color: var(--muted); font-size: 13px; }
+  nav.tabs { display:flex; flex-wrap:wrap; gap:4px; border-bottom:1px solid var(--line);
+             margin:20px 0 0; overflow-x:auto; }
+  nav.tabs button { appearance:none; background:none; border:0; border-bottom:2px solid transparent;
+             color:var(--muted); padding:10px 12px; font-size:13.5px; cursor:pointer; white-space:nowrap; }
+  nav.tabs button[aria-selected="true"] { color:var(--fg); border-bottom-color:var(--accent); font-weight:600; }
+  nav.tabs button:disabled { opacity:.4; cursor:default; }
+  .panel { display:none; padding:20px 2px; }
+  .panel[data-active="true"] { display:block; }
+  .panel h2 { font-size:16px; margin:0 0 10px; }
+  .empty { color:var(--muted); font-style:italic; padding:24px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px;
+          padding:14px 16px; margin:12px 0; }
+  .card h3 { margin:0 0 4px; font-size:14.5px; }
+  .card .csub { color:var(--muted); font-size:12.5px; margin-bottom:8px; }
+  .badges { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 10px; }
+  .badge { font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line);
+           color:var(--muted); }
+  .badge.crit{ color:var(--crit); border-color:var(--crit); }
+  .badge.warn{ color:var(--warn); border-color:var(--warn); }
+  .badge.info{ color:var(--info); border-color:var(--info); }
+  .badge.ok  { color:var(--ok);   border-color:var(--ok);   }
+  .badge.rec { color:#fff; background:var(--accent); border-color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin:8px 0; display:block; overflow-x:auto; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  ul { margin:6px 0; padding-left:18px; } li { margin:2px 0; }
+  code { background:var(--card); padding:1px 5px; border-radius:4px; font-size:12.5px; }
+  .pros li::marker{ color:var(--ok);} .cons li::marker{ color:var(--warn);}
+</style>
+</head>
+<body>
+<div class="de-report">
+  <header class="de-head">
+    <h1>Automation Review: <span id="mission-title">Email the customer when a new Case is created</span></h1>
+    <div class="sub">Reference model: Elements full sandbox (<code>00Dbf000005FlRxEAK</code>) · Mission <code>6a57b86f9ffc79d90ed86ba3</code> · Decision Engine (draft; nothing written to Salesforce/Elements)</div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="false" data-tab="inventory">Inventory</button>
+    <button role="tab" aria-selected="false" data-tab="recommendation">Recommendation</button>
+    <button role="tab" aria-selected="false" data-tab="dependencies">Dependencies</button>
+    <button role="tab" aria-selected="false" data-tab="impact">Change Impact</button>
+    <button role="tab" aria-selected="false" data-tab="risk">Architecture Risk</button>
+    <button role="tab" aria-selected="true"  data-tab="backlog">Backlog</button>
+  </nav>
+
+  <section class="panel" data-tab="inventory">
+    <h2>Automation Inventory</h2>
+    <div class="badges">
+      <span class="badge info">Primary entity: Case</span>
+      <span class="badge">3 candidates</span>
+      <span class="badge">3 trigger-matched</span>
+      <span class="badge">0 write-matched</span>
+      <span class="badge ok">3 active / 0 inactive</span>
+    </div>
+    <p>Three active automations fire on the Case object: one Apex Trigger (<strong>EasyRollUp_Case</strong>) and two Flows (<strong>PB Technical Case Email Alerts</strong> and <strong>Update Intercom Case Ticket</strong>). All three run in the after-save phase. <strong>PB Technical Case Email Alerts</strong> runs after a Case is created or updated, which overlaps directly with this requirement, though the inventory could not confirm its precise business effect. No inactive or omitted items were found in this scan.</p>
+    <table>
+      <thead><tr><th>Automation</th><th>Type</th><th>Trigger</th><th>Status</th><th>Why relevant</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>PB Technical Case Email Alerts</strong><br><code>PB_Technical_Case_Email_Alerts</code></td>
+          <td>Flow<br><span class="csub">process_builder · after_save</span></td>
+          <td>create, update</td>
+          <td><span class="badge ok">active</span></td>
+          <td>May already send emails on new Cases — adding another could result in duplicate notifications to customers. Effect confidence: <span class="badge warn">low</span></td>
+        </tr>
+        <tr>
+          <td><strong>EasyRollUp_Case</strong><br><code>EasyRollUp_Case</code></td>
+          <td>Apex Trigger<br><span class="csub">apex_trigger · after_save</span></td>
+          <td>create, update, delete, undelete</td>
+          <td><span class="badge ok">active</span></td>
+          <td>Already runs custom Apex logic on Case changes — a new email Flow fires in the same transaction, so watch for field conflicts or recursion.</td>
+        </tr>
+        <tr>
+          <td><strong>Update Intercom Case Ticket</strong><br><code>Update_Intercom_Case_Ticket</code></td>
+          <td>Flow<br><span class="csub">record_triggered_flow · after_save</span></td>
+          <td>update only</td>
+          <td><span class="badge ok">active</span></td>
+          <td>Calls Apex to update an external Intercom ticket after Case changes. Same after-save phase — consider integration timing. Update-only, so no direct collision on create.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 style="font-size:14px;margin-top:20px;">Ambiguities the Decision Engine flagged in the request</h3>
+    <ul>
+      <li>Which email template or content should be used?</li>
+      <li>How is the customer email address determined?</li>
+      <li>Should the email be sent for all Case types or only specific ones?</li>
+    </ul>
+  </section>
+
+  <section class="panel" data-tab="recommendation"><h2>Recommendation</h2>
+    <div class="badges">
+      <span class="badge info">3 options</span>
+      <span class="badge">1 automation reviewed</span>
+      <span class="badge warn">Awaiting decision</span>
+    </div>
+
+    <div class="card">
+      <h3>Existing automation landscape</h3>
+      <ul>
+        <li>An active Flow (<code>PB_Technical_Case_Email_Alerts</code>) is triggered after save on Case create and update, currently sending emails to customers when technical Cases change status to specific values.</li>
+        <li>No other automations or triggers for Case creation emails are present.</li>
+      </ul>
+      <p class="csub" style="margin-top:10px;"><strong>Next question the engine wants answered:</strong> Should the email on Case creation be sent for all Case types, or only for technical Cases with a linked Contact?</p>
+    </div>
+
+    <div class="card">
+      <h3>Create new Flow dedicated to Case creation email</h3>
+      <div class="csub">Build a new record-triggered Flow that sends an email to the customer specifically when a Case is created, separate from the existing status-change logic.</div>
+      <div class="badges">
+        <span class="badge rec">Recommended</span>
+        <span class="badge info">Create new</span>
+        <span class="badge">internal_logic_only</span>
+        <span class="badge">after_save · create</span>
+        <span class="badge warn">Order of Execution: manageable risk</span>
+      </div>
+      <strong>Pros</strong>
+      <ul class="pros">
+        <li>Keeps logic for Case creation emails isolated and easier to maintain.</li>
+        <li>Reduces risk of unintended changes to existing status-change notification logic.</li>
+      </ul>
+      <strong>Cons</strong>
+      <ul class="cons">
+        <li>Introduces a new automation that may overlap with existing Flows, increasing maintenance overhead.</li>
+        <li>Potential for duplicate emails if both Flows are triggered on Case creation for technical Cases.</li>
+        <li>Order of Execution precheck: manageable risk; full review required.</li>
+      </ul>
+      <strong>Open questions</strong>
+      <ul>
+        <li>What email template or content should be used for new Case creation?</li>
+        <li>How is the customer email address determined if no Contact is linked?</li>
+        <li>Should the email be sent for all Case types or only specific ones?</li>
+        <li>Legacy automation <code>PB_Technical_Case_Email_Alerts</code> still runs on Case; placement needs review before adding a new entry point.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Narrow existing Flow trigger to exclude create, then add new Flow for creation</h3>
+      <div class="csub">Modify <code>PB_Technical_Case_Email_Alerts</code> to only trigger on update, and create a new Flow dedicated to Case creation emails.</div>
+      <div class="badges">
+        <span class="badge info">Create new</span>
+        <span class="badge">internal_logic_only</span>
+        <span class="badge">after_save · update</span>
+        <span class="badge warn">Order of Execution: manageable risk</span>
+      </div>
+      <strong>Pros</strong>
+      <ul class="pros">
+        <li>Eliminates any risk of duplicate or conflicting emails on Case creation.</li>
+        <li>Keeps each Flow focused on a single trigger event, improving clarity.</li>
+      </ul>
+      <strong>Cons</strong>
+      <ul class="cons">
+        <li>Requires changes to an existing, active Flow and introduces a new one, increasing implementation effort.</li>
+        <li>Splitting logic may make it harder to see all customer communication logic in one place.</li>
+        <li>Order of Execution precheck: manageable risk; full review required.</li>
+      </ul>
+      <strong>Open questions</strong>
+      <ul>
+        <li>Is it acceptable to split status-change and creation logic into separate Flows?</li>
+        <li>What email template or content should be used for new Case creation?</li>
+        <li>How is the customer email address determined if no Contact is linked?</li>
+        <li>Should the email be sent for all Case types or only specific ones?</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Update existing PB_Technical_Case_Email_Alerts Flow to add create-triggered email</h3>
+      <div class="badges"><span class="badge rec">✓ ACCEPTED — carried forward</span></div>
+      <div class="csub">Expand the existing Flow to send an email to the customer when a new Case is created, leveraging its current after-save trigger on Case create and update.</div>
+      <div class="badges">
+        <span class="badge info">Update existing</span>
+        <span class="badge">internal_logic_only</span>
+        <span class="badge">after_save · create, update</span>
+        <span class="badge info">Order of Execution: insufficient evidence</span>
+      </div>
+      <strong>Pros</strong>
+      <ul class="pros">
+        <li>Reuses existing automation already handling Case-triggered customer emails.</li>
+        <li>Minimizes proliferation of automations for similar business logic.</li>
+        <li>Ensures consistent logic for technical Case communications.</li>
+      </ul>
+      <strong>Cons</strong>
+      <ul class="cons">
+        <li>Existing Flow is scoped to status changes for technical Cases, so create logic may require careful branching to avoid unintended emails.</li>
+        <li>May increase Flow complexity if additional create-vs-update branching is needed.</li>
+        <li>Order of Execution precheck: insufficient evidence; full review required.</li>
+      </ul>
+      <strong>Open questions</strong>
+      <ul>
+        <li>What email template or content should be used for new Case creation?</li>
+        <li>How is the customer email address determined if no Contact is linked?</li>
+        <li>Should the email be sent for all Case types or only specific ones?</li>
+        <li>The update changes whether the selected automation writes the triggering record; review same-transaction write overlap before implementation.</li>
+      </ul>
+    </div>
+  </section>
+  <section class="panel" data-tab="dependencies"><h2>Dependency Scan</h2>
+    <div class="badges">
+      <span class="badge ok">NO DEPENDENTS</span>
+      <span class="badge info">Target: Flow.PB_Technical_Case_Email_Alerts</span>
+      <span class="badge">0 dependents</span>
+    </div>
+    <div class="card">
+      <h3>No dependencies found &mdash; this is a win</h3>
+      <p>Nothing in this reference model references <code>PB_Technical_Case_Email_Alerts</code>. No other metadata is directly connected to it, so extending it does not ripple into other components.</p>
+      <p class="csub"><strong>Caveat:</strong> integrations or reports that live outside this reference model might still use it. Code-search fallback was applied.</p>
+    </div>
+  </section>
+  <section class="panel" data-tab="impact"><h2>Change Impact</h2>
+    <div class="badges">
+      <span class="badge warn">Complexity: Medium</span>
+      <span class="badge info">Coverage 1/1 analyzed</span>
+      <span class="badge">1 work unit</span>
+      <span class="badge warn">4 investigation items</span>
+    </div>
+    <div class="card">
+      <h3>Change under analysis</h3>
+      <p>Extend the existing <code>PB_Technical_Case_Email_Alerts</code> Flow (after-save on Case create and update) to send an email to the customer when a new Case is created, adding create-vs-update branching so existing technical-Case status-change emails are unaffected.</p>
+      <div class="csub">Implementation mode: <strong>update_existing</strong> &middot; Change shape: <strong>internal_logic_only</strong> &middot; OOE precheck: <strong>insufficient evidence</strong> (full review required)</div>
+    </div>
+    <div class="card">
+      <h3>Work unit 1 &mdash; PB_Technical_Case_Email_Alerts</h3>
+      <div class="csub">Flow</div>
+      <p>The Flow needs to be extended to send an email to the customer upon new Case creation, without affecting existing status-change emails.</p>
+      <p class="csub">Chain review scope: 1 selected node, 0 parent nodes, 0 child nodes, 0 warnings. The change stays contained.</p>
+    </div>
+  </section>
+  <section class="panel" data-tab="risk"><h2>Architecture Risk</h2>
+    <div class="badges">
+      <span class="badge info">1 item analyzed</span>
+      <span class="badge warn">1 with findings</span>
+      <span class="badge warn">3 verified risks</span>
+      <span class="badge ok">0 critical</span>
+    </div>
+    <div class="card">
+      <h3>Executive summary</h3>
+      <p>The Flow <code>PB_Technical_Case_Email_Alerts</code> contains multiple instances of hardcoded Salesforce IDs for email templates within its action elements. No critical stability or error-handling risks were detected, but the hardcoded IDs introduce deployment and maintainability risk, especially across multiple sandboxes and production orgs. Overall risk level: <strong>moderate</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>Hardcoded IDs &mdash; 3 findings</h3>
+      <div class="badges">
+        <span class="badge info">Flow</span>
+        <span class="badge warn">Warning</span>
+        <span class="badge">Deployment Risk</span>
+      </div>
+      <p><strong>Why it matters:</strong> Hardcoded IDs are org-specific and will break deployments or create drift between environments. After a sandbox refresh or a deploy to production, these template IDs will not resolve &mdash; causing failed email sends or unexpected behaviour at scale.</p>
+      <table>
+        <thead><tr><th>Element</th><th>Evidence</th><th>Severity</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><code>Case_Being_reviewed_Alert</code></td><td><code>&lt;stringValue&gt;00XPX00000Nj3u92AB&lt;/stringValue&gt;</code></td><td><span class="badge warn">warn</span></td><td>true positive (high confidence)</td></tr>
+          <tr><td><code>Case_Closed_Alert</code></td><td><code>&lt;stringValue&gt;00XPX00000Nj3uA2AR&lt;/stringValue&gt;</code></td><td><span class="badge warn">warn</span></td><td>true positive (high confidence)</td></tr>
+          <tr><td><code>Case_With_Development_Team_Alert</code></td><td><code>&lt;stringValue&gt;00XPX00000Nj3uB2AR&lt;/stringValue&gt;</code></td><td><span class="badge warn">warn</span></td><td>true positive (high confidence)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Recommendation:</strong> Replace hardcoded email template IDs with Custom Metadata Types, Custom Settings, or Flow resources that dynamically resolve the correct ID for the current environment. Alternatively use a text variable populated at runtime or via deployment scripts.</p>
+      <p class="csub"><strong>Relevance to the accepted option:</strong> you chose to extend this Flow, so a fourth email action risks adding a fourth hardcoded template ID. Consider folding this remediation into the same work.</p>
+    </div>
+  </section>
+  <section class="panel" data-tab="backlog" data-active="true"><h2>Backlog (draft)</h2>
+    <div class="badges">
+      <span class="badge crit">DRAFT ONLY &mdash; not written to Elements</span>
+      <span class="badge info">1 requirement</span>
+      <span class="badge info">2 stories</span>
+    </div>
+
+    <div class="card">
+      <h3>Requirement: Enhance PB_Technical_Case_Email_Alerts Flow to send customer email on Case creation</h3>
+      <div class="badges">
+        <span class="badge">P2 &mdash; Medium</span>
+        <span class="badge">Medium Impact</span>
+        <span class="badge">Medium Risk</span>
+        <span class="badge info">Flow &middot; Case Management &middot; Email Alerts &middot; Automation</span>
+      </div>
+      <p>Expand the existing Flow to send an email notification to the customer when a new Case is created, in addition to its current behaviour for status changes. This requires updating the automation logic to distinguish between Case creation and update events, ensuring the correct email template and recipient are used, and maintaining the integrity of existing email alerts. The change should not disrupt current functionality or introduce duplicate notifications.</p>
+      <p><strong>Reason:</strong> Customers currently do not receive an email when a new Case is created. Adding this notification improves customer communication and case transparency.</p>
+      <p><strong>Solution:</strong> Add a decision element that branches on Case creation versus update, add a new email action for Case creation, and configure the correct template and recipient. Validate that existing status-change emails are unaffected.</p>
+      <p class="csub">Priority, business impact and risk values are demo-defaults and should be edited in the UI.</p>
+      <h3 style="margin-top:14px;">Residual investigation items</h3>
+      <ul class="cons">
+        <li><strong>Order of Execution review:</strong> the update changes whether the automation writes the triggering record; review same-transaction write overlap before implementation.</li>
+        <li><strong>External integrations / middleware:</strong> ETL, middleware or API clients may depend on literal strings. Review and update mappings.</li>
+        <li><strong>Managed packages / AppExchange apps:</strong> installed packages may include hard-coded labels. Review package configs.</li>
+        <li><strong>Analytics / warehouses / exports:</strong> downstream analytics may store historical strings. Decide on mapping or backfill strategy.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Story 1 &mdash; Update PB_Technical_Case_Email_Alerts Flow to add create-triggered customer email</h3>
+      <div class="badges"><span class="badge info">User Story</span><span class="badge">update</span><span class="badge">Medium Risk</span></div>
+      <p>As a Salesforce administrator, I want the Flow to send an email to the customer when a new Case is created, so that customers are promptly notified of new Cases and communication is improved.</p>
+      <p class="csub"><strong>Problem:</strong> the Flow only sends emails on Case status changes, not on creation, so customers are not notified when a new Case is opened.</p>
+      <strong>Acceptance criteria</strong>
+      <ul>
+        <li>AC1: Given a new Case is created, when the Flow is triggered, then an email is sent to the Case's contact using the designated template.</li>
+        <li>AC2: Given a Case is updated (not created), when the Flow is triggered, then only the existing status-change email logic executes and no duplicate or unintended emails are sent.</li>
+        <li>AC3: Given the Flow is updated, when tested in a sandbox, then no errors or duplicate emails occur for either creation or update events.</li>
+      </ul>
+      <strong>Implementation details</strong>
+      <ul>
+        <li>Review the current after-save trigger logic for compatibility with new branching.</li>
+        <li>Add a decision element to branch between Case creation and update.</li>
+        <li>Create a new email action for Case creation with the correct template and recipient.</li>
+        <li>Update the start element's filter formula to include creation logic.</li>
+        <li>Validate no same-transaction write overlap is introduced.</li>
+        <li>Test thoroughly in a sandbox before deployment.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Story 2 &mdash; Extend PB_Technical_Case_Email_Alerts Flow for Case creation-triggered customer email</h3>
+      <div class="badges"><span class="badge info">User Story</span><span class="badge">update</span><span class="badge">Medium Risk</span><span class="badge info">nodeId: 69d521affb6405e4d62d8f11</span></div>
+      <p>As a Salesforce administrator, I want to extend the Flow to send an email to the customer upon new Case creation, so that customers are immediately informed when their Case is opened.</p>
+      <p class="csub"><strong>Problem:</strong> the gap reduces transparency and may delay customer awareness of their Case submission.</p>
+      <strong>Acceptance criteria</strong>
+      <ul>
+        <li>AC1: Given a new Case is created, when the Flow executes, then an email is sent to the customer using the correct template and recipient.</li>
+        <li>AC2: Given a Case is updated (not created), when the Flow executes, then only the existing status-change email is sent, with no impact from the new logic.</li>
+        <li>AC3: Given the Flow is updated, when tested, then no duplicate or missing emails occur for either event.</li>
+      </ul>
+      <strong>Implementation details</strong>
+      <ul>
+        <li>Add a new decision element to branch between Case creation and update.</li>
+        <li>Create a new action call to send an email on Case creation.</li>
+        <li>Ensure the new email action uses the correct template and recipient.</li>
+        <li>Update the start element's filter formula to include creation logic.</li>
+        <li>Validate that existing status-change emails are unaffected.</li>
+        <li>Affected items (1): <code>PB_Technical_Case_Email_Alerts</code>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>&#9888; Overlap note</h3>
+      <p>Stories 1 and 2 describe substantially the same work against the same Flow. Before creating them in Elements, merge them into a single story or scope them differently.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.tabs button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach((btn) => btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    tabs.forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+    panels.forEach((p) => p.setAttribute('data-active', String(p.dataset.tab === btn.dataset.tab)));
+  }));
+</script>
+</body>
+</html>
