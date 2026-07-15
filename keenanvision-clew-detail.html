@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clew - The Forward-Deployed Engineering Programme for ISVs | Keenan Vision</title>
+<meta name="description" content="Everyone's building an FDE army. The talent doesn't exist. Clew is the governed context graph that makes one great forward-deployed engineer deliver like a pod.">
+<meta name="author" content="Vernon Keenan">
+<meta name="publisher" content="Keenan Vision LLC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   CLEW — long-form offering, Keenan Vision identity
+   navy #19293c · blue #1e4d78 · gold #d1a73b (headline/CTA only)
+   ══════════════════════════════════════════════════════════ */
+:root{
+  --navy:#19293c; --navy-2:#213144; --deep:#24466a;
+  --gold:#d1a73b; --gold-dk:#b8912f; --gold-soft:rgba(209,167,59,.12); --gold-line:rgba(209,167,59,.4);
+  --blue:#1e4d78; --blue-soft:#eef4fa; --blue-line:#c4d8ea;
+  --ink:#19293c; --body:#4a5563; --muted:#77828f; --line:#dcdfe3;
+  --bg:#ffffff; --bg-alt:#f2f6fb;
+  /* aliases kept so inline styles in the document still resolve */
+  --blue-bright:#1e4d78; --light-muted:#77828f;
+  --wrap:1080px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     color:var(--body);background:var(--bg);line-height:1.68;-webkit-font-smoothing:antialiased}
+h1,h2,h3{color:var(--ink);letter-spacing:-.025em;line-height:1.15;font-weight:800}
+strong{color:var(--ink);font-weight:700}
+em{color:var(--ink)}
+
+/* ── NAV ── */
+.nav{background:var(--navy);position:sticky;top:0;z-index:50;
+     display:flex;align-items:center;justify-content:space-between;
+     padding:.9rem 2rem;gap:1rem}
+.logo{display:flex;align-items:center;gap:.8rem;text-decoration:none}
+.logo-icon{height:38px;width:auto;display:block}
+.logo-wordmark{display:flex;flex-direction:column;line-height:1.15}
+.logo-wordmark strong{color:#fff;font-size:1.05rem;font-weight:800;letter-spacing:-.02em}
+.logo-wordmark span{color:var(--gold);font-size:.68rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.nav-meta{display:flex;align-items:center;gap:1.1rem;font-size:.72rem;
+          color:rgba(255,255,255,.6);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.nav-badge{border:1px solid var(--gold);color:var(--gold);border-radius:999px;
+           padding:.25rem .8rem;font-size:.65rem;font-weight:700;letter-spacing:.1em}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(180deg,var(--navy) 0%,#1e3757 55%,var(--deep) 100%);padding:4.5rem 0 4rem}
+.hero-inner{max-width:var(--wrap);margin:0 auto;padding:0 2rem}
+.eyebrow{display:flex;align-items:center;gap:.7rem;color:var(--gold);
+         font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.4rem}
+.eyebrow::before{content:'';width:32px;height:2px;background:var(--gold);display:block}
+.hero-title{font-size:clamp(2.4rem,5.4vw,4rem);font-weight:900;color:var(--gold);
+            letter-spacing:-.035em;line-height:1.05;margin-bottom:1.1rem;max-width:20ch}
+.hero-subtitle{font-size:1.15rem;color:#c3c9d1;max-width:62ch;line-height:1.62}
+.hero-subtitle strong{color:#fff}
+.hero-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.5rem;
+           margin-top:2.75rem;padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.18)}
+.meta-item{font-size:.68rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.meta-item strong{display:block;margin-top:.35rem;color:#fff;font-size:.9rem;
+                  font-weight:600;letter-spacing:0;text-transform:none}
+
+/* ── SECTIONS ── */
+.page{max-width:100%}
+section{padding:4rem 0;background:var(--bg)}
+section:nth-child(even){background:var(--bg-alt)}
+section > *{max-width:var(--wrap);margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.sec-label{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--blue);margin-bottom:.9rem;display:flex;align-items:center;gap:1rem}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--line)}
+.section-headline{font-size:clamp(1.5rem,3vw,2.05rem);font-weight:800;color:var(--ink);
+                  margin-bottom:1.1rem;letter-spacing:-.025em;line-height:1.2}
+section p{font-size:1rem;margin-bottom:1rem;max-width:72ch}
+.horizon{height:1px;background:var(--line);margin:2.5rem auto;max-width:var(--wrap)}
+
+/* ── PULL QUOTE ── */
+.imperative{border-left:4px solid var(--blue);background:var(--blue-soft);
+            padding:1.3rem 1.6rem;border-radius:0 8px 8px 0;margin:2rem auto}
+.imperative p{font-size:1.1rem;color:var(--ink);font-style:italic;font-weight:500;margin:0;max-width:none}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin:2rem auto}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.75rem 1rem;text-align:center}
+.kpi-num{font-size:2.5rem;font-weight:900;color:var(--blue);letter-spacing:-.04em;line-height:1}
+.kpi-label{font-size:.85rem;color:var(--muted);margin-top:.6rem;line-height:1.45}
+
+/* ── TECH GRID ── */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin:1.75rem auto}
+.tech-item{display:flex;gap:.9rem;background:#fff;border:1px solid var(--line);
+           border-radius:8px;padding:1.25rem 1.4rem;align-items:flex-start}
+.tech-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:.5rem}
+.dot-gold{background:var(--gold)}
+.dot-sky{background:var(--blue)}
+.dot-amber{background:var(--gold-dk)}
+.dot-light{background:#9db4c9}
+.tech-name{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
+.tech-role{font-size:.92rem;color:var(--body);line-height:1.6}
+
+/* ── USE-CASE CARDS ── */
+.use-cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1.25rem;margin:1.75rem auto}
+.uc{background:#fff;border:1px solid var(--line);border-top:4px solid var(--blue);
+    border-radius:8px;padding:1.75rem;transition:box-shadow .15s,border-color .15s}
+.uc:hover{box-shadow:0 6px 22px rgba(25,41,60,.07)}
+.uc-num{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--blue);margin-bottom:.6rem}
+.uc-title{font-size:1.12rem;font-weight:800;color:var(--ink);margin-bottom:.6rem;letter-spacing:-.02em;line-height:1.3}
+.uc-desc{font-size:.94rem;color:var(--body);line-height:1.62}
+.uc-pill{display:inline-block;margin-top:1rem;font-size:.68rem;font-weight:700;
+         letter-spacing:.06em;text-transform:uppercase;color:var(--blue);
+         background:var(--blue-soft);border:1px solid var(--blue-line);padding:.3rem .7rem;border-radius:999px}
+
+/* ── PROOF ── */
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem auto}
+.proof-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.6rem}
+.proof-logo{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--muted);margin-bottom:.7rem}
+.proof-stat{font-size:1.5rem;font-weight:900;color:var(--blue);letter-spacing:-.03em;margin-bottom:.5rem;line-height:1.1}
+.proof-desc{font-size:.9rem;color:var(--body);line-height:1.6}
+
+/* ── INVEST BOX ── */
+.invest-box{background:var(--navy);border-radius:12px;padding:2.5rem;margin:2rem auto;max-width:var(--wrap)}
+.invest-box .sec-label{color:var(--gold)}
+.invest-box .sec-label::after{background:rgba(255,255,255,.2)}
+.invest-box .section-headline{color:#fff}
+.invest-box p{color:#c3c9d1}
+.ask-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem;margin-top:1.5rem}
+.ask-item{border-left:3px solid var(--gold);padding-left:1.1rem}
+.ask-item-phase{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+                color:var(--gold);margin-bottom:.5rem}
+.ask-item-val{font-size:.92rem;color:#c3c9d1;line-height:1.6}
+
+/* ── FOOTER ── */
+.doc-footer{background:var(--navy-2);padding:2rem;display:flex;justify-content:space-between;
+            gap:1rem;flex-wrap:wrap;font-size:.8rem;color:#8794a3;
+            letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+@media(max-width:820px){
+  .nav{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .nav-meta{font-size:.65rem;gap:.7rem}
+  .invest-box{padding:1.5rem}
+  section > *{padding-left:1.25rem;padding-right:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="logo">
+    <img class="logo-icon" src="https://keenanvision.net/images/Keenan%20Vision%20Logo%20Rect-Light-transparent.png" alt="Keenan Vision">
+    <div class="logo-wordmark">
+      <strong>Clew</strong>
+      <span>KeenanVision.net</span>
+    </div>
+  </a>
+  <div class="nav-meta">
+    <span>ISV Offering</span>
+    <span>Consulting · 2026</span>
+    <div class="nav-badge">Confidential</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">KeenanVision.net · Consulting Offering · 2026</div>
+    <div class="hero-title">Clew</div>
+    <div class="hero-subtitle">The FDE agent program for ISVs. Everyone is building a forward-deployed engineering army; the talent doesn't exist. Clew installs the governed context graph that makes one great FDE deliver like a pod — built, running and evaluated on our own engagements.</div>
+    <div class="hero-meta">
+      <div class="meta-item">Offering <strong>Governed context graph + FDE agent</strong></div>
+      <div class="meta-item">Shape <strong>Three phases from Foundation Sprint</strong></div>
+      <div class="meta-item">Built on <strong>Neo4j · Go · MCP · Claude</strong></div>
+      <div class="meta-item">Surfaces <strong>Claude Code · Cowork · Slack · VS Code</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- 1 · THE MARKET -->
+  <section>
+    <div class="sec-label">The Market</div>
+    <div class="section-headline">$9 billion has been committed to putting humans inside customers. The humans don't exist.</div>
+    <p>In eight weeks, OpenAI, Anthropic, AWS and Microsoft each committed to the same move: not a better model, but an army of people to sit inside customers and make the thing work. Microsoft Frontier alone is $2.5bn and roughly 6,000 embedded engineers. The subtext is MIT's finding that 95% of enterprise GenAI pilots delivered no measurable P&amp;L impact — and that the split was explained by <em>integration</em>, not model quality.</p>
+    <p>The plan is right on a spreadsheet. The forward-deployed engineer is the rarest hire in tech: job boards surface engineers, agencies surface salespeople, and neither pipeline produces someone who can run the exec meeting, make architecture calls on the fly, and ship production code. Even at the best vendors the FDE org chart is two or three people deep and then it's air.</p>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-num">$9B</div><div class="kpi-label">Committed to deployment<br>armies in eight weeks</div></div>
+      <div class="kpi"><div class="kpi-num">95%</div><div class="kpi-label">Of enterprise GenAI pilots<br>with no P&amp;L impact (MIT)</div></div>
+      <div class="kpi"><div class="kpi-num">↑ 800%</div><div class="kpi-label">Rise in FDE job postings,<br>Jan–Sep 2025</div></div>
+    </div>
+    <div class="imperative">
+      <p>"The way through the gap isn't more people. It's a better one, working with a better agent."</p>
+    </div>
+    <p>If you are an ISV, this is now your constraint. Your platform is fine. Your deployment capacity is the ceiling on your growth — and you cannot hire your way past it in the window your board has given you.</p>
+  </section>
+
+  <!-- 2 · THE DIAGNOSIS -->
+  <section>
+    <div class="sec-label">The Diagnosis</div>
+    <div class="section-headline">An FDE agent is only as good as the three layers of context underneath it.</div>
+    <p>The reason "give every FDE an agent" is hard — and the reason it's defensible once you get it right — is that useful deployment context lives on three distinct levels. Miss any one and you are back to a generic chatbot that stalls in the 95%.</p>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Business context</div><div class="tech-role">The operations, processes and terminology of <em>this</em> customer. Where the exceptions hide. The layer generic models never learn on their own.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Architecture context</div><div class="tech-role">Your target systems, their metadata, and the accumulated best practice for building on them well. What "good" looks like on this stack, and which patterns blow up in production.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Build context</div><div class="tech-role">How to configure, test and ship the agent, and integrate it without breaking anything. Where plain-English intent becomes a deployed, governed thing.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">The compounding effect</div><div class="tech-role">Ontologies built for one domain extend into the next. Each deployment leaves reusable building blocks. The advantage accrues across the system, not inside any single project.</div></div></div>
+    </div>
+    <div class="horizon"></div>
+    <p>Almost every ISV attempting this starts by dumping documentation into a vector store and wiring it to a model. That gets you plausible answers, not grounded ones — and no way to tell the difference at scale. What is actually required is a governed graph, an inheritance model that separates what <em>you</em> own from what your partners and customers own, skills that make the agent behave, a curation process that assumes nothing is trustworthy until a human says so, and an evaluation loop that proves it.</p>
+    <p>That is a two-year build. We have already done it.</p>
+  </section>
+
+  <!-- 3 · THE OFFERING -->
+  <section>
+    <div class="sec-label">The Offering</div>
+    <div class="section-headline">A clew is the thread that gets you out of the labyrinth.</div>
+    <div class="imperative">
+      <p>"clew (n.) — a ball of thread. The one Ariadne gave Theseus so he could find his way back out of the maze. English later respelled it: clue."</p>
+    </div>
+    <p>Your FDEs are not short of intelligence. They are in a labyrinth — your product surface, each customer's org, the accumulated right answers that live in three people's heads. The model is a brilliant driver with an empty glove box. Clew is the thread you hand it.</p>
+    <div class="horizon"></div>
+    <p>Clew is a governed context graph and agent substrate. It was built to break the expertise bottleneck on complex platform deployments: a canonical inventory on Neo4j, an MCP surface that puts it inside the tools your teams already use, and the governance to keep it honest. This offering takes the same architecture, the same plugins and the same operating discipline, and stands them up against <em>your</em> product, <em>your</em> patterns and <em>your</em> partners. We install it, run it beside your FDE team, and hand you the spool.</p>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Your canonical inventory</div><div class="tech-role">Your product family modelled as a governed semantic graph — intents, vocabulary, entities, patterns, platform objects, engine functions.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Your MCP surface</div><div class="tech-role">A signed gateway binary your FDEs register in Claude Code, Cowork or Slack. No new interface. No ramp time.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Your skills library</div><div class="tech-role">Plugins and SKILL.md files that make the agent reliably do the work — retrieval, discovery, decision capture, rendering.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Your curation ladder</div><div class="tech-role">The three-gate promotion pipeline and the human ratification lane, wired to your design authority.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Your eval harness</div><div class="tech-role">A hand-authored conformance corpus, a scoring rubric, and a GA gate you can hold your own team to.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">Your operating model</div><div class="tech-role">Named roles, cadence, regression policy and the decision log — so it survives us leaving.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 4 · SECRET SAUCE -->
+  <section>
+    <div class="sec-label">Why Us</div>
+    <div class="section-headline">Five things you cannot buy anywhere else.</div>
+    <p>Every consultancy in the market will now sell you an "FDE agent workshop". Here is what Clew brings that a slide deck cannot.</p>
+    <div class="use-cases">
+      <div class="uc">
+        <div class="uc-num">Pillar — 01</div>
+        <div class="uc-title">We built it. It runs. Including the MCP servers.</div>
+        <div class="uc-desc">Not a reference architecture — a running constellation of five repos: a producer platform (46 schema files, 136 seed files), a Go retrieval server fusing graph and vector results, an MCP gateway shipping as a signed binary for Linux, macOS and Windows, an enablement console, and a governance layer above them. Your FDEs install it and it works today.</div>
+        <div class="uc-pill">Proven, not proposed</div>
+      </div>
+      <div class="uc">
+        <div class="uc-num">Pillar — 02</div>
+        <div class="uc-title">The three-level model and the graph that makes it work</div>
+        <div class="uc-desc">A ratified semantic metamodel — 31 node types, 52 edge types — organised around a three-layer spine from business intent to semantic structure to platform binding. Plus the five-field identity contract that lets your layer, your partners' layer and each customer's layer inherit and override cleanly.</div>
+        <div class="uc-pill">Metamodel v1.11.0</div>
+      </div>
+      <div class="uc">
+        <div class="uc-num">Pillar — 03</div>
+        <div class="uc-title">The eval loop that proves it and grows it</div>
+        <div class="uc-desc">A hand-authored conformance corpus, a scoring rubric with a named owner, and a harness that scores, compares and catches regressions. The GA gate is explicit: ≥80% Tier-2-or-better, and a blind eval that beats base Claude. Failures aren't just defects — they are your content roadmap.</div>
+        <div class="uc-pill">Eval is constitutive</div>
+      </div>
+      <div class="uc">
+        <div class="uc-num">Pillar — 04</div>
+        <div class="uc-title">The skills</div>
+        <div class="uc-desc">Seven plugins and twenty-three skills, already written: research pipelines that author canonical content, archaeology that reverse-engineers a customer's org into a digital twin, codex renderers that emit Solution Theses and SOWs from graph state, rehearsal that role-plays personas to find gaps, and distillation that compiles builder skills from the corpus.</div>
+        <div class="uc-pill">7 plugins · 23 skills</div>
+      </div>
+      <div class="uc">
+        <div class="uc-num">Pillar — 05</div>
+        <div class="uc-title">Zero-trust curation</div>
+        <div class="uc-desc">Nothing is authoritative because an agent said so. Every claim carries provenance and a review status. Promotion runs three gates. And the one verb that would let an agent satisfy its own review gate — ratification — is structurally absent from the tool surface. Not policy. Architecture.</div>
+        <div class="uc-pill">Agents cannot self-ratify</div>
+      </div>
+      <div class="uc" style="border-top-color:var(--blue-bright);">
+        <div class="uc-num" style="color:var(--blue-bright);">The point</div>
+        <div class="uc-title">Two years of scar tissue, transferred</div>
+        <div class="uc-desc">Every one of these was learned the expensive way — through ratified decision traces, rejected bundles, drift audits and rewrites. You get the ending, not the journey. That is the whole offering.</div>
+        <div class="uc-pill">Time to value</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · THE THREE-LEVEL MODEL -->
+  <section>
+    <div class="sec-label">Pillar 02 · In Detail</div>
+    <div class="section-headline">Three layers, one spine: from what a practitioner wants to what your platform does.</div>
+    <p>The core of Clew is a three-layer map. Everything else in the graph — governance, engagement, context intelligence — hangs off this spine rather than living as a separate tree.</p>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Layer 1 — Business Intent</div><div class="tech-role">The practitioner's own language. "Unify customer profiles." <strong>BusinessIntent</strong> → USES_TERM → <strong>VocabularyTerm</strong>.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Layer 2 — Semantic Structure</div><div class="tech-role">The ontological middle. <strong>SemanticEntity</strong> defines canonical concepts; <strong>ContextPattern</strong> defines validated plays. Reached via EXPRESSES_AS.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Layer 3 — Platform Binding</div><div class="tech-role">What actually runs on your product. <strong>PlatformObject</strong> → INVOKES → <strong>EngineFunction</strong>. Reached via MAPS_TO and RECOMMENDS.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">The bridge node</div><div class="tech-role"><strong>ContextPattern</strong> is the only node type spanning all three layers. That polymorphism is why it is the primary retrieval target — enter the graph from any layer, land on the pattern that bridges them.</div></div></div>
+    </div>
+    <div class="horizon"></div>
+    <div class="section-headline" style="font-size:1.15rem;">The identity contract is what makes it an ISV product rather than a project.</div>
+    <p>Every inheritable node carries five fields: <strong>domainKey</strong>, <strong>stableKey</strong>, <strong>qualifiedKey</strong>, <strong>displayId</strong> and <strong>overrideMode</strong>. That last one is the commercial mechanism. Your canonical library is the base. Your partners <em>supplement</em> and <em>refine</em> it with vertical accelerators and their own decision records. Each customer engagement can <em>replace</em> or <em>suppress</em> at the project level for regulatory or local constraints — without ever forking your canon.</p>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-num">31</div><div class="kpi-label">Node types in the<br>ratified metamodel</div></div>
+      <div class="kpi"><div class="kpi-num">52</div><div class="kpi-label">Declared edge types,<br>schema-enforced</div></div>
+      <div class="kpi"><div class="kpi-num">5</div><div class="kpi-label">Identity fields on every<br>inheritable node</div></div>
+    </div>
+    <p>Cypher is the source of truth; Markdown is a projection. When the document and the schema file disagree, the schema wins. That single invariant is why the graph survives model changes, retrieval changes and rubric refinements — and why every improvement compounds instead of evaporating.</p>
+  </section>
+
+  <!-- 6 · THE SKILLS -->
+  <section>
+    <div class="sec-label">Pillar 04 · In Detail</div>
+    <div class="section-headline">Seven plugins your FDEs install on day one.</div>
+    <p>Skills are how the agent stops improvising. Each is a ratified playbook with its own evals, versioned alongside the graph it reads. We port the roster to your product and your patterns.</p>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">The agent substrate</div><div class="tech-role">The substrate. Full read/write MCP surface behind a deny-by-default policy, seven slash commands, eight model-facing skills.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Research pipeline</div><div class="tech-role">Seven-stage product family research pipeline. Authors canonical content — patterns, intents, vocabulary, entities — as reviewable Cypher.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Org archaeology</div><div class="tech-role">Four-phase pipeline turning a customer's org metadata into an engagement digital twin, a readiness verdict and forensic decision traces.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Engagement codex</div><div class="tech-role">Renders Solution Theses, Statements of Work and delivery Spec Manifests directly from graph state — in the tone the audience needs.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Engagement rehearsal</div><div class="tech-role">Role-plays six personas — seller, implementer, practitioner, exec sponsor, economic buyer, customer admin — to find the gaps before the customer does.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Skill distiller</div><div class="tech-role">Compiles task-level, happy-path builder skills straight from the seed corpus onto your live tool surface. Every delete tool rejected; every create paired with a verify read-back.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">Authoring reference</div><div class="tech-role">Reference skills for hand-constructing engagement and twin payloads correctly. Authors nothing, calls no write tools.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">…and the harness around them</div><div class="tech-role">Every skill ships with evals. A skill without a passing eval is a proposal, not a capability.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 7 · ZERO TRUST -->
+  <section>
+    <div class="sec-label">Pillar 05 · In Detail</div>
+    <div class="section-headline">Zero-trust curation: nothing is canon until a human says so.</div>
+    <div class="imperative">
+      <p>"No content is better than incorrect content. An empty page is acceptable. A page filled by a Tier-3 guess is not."</p>
+    </div>
+    <p>Most context programmes fail on the way in, not the way out. They ingest everything, trust the average, and discover eighteen months later that the agent is confidently citing a deprecated pattern. Clew assumes the opposite: every claim is untrusted until it has earned a status, and the earning is mechanical.</p>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Gate 1 — Ingestion validation</div><div class="tech-role">Decisions captured in conversation are scored for completeness and coherence against a threshold. Pass or fail, recorded.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">Gate 2 — Promotion</div><div class="tech-role">Traces group by decision point into a candidate, tested on volume, outcome coverage and consensus before it can advance.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">Gate 3 — Governance review</div><div class="tech-role">Alignment, contradiction and sign-off. Only on approval does a decision record become authoritative and enter production retrieval.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">Quality flags at every gate</div><div class="tech-role">Issues attach to the gate where they were raised, so failure is diagnosable rather than mysterious.</div></div></div>
+    </div>
+    <div class="horizon"></div>
+    <div class="section-headline" style="font-size:1.15rem;">The gate an agent cannot open</div>
+    <p>Every node in an engagement twin carries a provenance value — <strong>confirmed</strong> or <strong>simulated</strong> — and a review status that moves one way only: from <em>draft</em> or <em>agent-authored</em> to <em>human-ratified</em> or <em>rejected</em>. Both end states are terminal.</p>
+    <p>And ratification is <strong>structurally excluded from the agent's tool surface</strong>. It is not hidden behind a confirmation prompt or a permission flag — the verb does not exist in the catalogue the model can see, and the tool policy is deny-by-default with a completeness guard that fails the build if a new capability appears without a conscious allow-or-deny decision. Humans ratify through a console, under a named session. An agent physically cannot satisfy its own review gate.</p>
+    <div class="imperative">
+      <p>"The one verb whose absence from the agent surface is a feature."</p>
+    </div>
+    <p>This is the difference between a trust layer and trustworthy content. A safety filter measures whether the agent did something <em>bad</em>. It says nothing about whether the agent did the business task <em>correctly</em>. Your FDE agent will be quoted in front of your customer's architecture review board. It needs the second thing.</p>
+  </section>
+
+  <!-- 8 · EVAL -->
+  <section>
+    <div class="sec-label">Pillar 03 · In Detail</div>
+    <div class="section-headline">The eval loop is not quality control. It is the product.</div>
+    <p>For most enterprise software, evaluation is adjacent — you can imagine the product existing without it, just worse. Not here. An FDE agent <em>is</em> the calibrated mapping between practitioner intent and system response. Take away the calibration and you don't have a degraded version. You have nothing.</p>
+    <div class="proof">
+      <div class="proof-card"><div class="proof-logo">GA Gate — Metric 1</div><div class="proof-stat">≥ 80%</div><div class="proof-desc">Of corpus queries must return Tier-2-or-better: a confident single pattern, or ranked alternatives with explicit trade-off framing. Below that, it doesn't ship.</div></div>
+      <div class="proof-card"><div class="proof-logo">GA Gate — Metric 2</div><div class="proof-stat">Blind win</div><div class="proof-desc">The agent must beat base Claude in a blind comparison, adjudicated under a published protocol. If your context layer can't beat the raw model, you don't have a context layer.</div></div>
+      <div class="proof-card"><div class="proof-logo">Corpus discipline</div><div class="proof-stat">Hand-built</div><div class="proof-desc">Questions are authored by architects from real understanding — never scraped from chat logs or reverse-engineered from the patterns they're meant to test. A named Eval Manager approves every addition.</div></div>
+      <div class="proof-card"><div class="proof-logo">The compounding move</div><div class="proof-stat">Gaps → roadmap</div><div class="proof-desc">When a check fails because the cited entity isn't in the graph, that isn't an eval failure. It's a curation deliverable. Every cycle produces a prioritised list of what to build next.</div></div>
+    </div>
+    <div class="horizon"></div>
+    <p>This is the loop that makes a small expert pool viable. You cannot hire thirty thousand contractors to manufacture ground truth for your platform, and you shouldn't want to. One hour of your best architect's time, spent authoring a rubric rather than grading, displaces roughly a hundred hours downstream — and produces three compounding outputs: durable rubric IP, a better judge, and the next round of curation targets.</p>
+  </section>
+
+  <!-- 9 · ENGAGEMENT -->
+  <section>
+    <div class="sec-label">The Engagement</div>
+    <div class="section-headline">Three phases. Working software at the end of the first one.</div>
+    <p>We don't sell a discovery phase that produces a recommendation. Phase 1 ends with a graph your FDEs can query from inside Claude, against a real customer use case, with an eval score attached.</p>
+    <div class="invest-box">
+      <div class="sec-label">Phase Overview</div>
+      <div class="section-headline">From steel thread to compounding asset.</div>
+      <div class="ask-row">
+        <div class="ask-item"><div class="ask-item-phase">Phase 1 · Foundation Sprint</div><div class="ask-item-val">Your metamodel ratified, schema stood up, first seed corpus authored, MCP gateway live in your FDEs' tools, one steel-thread use case end to end.</div></div>
+        <div class="ask-item"><div class="ask-item-phase">Phase 2 · Install</div><div class="ask-item-val">Skills ported to your product, deterministic check layer, three-gate curation wired to your design authority, calibration set and rubric, first FDE pod running live.</div></div>
+        <div class="ask-item"><div class="ask-item-phase">Phase 3 · Compound</div><div class="ask-item-val">Partner and project layers opened up, eval-to-curation loop formalised, customer-facing instrumentation, handover to your own operating model.</div></div>
+      </div>
+    </div>
+    <div class="horizon"></div>
+    <div class="section-headline" style="font-size:1.15rem;">What you bring</div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-dot dot-gold"></div><div><div class="tech-name">Two or three real experts</div><div class="tech-role">The people whose heads the knowledge currently lives in. Days of their time, not weeks — spent authoring rubrics and ratifying, never grading.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-sky"></div><div><div class="tech-name">A named design authority</div><div class="tech-role">Someone who can say no. Zero-trust curation needs an owner or it degrades into an ingest pipeline.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-amber"></div><div><div class="tech-name">One real customer use case</div><div class="tech-role">A steel thread with a live deployment behind it. Not a hypothetical. The graph earns its shape from real work.</div></div></div>
+      <div class="tech-item"><div class="tech-dot dot-light"></div><div><div class="tech-name">The willingness to be measured</div><div class="tech-role">The GA gate is a real gate. If your context layer doesn't beat the raw model, we will tell you, and we will tell you why.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 10 · CLOSE -->
+  <section>
+    <div class="sec-label">The Case</div>
+    <div class="section-headline">The winner isn't a category. It's a posture.</div>
+    <p>The prize goes to whoever most aggressively fuses three things: genuine domain depth, a real technical bar for the humans, and an agent that holds all three layers of context. The systems integrators own the relationships and precisely the wrong economics. The tool vendors own the product DNA and no instinct for sitting in a bank's change-management meeting. Whoever gets there first stops competing on how many FDEs they can hire.</p>
+    <div class="imperative">
+      <p>"The durable advantage isn't owning the underlying model — it's owning the context, workflows and routing layer that make every model more useful."</p>
+    </div>
+    <p>That layer is your product's context. Nobody else can build it — not the frontier labs, not the SIs, not the customer. But you don't have two years, and you don't have the bench.</p>
+    <p>We already built it. Let us hand you the thread.</p>
+    <div class="horizon"></div>
+    <p style="font-size:.85rem;color:var(--light-muted);">Sources: metamodel v1.11.0 node/edge counts, MCP tool policy, plugin roster, three-gate pipeline and GA-gate metrics are drawn from the live Clew codebase. Market figures are drawn from <em>Everyone's Building an FDE Army. The Talent Doesn't Exist.</em> (Ian Gotts, July 2026) and MIT Project NANDA's <em>State of AI in Business 2025</em>.</p>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <span>Clew · KeenanVision.net · Confidential · ISV Offering · 2026</span>
+  <span>Clew by KeenanVision.net</span>
+</footer>
+
+</body>
+</html>
