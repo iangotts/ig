@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clew – The Forward-Deployed Engineering Programme for ISVs | Keenan Vision</title>
+<meta name="description" content="Everyone's building an FDE army. The talent doesn't exist. Clew is the governed context graph that makes one great forward-deployed engineer deliver like a pod. Built, running, installed in three phases.">
+<meta name="author" content="Vernon Keenan">
+<meta name="publisher" content="Keenan Vision LLC">
+<meta property="og:title" content="Clew – The Forward-Deployed Engineering Programme for ISVs">
+<meta property="og:description" content="Your platform isn't the bottleneck. Your deployment capacity is.">
+<meta property="og:image" content="https://keenanvision.net/images/Keenan%20Vision%20Logo%20Rect.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   CLEW — Keenan Vision service page
+   Palette sampled directly from keenanvision.net homepage:
+     navy #19293c · gold #d1a73b · gradient → #e3e5e7
+   ══════════════════════════════════════════════════════════ */
+:root{
+  --navy:#19293c; --navy-2:#213144; --navy-3:#2e3d4e;
+  --gold:#d1a73b; --gold-dk:#b8912f; --gold-soft:rgba(209,167,59,.12); --gold-line:rgba(209,167,59,.35);
+  --slate:#65717e; --slate-lt:#8d96a0; --grad-end:#e3e5e7;
+  --ink:#19293c; --body:#4a5563; --muted:#77828f; --line:#dcdfe3;
+  --bg:#ffffff; --bg-alt:#f2f6fb;
+  --blue:#1e4d78; --blue-soft:#eef4fa; --blue-line:#c4d8ea;
+  --wrap:1180px; --radius:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--body);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 1.75rem}
+h1,h2,h3,h4{color:var(--ink);line-height:1.12;letter-spacing:-.025em;font-weight:800}
+
+/* ── NAV ─────────────────────────────────────────── */
+.nav{background:var(--navy);position:sticky;top:0;z-index:50}
+.nav-in{max-width:1400px;margin:0 auto;padding:1rem 1.75rem;display:flex;align-items:center;gap:2rem}
+.nav img{height:40px;width:auto;display:block}
+.nav-links{display:flex;gap:1.9rem;margin:0 auto}
+.nav-links a{font-size:.95rem;font-weight:600;color:#fff;text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a.current{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:1.25rem}
+.nav-right .signin{font-size:.95rem;font-weight:600;color:#fff;text-decoration:none}
+.nav-right .signin:hover{color:var(--gold)}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{display:inline-block;padding:.95rem 1.8rem;border-radius:var(--radius);font-size:1rem;font-weight:700;text-decoration:none;border:2px solid transparent;transition:all .15s;white-space:nowrap}
+.btn-gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-dk);border-color:var(--gold-dk)}
+.btn-outline-light{border-color:rgba(255,255,255,.55);color:#fff}
+.btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.btn-outline-dark{border-color:var(--line);color:var(--ink);background:#fff}
+.btn-outline-dark:hover{border-color:var(--gold);color:var(--gold-dk)}
+.btn-sm{padding:.55rem 1.1rem;font-size:.85rem;border-width:1px}
+.btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.25rem}
+
+/* ── HERO (mirrors the KV homepage gradient) ─────── */
+.hero{background:linear-gradient(180deg,#19293c 0%,#1e3757 55%,#24466a 100%);text-align:center;padding:4rem 0 5rem}
+.hero-logo{height:90px;width:auto;margin:0 auto 2.25rem}
+.chips{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem}
+.chip{font-size:.9rem;font-weight:500;padding:.45rem 1.1rem;border-radius:999px;background:rgba(255,255,255,.12);color:var(--gold);border:1px solid rgba(255,255,255,.08)}
+.hero h1{font-size:clamp(2.6rem,6.6vw,5.2rem);font-weight:900;color:var(--gold);letter-spacing:-.035em;max-width:20ch;margin:0 auto .9rem}
+.hero .sub{font-size:clamp(1.3rem,2.5vw,1.85rem);font-weight:700;color:#fff;letter-spacing:-.02em;margin-bottom:1.75rem}
+.hero .intro{font-size:1.2rem;color:#c3c9d1;max-width:56ch;margin:0 auto;line-height:1.6}
+.hero .intro strong{color:#fff;font-weight:700}
+.hero .btn-row{justify-content:center}
+.hero .fine{margin-top:2.5rem;font-size:.95rem;color:rgba(255,255,255,.55)}
+.hero .built{margin-top:.5rem;font-size:.95rem;color:rgba(255,255,255,.5)}
+.hero .built strong{color:rgba(255,255,255,.8);font-weight:700}
+
+/* ── SECTIONS ────────────────────────────────────── */
+section{padding:4.5rem 0}
+section.alt{background:var(--bg-alt)}
+section.center{text-align:center}
+h2{font-size:clamp(1.9rem,3.6vw,2.6rem);margin-bottom:.85rem}
+.sec-intro{font-size:1.08rem;max-width:66ch;margin-bottom:2.25rem}
+section.center .sec-intro{margin-left:auto;margin-right:auto}
+p+p{margin-top:1rem}
+strong{color:var(--ink);font-weight:700}
+em{color:var(--ink)}
+
+/* ── STATS ───────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin:2.25rem 0}
+.stats.four{grid-template-columns:repeat(4,1fr)}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.75rem 1rem;text-align:center}
+.stat .n{font-size:2.6rem;font-weight:900;color:var(--blue);letter-spacing:-.04em;line-height:1}
+.stat .l{font-size:.88rem;color:var(--muted);margin-top:.6rem;line-height:1.45}
+
+/* ── CARDS ───────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.9rem;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:var(--blue-line);box-shadow:0 6px 22px rgba(25,41,60,.07)}
+.card .num{font-size:1.6rem;font-weight:900;color:var(--blue);line-height:1;margin-bottom:.75rem;letter-spacing:-.03em}
+.card h3{font-size:1.15rem;margin-bottom:.55rem}
+.card p{font-size:.95rem}
+.card .tag{display:inline-block;margin-top:1rem;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--blue);background:var(--blue-soft);border:1px solid var(--blue-line);padding:.3rem .7rem;border-radius:999px}
+
+/* ── QUOTE ───────────────────────────────────────── */
+.quote{border-left:4px solid var(--blue);background:var(--blue-soft);padding:1.4rem 1.75rem;border-radius:0 var(--radius) var(--radius) 0;margin:2.25rem 0}
+.quote p{font-size:1.15rem;color:var(--ink);font-style:italic;font-weight:500}
+
+/* ── LISTS ───────────────────────────────────────── */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:1.75rem;text-align:left}
+.col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:1rem;padding-bottom:.55rem;border-bottom:2px solid var(--blue)}
+.col ul{list-style:none}
+.col li{font-size:.95rem;padding-left:1.6rem;position:relative;margin-bottom:.7rem}
+.col li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.col.no li::before{content:'×';color:#b6bec7}
+
+/* ── PHASES ──────────────────────────────────────── */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1.75rem;text-align:left}
+.phase{border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:var(--radius);padding:1.75rem;background:#fff}
+.phase .p-num{font-size:.78rem;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.09em}
+.phase h3{font-size:1.15rem;margin:.45rem 0 .55rem}
+.phase p{font-size:.93rem}
+
+/* ── FAQ ─────────────────────────────────────────── */
+.faq{max-width:860px;margin:0 auto;text-align:left}
+details{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:1.2rem 1.4rem;margin-bottom:.75rem}
+details[open]{border-color:var(--blue-line)}
+summary{cursor:pointer;font-weight:700;color:var(--ink);font-size:1rem;list-style:none;display:flex;justify-content:space-between;gap:1rem;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--blue);font-size:1.5rem;font-weight:400;line-height:1}
+details[open] summary::after{content:'–'}
+details p{margin-top:.8rem;font-size:.95rem}
+
+/* ── CTA ─────────────────────────────────────────── */
+.cta{background:var(--navy);color:#c3c9d1;text-align:center}
+.cta h2{color:#fff}
+.cta p{max-width:60ch;margin:0 auto;font-size:1.1rem}
+.cta .btn-row{justify-content:center}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer{background:var(--navy-2);padding:3rem 0 2rem;font-size:.9rem;color:#93a0af}
+footer img{height:36px;opacity:.95}
+.f-top{display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:center}
+.f-links{display:flex;gap:1.4rem;flex-wrap:wrap}
+.f-links a{color:#c3c9d1;text-decoration:none}
+.f-links a:hover{color:var(--gold)}
+.f-bot{margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:#8794a3}
+.f-bot span{color:#8794a3}
+
+@media(max-width:960px){
+  .nav-links,.nav-right .signin{display:none}
+  .grid,.phases,.stats,.stats.four{grid-template-columns:1fr}
+  .cols{grid-template-columns:1fr;gap:1.75rem}
+  .hero{padding:3rem 0 3.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a href="https://keenanvision.net/"><img src="https://keenanvision.net/images/Keenan%20Vision%20Logo%20Rect-Light-transparent.png" alt="Keenan Vision"></a>
+    <div class="nav-links">
+      <a href="https://keenanvision.net/">Home</a>
+      <a href="https://keenanvision.net/about">About</a>
+      <a href="https://keenanvision.net/services" class="current">Services</a>
+      <a href="https://keenanvision.net/research">Research</a>
+      <a href="https://keenanvision.net/publications">Publications</a>
+      <a href="https://keenanvision.net/blog">Blog</a>
+      <a href="https://keenanvision.net/opportunities">Opportunities</a>
+    </div>
+    <div class="nav-right">
+      <a href="https://keenanvision.net/about/contact" class="signin">Sign in</a>
+      <a href="https://calendly.com/vernonkeenan/30min" class="btn btn-gold btn-sm">Book a Briefing</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="wrap">
+    <img class="hero-logo" src="https://keenanvision.net/images/Keenan%20Vision%20Logo%20Rect-Light-transparent.png" alt="Keenan Vision">
+    <div class="chips">
+      <span class="chip">ISV Advisory</span>
+      <span class="chip">Forward-Deployed Engineering</span>
+    </div>
+    <h1>Everyone's Building an FDE Army. The Talent Doesn't Exist.</h1>
+    <div class="sub">New Programme: Clew</div>
+    <p class="intro">Your platform isn't the bottleneck — your <strong>deployment capacity</strong> is. Clew is the <strong>governed context graph</strong> that makes one great forward-deployed engineer deliver like a pod. Already built. Already running.</p>
+    <div class="btn-row">
+      <a href="https://calendly.com/vernonkeenan/30min" class="btn btn-gold">Book a 30-Minute Briefing</a>
+      <a href="#why-clew" class="btn btn-outline-light">See What's Already Built</a>
+    </div>
+    <div class="fine">Installed in three phases · Working software after the first</div>
+    <div class="built"><strong>Built on:</strong> A governed graph · MCP · 23 skills · 107 ratified architecture decisions</div>
+  </div>
+</div>
+
+<!-- ══ WHY ══ -->
+<section>
+  <div class="wrap">
+    <h2>Why ISVs Can't Hire Their Way Out</h2>
+    <p class="sec-intro">In eight weeks, OpenAI, Anthropic, AWS and Microsoft each committed to armies of engineers embedded inside customers. Microsoft Frontier alone: $2.5bn and roughly 6,000 people.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">$9B</div><div class="l">Committed to deployment armies in eight weeks</div></div>
+      <div class="stat"><div class="n">95%</div><div class="l">Of enterprise AI pilots return no P&amp;L impact</div></div>
+      <div class="stat"><div class="n">↑800%</div><div class="l">Rise in FDE job postings in nine months</div></div>
+    </div>
+    <p>They are all reacting to the finding at the centre of our own research: <strong>pilot purgatory</strong>. What separates the few that work isn't the model — it's <strong>integration</strong>, whether the thing is genuinely wired into how the business runs. That is a human, in-the-building, hands-on-the-data job.</p>
+    <p>But the forward-deployed engineer is a hiring dead zone. Job boards surface engineers. Agencies surface salespeople. Neither produces someone who can run the executive meeting, make the architecture call, then ship the code. So the bench goes two deep — and then it's air.</p>
+    <div class="quote">
+      <p>"The way through the gap isn't more people. It's a better one, working with a better agent."</p>
+    </div>
+    <p><strong>Your platform isn't your ceiling. Your deployment capacity is.</strong></p>
+  </div>
+</section>
+
+<!-- ══ WHAT CLEW IS ══ -->
+<section class="alt center" id="what">
+  <div class="wrap">
+    <h2>What Clew Is</h2>
+    <p class="sec-intro">A <em>clew</em> is the ball of thread Ariadne gave Theseus to find his way back out of the labyrinth. English later respelled it: <em>clue</em>. Your FDEs aren't short of intelligence — they're in a maze: your product surface, each customer's org, and the answers that live in three people's heads.</p>
+    <div class="cols">
+      <div class="col">
+        <h4>What it is</h4>
+        <ul>
+          <li>Your product, patterns and decisions as a governed graph</li>
+          <li>Answers with citations — or an honest "I don't know"</li>
+          <li>An MCP server, installed once, inside the tools they already use</li>
+          <li>A skills library that behaves the same way twice</li>
+          <li>An evaluation gate you can hold your own team to</li>
+        </ul>
+      </div>
+      <div class="col no">
+        <h4>What it isn't</h4>
+        <ul>
+          <li>Not a chatbot, and not another portal to remember</li>
+          <li>Not document search with a model bolted on</li>
+          <li>Not a model — it makes whichever one you use better</li>
+          <li>Not a rip-and-replace of your systems of record</li>
+          <li>Not a black box: every answer traces to a source</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHAT WE DO ══ -->
+<section id="programme">
+  <div class="wrap">
+    <h2>What We Do</h2>
+    <p class="sec-intro">Three phases. No discovery phase that ends in a recommendation — Phase 1 ends with working software your FDEs query from inside Claude, against a real customer, with a score attached.</p>
+    <div class="phases">
+      <div class="phase">
+        <div class="p-num">Phase 1</div>
+        <h3>Foundation Sprint</h3>
+        <p>Your model ratified, schema live, first content authored, the MCP server in your FDEs' tools, and one real use case running end to end.</p>
+      </div>
+      <div class="phase">
+        <div class="p-num">Phase 2</div>
+        <h3>Install</h3>
+        <p>Skills ported to your product, automated checks, curation wired to your design authority, scoring calibrated, and your first FDE pod live.</p>
+      </div>
+      <div class="phase">
+        <div class="p-num">Phase 3</div>
+        <h3>Compound</h3>
+        <p>Partner and customer layers opened, the evaluation-to-curation loop formalised, and handover to your own operating model.</p>
+      </div>
+    </div>
+    <div class="cols">
+      <div class="col">
+        <h4>What you get</h4>
+        <ul>
+          <li>Your product family as a governed semantic graph</li>
+          <li>Your MCP server, installable in minutes</li>
+          <li>Your skills library, tuned to your patterns</li>
+          <li>Your curation ladder and design authority process</li>
+          <li>Your evaluation harness, corpus and pass/fail gate</li>
+          <li>Your operating model: roles, cadence, decision log</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>What you bring</h4>
+        <ul>
+          <li>Two or three real experts — days, not weeks</li>
+          <li>A named design authority: someone who can say no</li>
+          <li>One real customer use case, not a hypothetical</li>
+          <li>The willingness to be measured</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:2.25rem"><strong>You own all of it from day one.</strong> Phase 3 is handover — the programme is designed to end.</p>
+  </div>
+</section>
+
+<!-- ══ WHY CLEW ══ -->
+<section class="alt center" id="why-clew">
+  <div class="wrap">
+    <h2>Why Clew</h2>
+    <p class="sec-intro">We're not proposing this. We've been running it. Five repositories, a live MCP surface, a ratified semantic model and an evaluation harness — hardened on real enterprise engagements.</p>
+    <div class="stats four">
+      <div class="stat"><div class="n">107</div><div class="l">Architecture decisions</div></div>
+      <div class="stat"><div class="n">86</div><div class="l">Ratified decision traces</div></div>
+      <div class="stat"><div class="n">23</div><div class="l">Skills across 7 plugins</div></div>
+      <div class="stat"><div class="n">31/52</div><div class="l">Node types / edge types</div></div>
+    </div>
+    <p class="sec-intro" style="font-size:.95rem;color:var(--muted)">Most of those decisions record getting something wrong first. That is the asset. The code is the easy part.</p>
+    <div class="grid" style="text-align:left">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>It's built, and it runs</h3>
+        <p>Retrieval server, MCP gateway shipping as a signed binary, enablement console, governance layer. Your FDEs install it and it works the same day.</p>
+        <span class="tag">Proven, not proposed</span>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>The three-level model</h3>
+        <p>31 node types and 52 edge types on a spine running from what a practitioner wants to what your platform does. Your layer, your partners' and each customer's inherit and override — without forking your canon.</p>
+        <span class="tag">The commercial mechanism</span>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>The eval loop</h3>
+        <p>Hand-authored corpus, scored rubric, regression harness. The gate is explicit: 80% strong-or-better, and it must beat the raw model blind.</p>
+        <span class="tag">Measured, not asserted</span>
+      </div>
+      <div class="card">
+        <div class="num">04</div>
+        <h3>The skills</h3>
+        <p>Seven plugins, twenty-three skills, already written — from authoring canonical content to turning a customer's org into a digital twin.</p>
+        <span class="tag">Ported, not invented</span>
+      </div>
+      <div class="card">
+        <div class="num">05</div>
+        <h3>Zero-trust curation</h3>
+        <p>Nothing is true because an agent said so. Promotion runs three gates, and the verb that approves content is absent from the agent's toolset. Architecture, not policy.</p>
+        <span class="tag">Agents can't self-approve</span>
+      </div>
+      <div class="card" style="border-color:var(--blue-line);background:var(--blue-soft)">
+        <div class="num">→</div>
+        <h3>Two years of scar tissue, transferred</h3>
+        <p>You could build this. The question is whether your three best architects should spend two years on plumbing while competitors deploy.</p>
+        <span class="tag" style="background:#fff">Time to value</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHO ══ -->
+<section id="who">
+  <div class="wrap">
+    <h2>Who This Is For</h2>
+    <p class="sec-intro">Clew fits organisations whose growth is capped by deployment capacity rather than product capability.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Platform &amp; Ecosystem ISVs</h3>
+        <p>Companies building on or around Salesforce, ServiceNow, Workday and similar, whose deployments depend on scarce experts who know how the platform really behaves.</p>
+      </div>
+      <div class="card">
+        <h3>AI Product Leaders</h3>
+        <p>VPs of Product and GTM leaders who have proved the product and now need the deployment motion to scale faster than headcount allows.</p>
+      </div>
+      <div class="card">
+        <h3>Platform &amp; Advanced AI Organisations</h3>
+        <p>Teams standing up their own forward-deployed function and discovering the bench is two people deep, with no pipeline behind it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section class="alt center" id="faq">
+  <div class="wrap">
+    <h2>Straight Answers</h2>
+    <p class="sec-intro">The questions ISV leaders ask in the first meeting.</p>
+    <div class="faq">
+      <details open>
+        <summary>Why not just point a model at our documentation?</summary>
+        <p>You'll get plausible instead of grounded, with no way to tell them apart. A graph knows whether the entity exists, the relationship is real, and the claim has a source — embeddings only know what looks similar.</p>
+      </details>
+      <details>
+        <summary>Why couldn't we build this ourselves?</summary>
+        <p>You could. It took us two years, and the artifact that matters isn't code — it's 107 architecture decisions, most recording a wrong turn first. Meanwhile the people who'd build it are the experts you need deploying.</p>
+      </details>
+      <details>
+        <summary>Does this lock us into you?</summary>
+        <p>No. The graph, repositories, decision records and operating model are yours from day one, in portable form, with every choice written down. Phase 3 is explicitly handover.</p>
+      </details>
+      <details>
+        <summary>What happens when the models change?</summary>
+        <p>Nothing — that's the point. Ground truth in a versioned graph survives model, retrieval and rubric changes, so improvements compound instead of evaporating.</p>
+      </details>
+      <details>
+        <summary>How do we know it's working?</summary>
+        <p>We agree the gate up front: 80% of a hand-authored corpus strong-or-better, and a blind win against the raw model. If your context layer can't beat the base model, we'll tell you.</p>
+      </details>
+      <details>
+        <summary>How do we stop it going rogue in a customer's org?</summary>
+        <p>The tool surface is deny-by-default, and the build fails if a new capability appears unclassified. The verb that marks content approved doesn't exist for the agent — only a named human can.</p>
+      </details>
+      <details>
+        <summary>Is this consulting with a technical coat of paint?</summary>
+        <p>Fair challenge, so here's the falsifiable version: Phase 1 ends with running software answering questions about a real customer, with a score. If we can't deliver that, don't buy Phase 2.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta">
+  <div class="wrap">
+    <h2>Ready to Break Your Deployment Bottleneck?</h2>
+    <p>Thirty minutes, no deck. We'll ask what's bottlenecking your deployments, how deep your bench really is, and where your best answers live today. You'll leave with a written view on whether Clew fits — whether or not you buy it.</p>
+    <div class="btn-row">
+      <a href="https://calendly.com/vernonkeenan/30min" class="btn btn-gold">Book a 30-Minute Briefing</a>
+      <a href="https://keenanvision.net/research/architecture-as-strategy" class="btn btn-outline-light">Read the Research Paper</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-top">
+      <a href="https://keenanvision.net/"><img src="https://keenanvision.net/images/Keenan%20Vision%20Logo%20Rect-Light-transparent.png" alt="Keenan Vision"></a>
+      <div class="f-links">
+        <a href="https://keenanvision.net/">Home</a>
+        <a href="https://keenanvision.net/about">About</a>
+        <a href="https://keenanvision.net/services">Services</a>
+        <a href="https://keenanvision.net/publications">Publications</a>
+        <a href="https://keenanvision.net/blog">Blog</a>
+        <a href="https://keenanvision.net/opportunities">Opportunities</a>
+        <a href="https://keenanvision.net/about/contact">Contact</a>
+      </div>
+    </div>
+    <div class="f-bot">
+      <span>© 2026 Keenan Vision LLC. All rights reserved.</span>
+      <div class="f-links">
+        <a href="https://twitter.com/salesforcedevop">Twitter</a>
+        <a href="https://github.com/vkeenan">GitHub</a>
+        <a href="https://www.linkedin.com/in/vernonkeenan/">LinkedIn</a>
+        <a href="https://keenanvision.net/about/privacy">Privacy Policy</a>
+        <a href="https://keenanvision.net/about/terms">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
