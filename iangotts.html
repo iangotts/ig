@@ -526,8 +526,8 @@
         <div class="sub-modal__eyebrow">Subscribe</div>
         <h3 id="sub-modal-title">Never miss a post</h3>
         <p class="sub-intro">New thinking on the Salesforce ecosystem, AI agents, and go-to-market strategy &#8212; delivered to your inbox.</p>
-        <p class="sub-intro" style="margin-top:.7rem;">Subscriptions are handled on the WordPress blog. Add your email there and WordPress will send you a confirmation link to click.</p>
-        <a href="https://iangotts.wordpress.com/" target="_blank" rel="noopener" class="btn btn-gold" id="subscribe-open-blog" style="display:block;width:100%;text-align:center;margin-top:.3rem;">Subscribe on the blog &#8599;</a>
+        <p class="sub-intro" style="margin-top:.7rem;">Enter your email on the Contact &amp; Subscribe page and confirm to start getting each new post by email.</p>
+        <a href="https://iangotts.wordpress.com/about/" target="_blank" rel="noopener" class="btn btn-gold" id="subscribe-open-blog" style="display:block;width:100%;text-align:center;margin-top:.3rem;">Subscribe on the blog &#8599;</a>
         <p class="subscribe-note muted" id="subscribe-note" role="status" aria-live="polite"></p>
       </div>
     </div>
@@ -810,11 +810,9 @@
     });
   }
 
-  // ── Subscribe (hand off to WordPress) ───────────────
-  // WordPress.com no longer accepts a hand-built cross-origin POST from this
-  // page (it rejects it as invalid and sends no confirmation email). So the
-  // modal simply hands the visitor to the blog, where WordPress serves its own
-  // subscribe form on its own domain and handles the double opt-in email.
+  // ── Subscribe (hand off to the blog) ────────────────
+  // The button opens the blog's "Contact & Subscribe" page, where WordPress
+  // serves its own email form on its own domain and sends the confirmation.
   (function wireSubscribe() {
     var modal   = document.getElementById('subscribe-modal');
     var openBtn = document.getElementById('subscribe-open');
@@ -851,7 +849,7 @@
     // Once the visitor heads to the blog, leave a gentle reminder in the modal.
     if (blogBtn && note) {
       blogBtn.addEventListener('click', function() {
-        note.textContent = 'Opened the blog in a new tab \u2014 add your email there, then check your inbox (and spam) for the confirmation link.';
+        note.textContent = 'Opened the Contact & Subscribe page in a new tab \u2014 enter your email there and check your inbox (and spam) for the confirmation link.';
         note.className = 'subscribe-note muted';
       });
     }
