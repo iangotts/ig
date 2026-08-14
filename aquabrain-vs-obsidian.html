@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AquaBrain vs Obsidian</title>
+<style>
+  :root{
+    --teal:#2e8b8b; --teal-dark:#1f6f6f; --ink:#1c2733; --slate:#2f3e4d;
+    --muted:#5c6b7a; --bg:#f6f8fa; --card:#ffffff; --line:#e3e9ee;
+    --amber:#b97a2a; --amber-bg:#fdf3e3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);padding:36px 20px 48px;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  h1{text-align:center;font-size:44px;letter-spacing:-.5px;}
+  h1 .aq{color:var(--teal);} h1 .vs{color:var(--muted);font-weight:500;}
+  .sub{text-align:center;color:var(--muted);font-size:18px;margin:8px 0 6px;}
+  .src{text-align:center;color:var(--muted);font-size:13px;margin-bottom:26px;}
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(28,39,51,.08);}
+  th{font-size:19px;padding:16px 18px;text-align:left;}
+  th.cat{background:#f0f4f7;color:var(--ink);width:21%;}
+  th.aq{background:var(--teal);color:#fff;width:39%;}
+  th.ob{background:var(--slate);color:#fff;width:40%;}
+  td{padding:14px 18px;border-top:1px solid var(--line);vertical-align:top;font-size:15px;line-height:1.5;}
+  td.cat{font-weight:700;font-size:15.5px;white-space:nowrap;}
+  td.cat .n{color:var(--teal);margin-right:6px;}
+  td .lead{font-weight:700;}
+  td .det{color:var(--muted);font-size:13.5px;display:block;margin-top:3px;}
+  .fix{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.4px;color:var(--amber);
+    background:var(--amber-bg);border:1px solid #ecd9b8;border-radius:999px;padding:1px 8px;
+    vertical-align:middle;margin-left:8px;}
+  .verdict{margin-top:22px;background:#eaf4f2;border:1.5px solid var(--teal);border-radius:16px;
+    padding:22px 26px;display:flex;gap:18px;align-items:flex-start;}
+  .verdict .star{flex:0 0 46px;height:46px;border-radius:50%;background:var(--teal);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;}
+  .verdict h2{font-size:20px;margin-bottom:6px;}
+  .verdict p{font-size:16px;line-height:1.55;}
+  .verdict .aq{color:var(--teal-dark);font-weight:700;} .verdict b{color:var(--slate);}
+  .legend{margin-top:14px;color:var(--muted);font-size:12.5px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="aq">AquaBrain</span> <span class="vs">vs</span> Obsidian</h1>
+  <div class="sub">AI-native working memory vs durable linked knowledge base</div>
+  <div class="src">AquaBrain column verified against the AquaBrain business &amp; technical specs v7.0 (June–Aug 2026)</div>
+
+  <table>
+    <tr><th class="cat">Category</th><th class="aq">AquaBrain</th><th class="ob">Obsidian</th></tr>
+
+    <tr>
+      <td class="cat"><span class="n">1.</span>Category</td>
+      <td><span class="lead">AI-first memory layer</span><span class="det">Two object kinds — AI-classified Thoughts + user-authored Journal Notes — with a compiled knowledge layer built overnight on top ("dream cycle").</span></td>
+      <td><span class="lead">Human-first knowledge base</span><span class="det">Linked Markdown notes, curated and organised by the human.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">2.</span>Main interface</td>
+      <td><span class="lead">AI clients via MCP — plus real UIs</span><span class="det">Claude Desktop / Cursor / Claude Code over MCP; web app (notes grid, capture, export, settings), native iOS app, Slack, Telegram bot, Chrome clipper.</span></td>
+      <td><span class="lead">Notes, links, graph, plugins</span><span class="det">Desktop + mobile editor; ~2,500 community plugins.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">3.</span>AI read/write</td>
+      <td><span class="lead">Native by design</span><span class="det">9 MCP tools (search, capture, update, delete, lenses, skills…); every capture runs an AI ingest pipeline: memory statement, auto-tags, embedding.</span></td>
+      <td><span class="lead">Possible with integrations</span><span class="det">Community plugins (Copilot, Smart Connections) and third-party MCP bridges; not native.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">4.</span>Capture friction</td>
+      <td><span class="lead">Very low, AI-mediated</span><span class="det">"Save this" in any AI chat, paste/upload, mobile share target, Slack right-click, Telegram /save, web clipper, 25-file bulk migration. 1MB/file cap — an ideas exchange, not a library.</span></td>
+      <td><span class="lead">More deliberate / manual</span><span class="det">You write the note; quick-capture exists via plugins and mobile.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">5.</span>Organisation</td>
+      <td><span class="lead">AI-mediated + Lenses</span><span class="det">Auto-tagged themes on capture; Lenses = saved semantic views shared across Thoughts and Notes; nightly enrichment compiles topic/company/project profiles.</span></td>
+      <td><span class="lead">Explicit folders, links, properties</span><span class="det">Human-built structure: wikilinks, tags, YAML properties.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">6.</span>Human browsing<span class="fix">was "appears secondary"</span></td>
+      <td><span class="lead">Split by design</span><span class="det">Journal Notes: full UI — card grid, search, filters, edit, iOS drawer. Thoughts: deliberately minimal (immutable AI memories, reviewed via search/export; no browse-everything explorer in V1).</span></td>
+      <td><span class="lead">Excellent</span><span class="det">Browsing and rereading is the core experience.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">7.</span>Knowledge graph<span class="fix">was "unclear"</span></td>
+      <td><span class="lead">Compiled, not drawn</span><span class="det">No visual link graph. Instead: entities (topics/companies/projects) with typed edges, atomic facts with confidence + evidence links, and contradiction detection ("you said X in March, Y in June"). Semantic, machine-consumed.</span></td>
+      <td><span class="lead">Excellent — visual</span><span class="det">Interactive link graph; the meaning lives in the human's links.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">8.</span>Plain file ownership<span class="fix">was "unknown"</span></td>
+      <td><span class="lead">No — hosted DB, clean .md export</span><span class="det">Data lives in hosted Postgres. Raw thoughts/notes export as Markdown (lens export, bulk .zip with frontmatter) — portability of raw captures is an explicit promise. The compiled enrichment layer does not export.</span></td>
+      <td><span class="lead">Yes — Markdown files</span><span class="det">Plain files on your disk, readable by anything.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">9.</span>Local-first<span class="fix">was "probably"</span></td>
+      <td><span class="lead">Cloud-first — confirmed</span><span class="det">Multi-tenant hosted Supabase + Vercel/Railway; no self-host option today. iOS notes are offline-capable and sync on reconnect; retrieval needs the cloud. Dedicated infrastructure is an enterprise roadmap item.</span></td>
+      <td><span class="lead">Yes</span><span class="det">Local vault; sync is optional and paid.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">10.</span>Vendor independence<span class="fix">was "unknown"</span></td>
+      <td><span class="lead">Moderate — by deliberate design</span><span class="det">You can leave with your raw captures (.md export) and bring your own LLM keys (BYOK). But hosting is AquaBrain-only, and the spec is candid: the compiled overnight layer is the intended "data-gravity moat".</span></td>
+      <td><span class="lead">Strong</span><span class="det">The files outlive the app.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">11.</span>MCP &amp; agents</td>
+      <td><span class="lead">First-class feature</span><span class="det">Native MCP server with 9 tools + 12 skills and a token-efficient routing table (~700 tokens ambient, bodies loaded on demand); contested facts are flagged inline to the AI at retrieval time.</span></td>
+      <td><span class="lead">Needs bridge / plugin / server</span><span class="det">Community MCP servers exist; nothing first-party.</span></td>
+    </tr>
+
+    <tr>
+      <td class="cat"><span class="n">12.</span>Best role</td>
+      <td><span class="lead">Working AI memory</span><span class="det">Passive capture from every AI you touch, semantic recall into every conversation — plus a Brain that compiles what it knows overnight.</span></td>
+      <td><span class="lead">Durable long-term knowledge</span><span class="det">Human-curated writing you'll still own in 20 years.</span></td>
+    </tr>
+  </table>
+
+  <div class="verdict">
+    <div class="star">★</div>
+    <div>
+      <h2>Best fit for CianiOS</h2>
+      <p><span class="aq">AquaBrain</span> as AI working memory; <b>Obsidian</b> as durable curated knowledge. The original verdict holds — with one refinement: AquaBrain's enrichment layer (compiled profiles, facts, contradiction review) reaches further into "durable knowledge" than the draft table credited, but plain-file ownership and offline durability remain squarely Obsidian's. Use AquaBrain's .md export as the bridge: promote what proves durable into the vault.</p>
+    </div>
+  </div>
+
+  <div class="legend">Amber chips mark rows corrected from the draft table using the v7.0 specs.</div>
+</div>
+</body>
+</html>
