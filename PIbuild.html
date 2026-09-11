@@ -139,7 +139,7 @@
 <div class="shell">
 
   <div class="masthead">
-    <div class="eyebrow">Execution Plan · Phase 0–4 · Synthesizes both specs</div>
+    <div class="eyebrow">Execution Plan · Phase 0–4 · Phase 3 grounded in the real AquaBrain repo</div>
     <h1>The Build Plan</h1>
     <p class="sub">Sequencing, dependencies, and gates across the core app and the Wisdom Layer — kickoff to the first external coaching release.</p>
     <div class="meta-row">
@@ -178,6 +178,10 @@
       <div class="sec-head"><span class="sec-num">01</span><h2>How to read this</h2></div>
       <p class="lede">The sequencing and dependencies below are real planning judgement. The week numbers are not.</p>
       <p>Durations assume a small team working in parallel — roughly 3–5 full-stack/product engineers, one iOS specialist joining at Phase 1, and a data/ML engineer joining for Phase 3 — with no team-size or velocity data behind that assumption. Treat the timeline as <b>relative sequencing</b> — what can run in parallel, what blocks what — and recalibrate the actual week numbers once real resourcing is known. That's a deliberate choice: inventing a fake calendar would be worse than not having one, the same reason neither prior spec invented a subscription price.</p>
+      <div class="callout wisdom">
+        <span class="tag">Updated — grounded in the real AquaBrain repo, not built on it</span>
+        Phase 3 below was re-derived against Ian's actual AquaBrain codebase (technical spec v7.0, the job system, the overnight enrichment cycle) rather than inferred from first principles. To be precise about what that means: this is a completely new, standalone build — its own codebase, its own database, its own deployment — not a product layered on top of AquaBrain's actual running Brain or engine (that's a different pattern, described in section 06). What's borrowed is the architectural thinking and deployment approach — a job-worker pipeline shape, a conflict-resolution mechanism, an MCP-over-edge-function deployment pattern — proven designs this build re-implements in its own infrastructure, not code or services it plugs into. That raises confidence in <i>how</i> Phase 3 gets built; it doesn't change the week numbers, which are still illustrative.
+      </div>
     </section>
 
     <section id="timeline">
@@ -249,6 +253,10 @@
           </tbody>
         </table>
       </div>
+      <div class="callout">
+        <span class="tag">Real data point for the iOS-approach decision</span>
+        AquaBrain's own shipped iOS app is native SwiftUI + SwiftData + Combine (not a cross-platform framework) — a real internal precedent for build quality and team familiarity, worth weighing directly against React Native's cross-platform speed when this decision is made in week one or two. Not a recommendation either way — just a data point the base spec didn't have.
+      </div>
       <p><b>Exit criteria:</b> naming and pricing tier decided (even directionally); iOS build approach confirmed; a real catalog count in hand; component library ready for engineering to consume.</p>
     </section>
 
@@ -260,7 +268,7 @@
           <thead><tr><th>Workstream</th><th>Covers</th></tr></thead>
           <tbody>
             <tr><td>Backend, data model &amp; ingestion</td><td>Insight / SME / Tag / Library schema; YouTube sync + Shorts-vs-long-form classifier</td></tr>
-            <tr><td>Platform shells</td><td>Web (responsive) + iOS (React Native) scaffolding, light/dark theme</td></tr>
+            <tr><td>Platform shells</td><td>Web (responsive) + iOS scaffolding, light/dark theme — framework per the Phase 0 iOS-approach decision (React Native for shared velocity, or native SwiftUI following AquaBrain's own precedent)</td></tr>
             <tr><td>Core screens</td><td>Discover, Library, Insight detail, SME profile/directory, Search, Curated Collections</td></tr>
             <tr><td>Accounts &amp; personal library</td><td>Auth, My List (Later/Favourites/History)</td></tr>
             <tr><td>Admin / CMS</td><td>Sync queue, approve Insight/SME, Collections curation</td></tr>
@@ -279,29 +287,44 @@
 
     <section id="p3">
       <div class="sec-head"><span class="sec-num">06</span><h2>Phase 3 — The Wisdom Layer</h2></div>
-      <p class="lede">Sequenced exactly as the extended spec lays out — each sub-phase gates the next.</p>
+      <p class="lede">Sequenced exactly as the extended spec lays out — each sub-phase gates the next. What changed here: the <i>how</i> behind each sub-phase now follows a pattern AquaBrain has already built and run in production. To be precise, this is a new, standalone build — its own codebase, database and deployment — not a product that sits on top of AquaBrain's actual Brain or infrastructure. What carries over below is the architecture and deployment <i>approach</i>, re-implemented here from scratch, never shared services or shared code.</p>
+
+      <div class="callout wisdom">
+        <span class="tag">A design precedent, not an infrastructure one — JustAsk</span>
+        Worth being explicit about the difference: <b>JustAsk</b> is a second branded product AquaBrain built <i>on top of its own real, running engine</i> — shared auth model, shared Brain, shared infrastructure, since 2025. That is not this build's model. This build borrows AquaBrain's architectural thinking, not its infrastructure — there's no shared engine, no shared database, no dependency on AquaBrain being up. The one piece of JustAsk genuinely worth taking directly is a design pattern, not a dependency: its working safety guardrail for a vulnerable audience (an <code class="mono">ACTION_PROMISE</code> pattern check with a corrective re-ask and a fallback line) is the closest real precedent for how the "Overcoming Anxiety" Coaching Skill should guard its own output — re-implemented in this build, not called into JustAsk's.
+      </div>
+
       <div class="cards">
         <div class="card">
           <div class="top"><h3>3a — Ingest, extract, review</h3><span class="card-idx">Gated by legal</span></div>
           <div class="card-grid">
-            <div><div class="label">Covers</div><div class="val">Transcript segmentation, Wisdom Fragment extraction, Admin review queue — no live Q&amp;A yet</div></div>
+            <div><div class="label">Covers</div><div class="val">Transcript segmentation, Wisdom Fragment extraction against Lenses, Admin review queue — no live Q&amp;A yet</div></div>
             <div><div class="label">Exit criteria</div><div class="val">A corpus past the minimum size/quality threshold (open question in the Wisdom Layer spec, section 13)</div></div>
+            <div><div class="label">Modeled on</div><div class="val">AquaBrain's real overnight enrichment cycle: an 8-phase, idempotent, resumable job pipeline (<code class="mono">extract_entities → extract_facts → consolidate → contradictions → salience → embed → daily_prep → report</code>). This build's own extraction pipeline follows the same shape — segment, extract Wisdom Fragments, tag against Lenses, de-dupe/consolidate, flag disagreements, score salience, embed, summarize — implemented fresh in its own service, rather than a bespoke one-shot script designed from a blank page.</div></div>
+            <div><div class="label">Job pattern to replicate</div><div class="val">The same job-worker pattern as production AquaBrain, rebuilt in this project's own backend and database: a service running an in-process worker loop that claims work via a <code class="mono">jobs_claim_next()</code>-style SQL RPC (<code class="mono">for update skip locked</code>) against a polymorphic <code class="mono">jobs</code> table, with orphan-resume on boot for jobs interrupted mid-run. Following this pattern means the extraction pipeline is stoppable, resumable, and re-runnable per-video without re-processing the whole corpus — important given 3a runs on hundreds of transcripts, not one.</div></div>
           </div>
         </div>
         <div class="card">
           <div class="top"><h3>3b — In-app Ask</h3><span class="card-idx">Gated by 3a</span></div>
           <div class="card-grid">
-            <div><div class="label">Covers</div><div class="val">One surface, real subscribers, validating answer quality and the CONTESTED-disagreement pattern</div></div>
+            <div><div class="label">Covers</div><div class="val">One surface, real subscribers, validating answer quality and the disagreement-handling pattern</div></div>
             <div><div class="label">Exit criteria</div><div class="val">Answer quality validated well enough to trust distributing it externally</div></div>
+            <div><div class="label">Modeled on</div><div class="val">AquaBrain's real conflict-resolution mechanism, replicated rather than reinvented: a per-Lens <code class="mono">resolution_policy</code> (<code class="mono">recency</code> = auto-supersede the older view silently; <code class="mono">review</code> = queue for human review) and an exact, reusable marker-text pattern — <code class="mono">⚠️ CONTESTED — &lt;summary&gt;. Resolve at …</code> — for when two experts in the corpus genuinely disagree. That's the mechanism shape the Wisdom Layer spec's "CONTESTED" idea should implement in this build's own database, not a service it calls out to.</div></div>
           </div>
         </div>
         <div class="card">
           <div class="top"><h3>3c — MCP server + subscription gate</h3><span class="card-idx">Gated by 3b</span></div>
           <div class="card-grid">
-            <div><div class="label">Covers</div><div class="val">The 6-tool MCP surface, Coach-tier entitlement, external distribution into a subscriber's own Claude</div></div>
+            <div><div class="label">Covers</div><div class="val">The Wisdom Layer's own MCP surface, Coach-tier entitlement, external distribution into a subscriber's own Claude</div></div>
             <div><div class="label">Exit criteria</div><div class="val">First external subscribers connected and using it</div></div>
+            <div><div class="label">Modeled on</div><div class="val">The same deployment shape as AquaBrain's real, production <code class="mono">brain-mcp</code> server — Deno + the official MCP SDK + Hono, served over Streamable HTTP as an edge function — a proven approach for exposing a Brain over MCP. This build stands up its own separate MCP server this way; it does not connect into AquaBrain's actual server or Brain.</div></div>
           </div>
         </div>
+      </div>
+
+      <div class="callout">
+        <span class="tag">A real cost data point for Gate B</span>
+        AquaBrain's own enrichment backfill — extraction, consolidation, contradiction-checking, embedding — cost roughly <b>$0.18 per 993 thoughts processed</b> (batched ~12 items per LLM call, with recompilation gated on material change). Extraction cost is very unlikely to be what makes Gate B's corpus threshold hard to hit; the threshold is a <i>quality</i> bar, not a budget constraint. Useful to know before anyone worries Phase 3a is expensive to run.
       </div>
     </section>
 
@@ -318,7 +341,7 @@
           <thead><tr><th>Gate</th><th>Blocks</th><th>Must be true first</th></tr></thead>
           <tbody>
             <tr><td><b>A</b></td><td>Phase 3a start</td><td>Legal &amp; rights clearance closed — the Wisdom Layer spec's biggest flagged risk (section 11 there)</td></tr>
-            <tr><td><b>B</b></td><td>3a → 3b</td><td>Corpus size/quality threshold met, not just "some time has passed"</td></tr>
+            <tr><td><b>B</b></td><td>3a → 3b</td><td>Corpus size/quality threshold met, not just "some time has passed" — a quality bar, not a cost one (see the real per-item processing cost in section 06)</td></tr>
             <tr><td><b>C</b></td><td>3b → 3c</td><td>In-app Ask quality validated with real subscribers before it's handed to an external MCP audience</td></tr>
           </tbody>
         </table>
@@ -338,7 +361,7 @@
             <tr><td>0 — Foundations</td><td>Product/design lead, external counsel (part-time)</td></tr>
             <tr><td>1 — MVP</td><td>+ Backend engineer(s), web engineer, iOS engineer, Admin/ops</td></tr>
             <tr><td>2 — Deepen</td><td>Same team, steady state</td></tr>
-            <tr><td>3 — Wisdom Layer</td><td>+ Data/ML engineer (extraction pipeline), a human reviewer for the Admin queue, continued counsel involvement through Gate A</td></tr>
+            <tr><td>3 — Wisdom Layer</td><td>+ A backend engineer comfortable with a Postgres/pgvector + job-worker pipeline (not a dedicated ML infra hire — AquaBrain's real enrichment cycle is built and run by generalist backend engineers, not an ML team), a human reviewer for the Admin queue, continued counsel involvement through Gate A</td></tr>
             <tr><td>4 — Scale</td><td>Sized against what Phase 3 usage actually shows</td></tr>
           </tbody>
         </table>
@@ -359,15 +382,15 @@
       <div class="sec-head"><span class="sec-num">11</span><h2>Self-critique</h2></div>
       <div class="callout">
         <span class="tag">Solid</span>
-        The sequencing and gates are real judgement calls grounded in what each spec already established — Gate A through C aren't new constraints, they're the dependencies both documents already named, made explicit and placed on a timeline.
+        The sequencing and gates are real judgement calls grounded in what each spec already established — Gate A through C aren't new constraints, they're the dependencies both documents already named, made explicit and placed on a timeline. Phase 3 is now stronger still: its architecture replicates patterns from a real, running system (AquaBrain's job pipeline, enrichment cycle, conflict-resolution mechanism, MCP deployment shape, and — narrowly, for the anxiety-Skill guardrail — JustAsk's safety design) rather than being inferred from the Wisdom Layer spec alone. This is architectural precedent, not shared infrastructure: this build has its own codebase, database and deployment throughout, and doesn't depend on AquaBrain's Brain or engine being up.
       </div>
       <div class="callout wisdom">
         <span class="tag">Weaker, by design</span>
-        The week numbers are illustrative, stated plainly as such in section 01, and built on an undisclosed-elsewhere team-size assumption I made explicit rather than hid. Once real resourcing exists, the bars will move; the order and the gates most likely won't.
+        The week numbers are illustrative, stated plainly as such in section 01, and built on an undisclosed-elsewhere team-size assumption I made explicit rather than hid. Once real resourcing exists, the bars will move; the order and the gates most likely won't. The AquaBrain grounding changes confidence in <i>how</i> Phase 3 gets built, not how long it takes — I have no real velocity data for this team, only for a different one.
       </div>
       <div class="callout">
-        <span class="tag">Not covered</span>
-        This is a build plan, not a budget — no cost estimates, and no attempt to size the legal engagement itself, which is a real unknown this plan just treats as "start it early."
+        <span class="tag">Not fully covered</span>
+        The per-item enrichment cost in section 06 is a real number, but it's AquaBrain's cost on AquaBrain's content and model choices, not a quote for this project's transcript volume or prompts — treat it as a directional floor, not a budget. I also read the AquaBrain and JustAsk <i>technical</i> specs in depth but not the 742-line AquaBrain business spec or the MCP server's actual source code, so some specifics here (schema field names, exact tool signatures) are taken from spec prose rather than verified against code — worth a source-code pass before Phase 3a starts if precision matters. And this is still a build plan, not a budget: no attempt to size the legal engagement itself, which stays "start it early" rather than a real estimate.
       </div>
     </section>
 
